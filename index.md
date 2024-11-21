@@ -1,1 +1,1 @@
-On this blog I write about my experiences as a newbie in the world of programming. Shoutout to <a href="https://chadbaldwin.net/2021/03/14/how-to-build-a-sql-blog.html">Chad Baldwin</a> for providing the template and instructions.
+I write about my experiences in the world of programming. Shoutout to <a href="https://chadbaldwin.net/2021/03/14/how-to-build-a-sql-blog.html">Chad Baldwin</a> for providing the template and instructions.
