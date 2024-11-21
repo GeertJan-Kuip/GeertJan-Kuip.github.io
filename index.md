@@ -1,5 +1,1 @@
-Here you can say lots of fun things about your site.
-
-Maybe say a some things about yourself.
-
-Or maybe what you plan to blog about.
+On this blog I write about my experiences in the world of programming. Two weeks ago I decided to become a software engineer, after having worked for years on architectural visualization and political science. 
