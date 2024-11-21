@@ -6,13 +6,13 @@ One of them works for a company that offers two-year contracts to non-IT graduat
 
 I learned a few things:
 - recruiters call and mail you back and are pleasant to talk to
-- there's always some hard-to-fulfill vacancy requiring a special combination of skills
-- doing the bootcamp trajectory is risky, at least with my age
+- there's always a hard-to-fill vacancy requiring some special combination of skills
+- the bootcamp trajectory is risky
 - my experience in 3D might be handy
 
-With regards to the second point, the regular recruiter had a job opening at a company in the medical sector, requiring C++ and 3D experience. Sure, it's a typical profile for game developers, but otherwise I don't know about the relative scarcity of this profile. At least I am halfway with it.
+With regards to the second point, the regular recruiter had a job opening at a company in the medical sector, requiring C++ and experience in 3D. Sure, it's a typical profile for game developers, but otherwise I don't know about the relative scarcity of this profile. At least I know about 3D.
 
-About the bootcamp trajectory: I'm a bit old and thus harder to sell. Because you signed the contract with the recruiting company, they will have to pay you for the full period and if you want to terminate, you need to pay back the bootcamp costs.
+About the bootcamp trajectory: I'm a bit old and thus harder to sell. Because you signed the contract with the recruiting company, they will have to pay you for the full period and if you want to terminate, you need to pay back the costs of the initial course.
 
 Funny thing: after I spoke with the recruiter of the bootcamp company, a YouTube advertisement started to show up starring that same recruiter, talking about how interested they were in new talent. I have never been targeted so hard.
 
