@@ -1,4 +1,4 @@
-##What language to learn
+## What language to learn
 
 When I started three weeks ago I was quite sure I would specialize in either Python, Java or C++. Now I'm not so sure anymore.
 
