@@ -1,4 +1,4 @@
-##Everyone loves his niche
+## Everyone loves his niche
 
 All of the developers I talked to over the last week seemed to be happy with the niche they ended up in. That's good news, as it suggests that the choice for a biotope, skill or programming language does not seem to matter a lot.
 
