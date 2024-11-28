@@ -1,4 +1,4 @@
-##What a pet project should look like
+## What a pet project should look like
 
 'Make some small pet projects,' I was advised by my neighbour team lead. 'But don't make the default stuff they do on bootcamps. We see through that.'
 
