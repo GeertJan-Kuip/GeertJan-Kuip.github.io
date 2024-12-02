@@ -1,4 +1,4 @@
-##Identifying data types
+## Identifying data types
 
 From my past programming stints I remember that not knowing the datatypes you work with is one of the best ways to waste your time.
 
@@ -8,7 +8,7 @@ Yesterday, in Javascript, I tried to write a function that returns whether the a
 
 ```typeof myVar === 'object'```
 
-No way this works. In Javascript, not only objects, but also arrays, functions and 'null' return true on this statement. 
+No way this works. In Javascript, not only objects, but also arrays and 'null' return true on this statement. 
 
 For me, being misinformed about datatypes has often resulted in senseless trial and error, using one inappropriate method after the other until the code finally works.
 
