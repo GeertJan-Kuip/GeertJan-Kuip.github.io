@@ -1,4 +1,4 @@
-## First pet project is online
+## First pet project is online 
 
 The first pet project is online. Check it out [here](https://geertjan-kuip.github.io/learning-javascript/).
 
