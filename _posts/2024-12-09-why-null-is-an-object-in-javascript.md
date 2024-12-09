@@ -6,7 +6,7 @@ Null in Javascript, I learned, is an object which means that
 
 returns 'object'. I wondered about this, just as I wondered why typeof [1,2,3] returns 'object' as well. The most puzzling statement is this:
 
-```typeof [1,2,3] === 'object'; //true```
+```typeof [1,2,3] === typeof null; //true```
 
 What makes it puzzling is that objects in Javascript appear to be well defined datatypes, with own methods and properties, clearly different from thos of arrays. Null doesn't have any methods and properties at all.
 
