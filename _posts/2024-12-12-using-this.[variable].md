@@ -1,4 +1,4 @@
-## Using this.\<variablename\> 
+## Using this.variablename 
 
 In a previous post I lauded the use of classes, not only to better organize code but also to get rid of the mess in your head that emerges when your mind has to keep track of countless variables getting passed from function to function.
 
