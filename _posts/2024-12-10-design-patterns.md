@@ -1,4 +1,4 @@
-## Design Patterns
+## Design Patterns 
 
 Yesterday I started reading 'Design Patterns,' a 1994 book written by Erich Gamma, Richard Helm, Ralph Johnson and John Vlissides. The book identifies 23 design patterns that can be applied when writing software and discusses their pros and cons.
 

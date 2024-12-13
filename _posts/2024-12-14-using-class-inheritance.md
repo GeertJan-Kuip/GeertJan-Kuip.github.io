@@ -1,4 +1,4 @@
-## Class inheritance
+## Class inheritance 
 
 My current pet project is a static website that allows users to click the name of a Javascript method name to see what it actually does. Given the large number of methods this project can be scaled up until it covers the totality of all methods.
 
