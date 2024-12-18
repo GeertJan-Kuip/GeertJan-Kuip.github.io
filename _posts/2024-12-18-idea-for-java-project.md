@@ -1,4 +1,4 @@
-## Idea for Java project
+## Idea for Java project 
 
 Ok, this is the Java pet project I'm going to make. It's a desktop application that reads the files of a Java software package via its Git folder and generates all sorts of analysis and quick-to-scan materials about that project. Think of:
 
