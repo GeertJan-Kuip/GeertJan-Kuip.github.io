@@ -1,4 +1,4 @@
-## Embedding SQLite
+## Embedding SQLite 
 
 I want my Java program to analyze Java code. To do so I'm splitting Java files into separate tokens and I store those tokens in a SQLite database in a table that has fields for token-id, the place of the token in the line, the line number and the file reference. I remember reading a paper of the Google founders in which they argued that this is actually very efficiënt.
 
