@@ -1,4 +1,4 @@
-## Abstract classes, implements and @Override
+## Abstract classes, implements and @Override 
 
 I didn't have much idea about the purpose or definition of abstract classes, but since Intellij started to assert its power things begin to dawn on me.
 
