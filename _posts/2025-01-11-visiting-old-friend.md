@@ -1,4 +1,4 @@
-## Visiting old friend
+## Visiting old friend 
 
 Yesterday I visited a neighbour friend of my childhood, we hadn't met for years but this was fun. He is a senior web developer for a large publisher, and back in the days he was an avid Commodore 64 explorer. Since then he has worked in Pascal, C, Perl, PHP and Javascript/React. As a hobby he likes to program all sorts of sensors and is capable of connecting those to whatever network.
 
