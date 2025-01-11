@@ -1,4 +1,4 @@
-## Zlib and Git
+## Zlib and Git 
 
 My Java project requires reading the files stored in the hidden .git folder of projects. I did my research and learned a bit about compression techniques and -standards.
 

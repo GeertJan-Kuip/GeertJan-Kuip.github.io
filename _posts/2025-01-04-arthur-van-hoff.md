@@ -1,4 +1,4 @@
-## Arthur van Hoff
+## Arthur van Hoff 
 
 I had never heard of Arthur van Hoff until I found his name, first on Wikipedia and later on as an author somewhere in the Java library code. It turns out he is Dutch and he is named as the author of the Java 1.0 compiler.
 

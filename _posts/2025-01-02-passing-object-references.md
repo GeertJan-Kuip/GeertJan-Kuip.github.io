@@ -1,4 +1,4 @@
-## Passing object references
+## Passing object references 
 
 I needed a simple interface so I discovered Java Swing. JavaFX makes cooler interfaces but needs separate installation, so I sticked to the older solution. 
 
