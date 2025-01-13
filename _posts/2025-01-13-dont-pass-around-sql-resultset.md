@@ -1,4 +1,4 @@
-## Don't pass around SQL ResultSet
+## Don't pass around SQL ResultSet 
 
 My pet project includes the printing of SQLIte tables to a Java Swing JTextPane, for which I use a html format.
 
