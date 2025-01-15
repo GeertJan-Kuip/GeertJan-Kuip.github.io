@@ -1,4 +1,4 @@
-## Making complex algorithm work
+## Making complex algorithm work 
 
 I'm writing a Java class that tokenizes .java files. It's a sort of win-win as I'm solving code problems working on a tool that helps me analyze Java code. As of now I don't know much about tweaking performance, but this is how the algorithm works:
 
