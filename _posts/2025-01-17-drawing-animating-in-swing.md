@@ -1,4 +1,4 @@
-## Drawing, animating in Swing
+## Drawing, animating in Swing 
 
 For my pet project I want to draw a network graph on a canvas in the UI. From network sociology I knew there are algorithms that can draw beautiful network graphs with many nodes, so I tried to find such an algorithm.
 
