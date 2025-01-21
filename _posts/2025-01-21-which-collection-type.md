@@ -1,4 +1,4 @@
-## Which collection type
+## Which collection type 
 
 Since I discovered Java ArrayList, I use it for almost anything, mainly because it can do almost anything. But being single minded in this might be a bit unsophisticated so I explored the topic.
 
