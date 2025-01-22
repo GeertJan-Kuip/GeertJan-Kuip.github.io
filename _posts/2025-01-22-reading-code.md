@@ -1,4 +1,4 @@
-## Reading code
+## Reading code 
 
 To improve my Java knowledge I need to read good code and I'm gonna try to start with it soon. I already googled for it and found some better known GitHub repositories.
 
