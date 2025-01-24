@@ -1,4 +1,4 @@
-## Debugging in Intellij part 2
+## Debugging in Intellij part 2 
 
 I learned a bit more about the Intellij debugger, by using it and by watching an Intellij YouTube video in which one of its developers explained features. I have internalized a few things:
 
