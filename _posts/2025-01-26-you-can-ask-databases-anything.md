@@ -1,4 +1,4 @@
-## You can ask databases anything
+## You can ask databases anything 
 
 In my Python days I used to make series of consecutively executed SQLite queries that in the end would give me the desired result. Often I looped through resultsets to refine the search further, all under the assumption that making too difficult requests was either impossible of would take too much thought.
 
