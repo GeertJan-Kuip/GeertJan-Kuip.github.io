@@ -1,4 +1,4 @@
-## Creating a logger
+## Creating a logger 
 
 In my pet project, a desktop application that can analyze a Java codebase, you need to select a folder upon which the program will start to tokenize and analyze the .java files in it.
 
