@@ -1,4 +1,4 @@
-## Yes, you can pas ResultSet around
+## Yes, you can pas ResultSet around 
 
 In an earlier post I mentioned the trouble I got into when passing a reference to a SQLIte ResultSet object to another class. My advice to myself was to never do it again.
 
