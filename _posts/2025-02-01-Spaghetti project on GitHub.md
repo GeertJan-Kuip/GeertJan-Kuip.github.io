@@ -1,6 +1,6 @@
 ## Spaghetti project on GitHub 
 
-My pet project named 'Spaghetti' is on [GitHub]<https://github.com/GeertJan-Kuip/spaghetti> in an open repository. I tried to publish the project a bit more orderly than my [previous project]<https://github.com/GeertJan-Kuip/learning-javascript>, at least by writing a better readme and by being more disciplined when doing commits. Every commit does one thing, whether cleaning code or fixing a bug, so it is clear how one version is different from the next.
+My pet project named 'Spaghetti' is on [GitHub](https://github.com/GeertJan-Kuip/spaghetti) in an open repository. I tried to publish the project a bit more orderly than my [previous project](https://github.com/GeertJan-Kuip/learning-javascript), at least by writing a better readme and by being more disciplined when doing commits. Every commit does one thing, whether cleaning code or fixing a bug, so it is clear how one version is different from the next.
 
 While I used GitHub desktop in my javascript projects, for this I used Intellij's in-built functionality. It surprised me how fast JetBrains had access to my account. Kuddos to GitHub.
 
