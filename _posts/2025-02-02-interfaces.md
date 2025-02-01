@@ -1,4 +1,4 @@
-## Interfaces
+## Interfaces 
 
 It took me six week to figure out why 'Set' is rendered yellow and 'ArrayList' is rendered white in Intellij. Set is an interface, arraylist an object.
 
