@@ -1,4 +1,4 @@
-## Maven, pom.xml, MANIFEST.MF and the fat jar
+## Maven, pom.xml, MANIFEST.MF and the fat jar 
 
 I started my pet project using the default Intellij setup, foregoing Maven. Last friday I decided to convert it into a Maven project and to upload it to GitHub so my versioning would be correct and others would be able to see it.
 
