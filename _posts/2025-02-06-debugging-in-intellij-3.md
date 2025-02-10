@@ -1,4 +1,4 @@
-## Debugging in Intellij part 3
+## Debugging in Intellij part 3 
 
 This is a topic I'm getting philosophical about. In previous posts I told about my encounters with the Intellij debugger and the difficulties using it.
 
