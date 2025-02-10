@@ -2,7 +2,7 @@
 
 Repetition is key in learning so here is a list of what I learned while studying the first 90 questions in [this book](https://www.amazon.com/Oracle-Certified-Professional-Developer-Practice-ebook/dp/B08VRSQ3TW/ref=sr_1_1).
 
-- variable names can start with an underscore but they need to contain more than only underscores
+- variable names can start with an underscore but they need to contain more than only one underscore
 - var++ returns the value of var before it is incremented, ++var returns the value of var after it has been incremented
 - if you use var in type initiation, it will first try to make your value a primitive
 - a string object cannot be reversed, it is immutable
