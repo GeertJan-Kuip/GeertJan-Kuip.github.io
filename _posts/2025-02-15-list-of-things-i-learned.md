@@ -22,12 +22,12 @@ var sb = new StringBuilder("radical").insert(sb.length(), "robots");
 - the value of a case statement must be a constant, a literal or a final value
 - you can give loops names like V: (ahead of 'for' or 'do')
 - for(;;) results in an endless loop
-- while needs to be followed by an expression that is true or false, both in a while and a while/do loop
-- you can omit brackets when there is only one statement to be executed. Switch can do without, while and do do not.
+- while needs to be followed by an expression that is true or false, both in a while and a do-while loop
+- you can omit brackets when there is only one statement to be executed. Switch can do without, while and do can not.
 - beware of the fall-through principle in switch statements
 - do- and while loops can be exitted early with a return statement
 - do- loops require a body, a while loop doesn't
-- both require a true/flase condition
+- both require a true/false condition
 - you cannot put multiple values in one case statement. But you can combine them like case 1: case 2:
 - you can put 'return' in a switch statement but not in a switch expression
 - a switch statement always needs braces, a while statement doesn't necessarily
