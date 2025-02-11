@@ -59,7 +59,7 @@ public class DocumentHandler implements Printable {
         String myString = d.print("my addition");
         System.out.println(myString);
         String answer = d.doYouLikeToPrint().toString();
-        System.out.println("Do you like to print? " + answer.toString());
+        System.out.println("Do you like to print? " + answer);
     }
 
     @Override
