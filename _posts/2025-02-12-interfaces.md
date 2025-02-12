@@ -1,4 +1,4 @@
-## Interfaces
+## Interfaces 
 
 I thought that interfaces didn't need more than abstract methods and that they actually could contain only that. The most important fact about interfaces is that you can make some interface the type of a variable, thus creating code with less dependencies and better maintainability.
 
