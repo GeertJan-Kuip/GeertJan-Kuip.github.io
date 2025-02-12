@@ -2,8 +2,10 @@
 
 In my [book with exercises](https://www.amazon.com/Oracle-Certified-Professional-Developer-Practice-ebook/dp/B08VRSQ3TW/ref=sr_1_1) I tested myself with 40 questions I found in chapter 4 (questions 7-46) about exception handling. Of those 40 questions, I answered 22 correct which gives me a score of 55%. I need 68% and therefore I would need at least 5 more correct answers. I reviewed my result as follows:
 
-- Of the 24 questions that included sample code, I only got 10 correct. Of the 16 questions without code samples, I got 12 correct. The theoretical part is easier for me.
+- Of the 24 questions that included sample code, I only got 10 correct. 
+- Of the 16 questions without code samples, I got 12 correct. The theoretical part is easier for me.
 
+### In detail
 Multiple times I had problems identifying hierarchical relations between classes as the key to the right answer. Examples:
 - When a catch statement has two or more exception types in it, code will not compile if one is a subclass of the other
 - If two custom exception classes are created, one a subclass of the other, and the subclass creates a constructor using super but with another type of argument than the parent, compilation fails.
