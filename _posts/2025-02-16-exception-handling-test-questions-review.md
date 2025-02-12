@@ -7,7 +7,7 @@ In my [book with exercises](https://www.amazon.com/Oracle-Certified-Professional
 Multiple times I had problems identifying hierarchical relations between classes as the key to the right answer. Examples:
 - When a catch statement has two or more exception types in it, code will not compile if one is a subclass of the other
 - If two custom exception classes are created, one a subclass of the other, and the subclass creates a constructor using super but with another type of argument than the parent, compilation fails.
-- One question (7) presented a custom exceptionclass extending Exception. It had three constructors, two with super and one with an empty body. All three were valid because the constructors were analogous to thos of Exception.
+- One question (7) presented a custom exceptionclass extending Exception. It had three constructors, two with super and one with an empty body. All three were valid because the constructors were analogous to those of Exception.
 - One question (39) required me to know that UnsupprtedOperationException is a subclass of RunTimeException.
 - One question had code in which a catch statement was not able to catch the exception because the exception type thrown was higher in the hierarchy than the exceptiontype in the catch statement.
 
@@ -21,7 +21,7 @@ There were two questions were thrown exceptions were not caught. I had the answe
 - Question 8 had a try-catch-catch-finally sequence. The first catch statement caught an exception but threw another one that could not be handled. The output was that lines printed fromout the try, the first catch- and the finally block were printed to the terminal, and only after that the stacktrace was printed. Finally has precedence.
 - In question 37 the program lead to 4 regular printed numbers, indicating smooth program flow, and then a printed stacktrace because of an unhandled exceptionn. The printed stacktrace came at the end as the finally blocks got first.
 
-Question 28 was not about exceptions, it had this code and I was not aware that this is a valid way to create an object as AutoCloseable is an interface:
+Question 28 was not about exceptions, it had this code and I was not aware that this is a valid way to create an object. AutoCloseable is an interface, but because you make it an anonymous class it works.
 ```
 var weatherTracker = new AutoCloseable(){
 	public void close() throws RunTimeException {
@@ -39,6 +39,16 @@ Lastly, four trick questions:
 ```
 class Error extends Exception {}
 ```
+
+### To do
+I think I must do the following:
+- always be aware of the hierarchical relationships between classes 
+- learn exceptiontypes and remember whether they are subclasses of RunTimeException or not
+- fiddle around in Intellij and create my own custom Exceptions, relying on constructors of parent classes with the super keyword
+- remember that unhandled exceptions or exceptions thrown by main to its non-existing caller result in terminal output
+- watch out for duplicate variable names and double declarations
+- remember that the output of the finally block preceeds the stacktrace printing to the terminal that is the result of uncaught exceptions
+- experiment with creating objects using anonymous classes
 
 
 
