@@ -1,4 +1,4 @@
-## Interfaces
+## Interfaces ii
 
 I thought that interfaces didn't need more than abstract methods and that they actually could contain only that. The most important fact about interfaces is that you can make some interface the type of a variable, thus creating code with less dependencies and better maintainability.
 
@@ -59,7 +59,7 @@ public class DocumentHandler implements Printable {
         String myString = d.print("my addition");
         System.out.println(myString);
         String answer = d.doYouLikeToPrint().toString();
-        System.out.println("Do you like to print? " + answer.toString());
+        System.out.println("Do you like to print? " + answer);
     }
 
     @Override
