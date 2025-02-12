@@ -46,6 +46,7 @@ initCause(Throwable cause);
 Try-with resources
 - A try-with-resources can have catch and final blocks but not necessarily so.
 - In a try-with-resources the try-with-resources statements are placed within parentheses just after try, separated by semicolons. This statement section needs contain the opening of the resources. The try block {} comes after, containing all the code that requires the content of those resources.
+- If an exception occurs in a try-with-resources, the resources are closed first and only then the catch and finally blocks are executed.
 - If a try-with-resources fails, both in the statement(s) and the block, the exception from the statement(s) is suppressed and the exception from the block is thrown.
 - Try-with-resources can very well be used when writing and reading databases. It guarantees that connections, resultsets and statements will be closed.
 - Try-with-resources closes all resources that implement the java.lang.AutoClosable interface or its subinterfaces, such as java.io.closable.
