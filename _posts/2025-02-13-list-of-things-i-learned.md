@@ -1,4 +1,4 @@
-## List of things I learned
+## List of things I learned 
 
 Repetition is key in learning so here is a list of what I learned while studying the first 90 questions in [this book](https://www.amazon.com/Oracle-Certified-Professional-Developer-Practice-ebook/dp/B08VRSQ3TW/ref=sr_1_1).
 
