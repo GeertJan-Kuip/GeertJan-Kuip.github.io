@@ -6,13 +6,14 @@ I tried to define some rules of thumb about primitive/reference conversion that 
 **Boxed primitives/reference types don't get along very well. They behave hierarchically.**
 
 ### Rule 2
-**Primitives get along very well. They convert smoothly, in case of potential information loss you need to do casting.
+**Primitives get along very well. They convert smoothly, in case of potential information loss you need to do casting.**
+
 
 Okay, this is quite generalistic but it might summarize things well. Now a bit more detail:
 
-- Primitive conversion, both widening and narrowing, almost always works well. If it doesn't compile, the reason is that the information loss is too large and the compiler thinks you are unaware of this. In this case you use type casting and voila.
+- Primitive conversion, both widening and narrowing, almost always works well. If it doesn't compile, the reason is that the information loss is too large and the compiler thinks you are unaware of this. In this case you use explicit type casting and voila.
 
-- Reference conversion (from one boxed type to the other) almost never works. Classes are aware of hierarchical relationships so the only conversion that works is from subclasses of Number to Number or vice versa. The latter only works if the primitive stored in the number object is the same type as the primitive type that is stored in the subclass. In all cases explicit casting is required.
+- Reference conversion (from one boxed type to the other) almost never works. Classes are aware of hierarchical relationships so the only conversion that works is from subclasses of Number to Number or vice versa. The latter only works if the primitive stored in the number object is the same type as the primitive type that is stored in the subclass. In all cases explicit casting is required. BTW the Character class is not a subclass of Number.
 
 - Reference types refuses to store a primitive that is not their type. Primitive types have no problem doing a conversion during assignement, as long as it doesn't result in information loss. For example:
 
