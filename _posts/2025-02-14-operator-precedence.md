@@ -1,4 +1,4 @@
-## Operator precedence
+## Operator precedence 
 
 In 1Z0-819 questions involving operator precedence are to be expected. This is the order:
 
