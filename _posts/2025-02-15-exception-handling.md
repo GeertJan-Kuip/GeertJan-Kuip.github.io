@@ -5,6 +5,7 @@ Preparing for 1Z0-819 I'm learning about exception handling. I read the [Java tu
 - All exception (and error) classes have Throwable as ancestor. Exception is the parent of RunTimeException. Only subclasses of RunTimeException are counted as unchecked exceptions.
 - StackTraceElement is a class whose instances contain variables file, class, method and line. StackTraceElement plays an important role in Throwable, the stacktrace is an array of StackTraceElements.
 - e.printStackTrace() prints a list of StackTraceElements to the terminal. e.getSTackTrace() returns an array of StackTraceElements that you can use to do your own custom reporting, something like:
+  
 ```
 try {
     throw new SQLException();
