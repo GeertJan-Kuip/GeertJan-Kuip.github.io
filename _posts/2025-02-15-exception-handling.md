@@ -31,6 +31,7 @@ The latter one is accessible by all subclasses, not by clients.
 - Throwable hase a 'cause' variable that facilitates exception chaining. Exception chaining helps to create better log content.
 - A chained exception is created by throwing a new exception in the catch block with the 'caught' exception as 'cause' parameter.
 - Some of the relevant methods in Throwable, apart from its constructors and the print methods, are:
+  
 ```
 getCause();
 getStackTrace();
