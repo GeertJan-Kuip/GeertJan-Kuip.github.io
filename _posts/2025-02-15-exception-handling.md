@@ -1,4 +1,4 @@
-## Exception handling
+## Exception handling 
 
 Preparing for 1Z0-819 I'm learning about exception handling. I read the [Java tutorial](https://docs.oracle.com/javase/tutorial/essential/exceptions/index.html) and fiddled around in Intellij. This is what I learned:
 
