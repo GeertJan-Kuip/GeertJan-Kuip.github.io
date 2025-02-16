@@ -1,4 +1,4 @@
-## Exception handling - test questions review
+## Exception handling - test questions review 
 
 In my [book with exercises](https://www.amazon.com/Oracle-Certified-Professional-Developer-Practice-ebook/dp/B08VRSQ3TW/ref=sr_1_1) I tested myself with 40 questions I found in chapter 4 (questions 7-46) about exception handling. Of those 40 questions, I answered 22 correct which gives me a score of 55%. I need 68% and therefore I would need at least 5 more correct answers. I reviewed my result as follows:
 

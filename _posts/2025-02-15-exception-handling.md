@@ -21,6 +21,7 @@ try {
 ```
 - Subclasses of Throwable have very little code in them, and refer to methods in Throwable via the 'super' keyword.
 - Throwable has 4 public constructors and one protected:
+  
 ```
 Throwable();
 Throwable(String message);
@@ -67,6 +68,7 @@ Try-with resources
 - e.printStackTrace() prints to the terminal in red color. That looks scary, as if many things have gone wrong, but it is mainly optics. If you do some other kind of writing to the terminal instead of e.printStackTrace the color might not be red but the problem is exactly the same.
 - You can adjust the print color in the terminal to blue by preceeding the string to print with "\u001B[34m". End the string with "\u001B[0m" to set it back to default color. Other colors can be set as well, it is the two digits before the m that indicate the color.
 - A catch statement can contain more than one exception object type. Separate them by a vertical bar.
+  
 ```
 catch (IOException|ArrayOutOfBoundsException e) {}
 ```
