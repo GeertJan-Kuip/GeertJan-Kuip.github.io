@@ -1,4 +1,4 @@
-## Get the primitive out of the box
+## Get the primitive out of the box 
 
 I tried to define some rules of thumb about primitive/reference conversion that help me to find mistakes in 1Z0-819 questions. Everything about type conversion can be found in [chapter 5 of the Java Language Specification](https://docs.oracle.com/javase/specs/jls/se23/html/jls-5.html) but that is such a long set of rules that I might, for new, be better of with something more simple and generic.
 
