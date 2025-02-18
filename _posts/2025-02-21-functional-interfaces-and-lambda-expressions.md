@@ -20,7 +20,7 @@ interface SomeInterFace<J,K> {
 To create an anonymous class based on this interface you do the following. The generic types are made specific and the abstract methods get their implementation (step 2):
 
 ```
-SomeInterFace<Integer, String> mySet = new SomeInterFace<Integer, String>() {
+SomeInterFace<Integer, String> myThing = new SomeInterFace<Integer, String>() {
 
     @Override
     public void someMethod() {
