@@ -26,6 +26,7 @@ String[] stringArray = {"hi", a};
 ```
 
 Having null in an array is okay and compiles:
+
 ```
 String[] stringArray = {"hi", null};
 ```
