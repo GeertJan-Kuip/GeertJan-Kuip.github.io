@@ -55,7 +55,8 @@ Consumer<Double> myMethod =
 
 Java actually already knows what you are gonna do. Yes, you can create an anonymous class similar to the previous step 2, but you are encouraged to omit every element that can be inferred by the compiler. 
 - You do not have to again declare <new InterFaceName> with the used type as this is already mentioned before (Consumer<Double>). So you can start with the parentheses. 
-- Between these parentheses you put the argument with the variable name. Then you use the arrow operator (->) and then you can either create a block with curly brackets or just a single expression without brackets. 
+- Between these parentheses you put the argument with the variable name. You can omit the type as you already declared it on the other side of the assignment. 
+- Then you use the arrow operator (->) and then you can either create a block with curly brackets or just a single expression without brackets. 
 - You can omit the name of the method (Java can infer it because functional interfaces have only one abstract method). 
 - If you don't use the curly brackets you can also omit the return keyword, as the one expression you provide cannot be something else than the return value. 
 - If there is no return value required (as in Consumer, which has 'void' in its signature), Java will know as well.
@@ -63,11 +64,11 @@ Java actually already knows what you are gonna do. Yes, you can create an anonym
 These are the two ways to do it, one without and one with a block.
 
 ```
-Consumer<Double> myThing = (Double a) -> System.out.printf("Thanks for value %s!", a);
+Consumer<Double> myThing = (a) -> System.out.printf("Thanks for value %s!", a);
 ```
 
 ```
-Consumer<Double> myThing = (Double a) -> {
+Consumer<Double> myThing = (a) -> {
 
     String s = String.format("Thanks for value %s!", a);
     System.out.println(s);
