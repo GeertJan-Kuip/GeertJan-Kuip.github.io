@@ -7,4 +7,15 @@ Here my notes on simple arrays. They lack the methods that higher order collecti
 
 All of the following statements compile:
 
+```
+int  []myArray1 = new int[3];
+int[]  myArray2 = new int[] {1,2,3};
+int myArray3  [] = {1,2,3};
+
+int[][] myMultiArray1 = new int[2][2];
+int  []myMultiArray2 [] = new int[2][];
+int myMultiArray3[][] = {{1,2},{3,4}};
+int[]  myMultiArray4[] = new int[8%3][3-1];
+```
+
 
