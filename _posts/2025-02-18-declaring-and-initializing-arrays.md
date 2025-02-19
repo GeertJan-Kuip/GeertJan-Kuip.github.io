@@ -8,6 +8,7 @@ Here my notes on simple arrays. They lack the methods that higher order collecti
 All of the following statements compile:
 
 ```
+{% raw %}
 int  []myArray1 = new int[3];
 int[]  myArray2 = new int[] {1,2,3};
 int myArray3  [] = {1,2,3};
@@ -29,6 +30,7 @@ Having null in an array is okay and compiles:
 
 ```
 String[] stringArray = {"hi", null};
+{% endraw %}
 ```
 
 An array can store primitives, object instances, abstract class types and interface types. An array for abstract class types can contain instances of all subclasses, while an array for interface types can contain instances of all implementing classes.
