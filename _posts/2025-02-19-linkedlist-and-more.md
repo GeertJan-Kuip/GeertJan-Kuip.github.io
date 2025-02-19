@@ -1,4 +1,4 @@
-## LinkedList and more 
+## LinkedList and more
 
 LinkedList implements the List interface and thus has all its methods. Unlike ArrayList, it implements the Deque and Queue interface (Deque extends the Queue interface). This makes LinkedList suited for the role of queue and stack. ArrayList implements the RandomAcces, which LinkedList doesn't.
 
