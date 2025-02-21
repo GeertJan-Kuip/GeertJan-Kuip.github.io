@@ -1,5 +1,5 @@
 ## Functional interfaces and lambda expressions 
-{% raw %}
+
 A new topic presented itself to me (yes, all in relation to 1Z0-819), namely functional interfaces and lambda expressions. I was not aware of functional interfaces at all and lambdas were a kind of unexplored territory.
 
 In short, a functional interface is an interface that contains only one abstract method. Interfaces with just one abstract method can be used to create lambda expressions, which are function definitions with a very compact syntax. The community seems to love it, as it provides more elegant ways to do the same thing. The downside is some extra learning costs, a bit like learning a language with cases, like German.
@@ -43,7 +43,7 @@ myThing.someMethod();  // returns 😃
 int myNameLength = myThing.someOtherMethod("Geert-Jan");  // returns 9
 ```
 
-With functional interfaces, this process is being made less verbose. First of all, you do not have to create your basic interface. Java already made them for you in a lot of different variants like Function<K,V>, Supplier<K>, Predicate<R> and Consumer<U>. They are mostly generic and they have just one abstract method. They differ with respect to their arguments (number and type) and return type (or the absence thereof). 
+With functional interfaces, this process is being made less verbose. First of all, you do not have to create your basic interface. Java already made them for you in a lot of different variants like Function{% raw %}<K,V>, Supplier<K>, Predicate<R> and Consumer<U>{% endraw %}. They are mostly generic and they have just one abstract method. They differ with respect to their arguments (number and type) and return type (or the absence thereof). 
 
 These functional interfaces can be used instead of step 1, which saves time and reduces complexity.
 
@@ -82,7 +82,7 @@ myThing.accept(456.2);  // Thanks for value 456.2!
 ```
 
 The magnificent thing about these functional interfaces and lambda expressions is that you can use them in streams. Streams filter and modify sequences of values of a same type and all the processing methods can be easily defined with lambda expressions. Streams are a big topic, more over them in a next blog.
-{% endraw %}
+
 
 
 
