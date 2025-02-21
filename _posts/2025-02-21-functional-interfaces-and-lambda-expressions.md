@@ -1,4 +1,4 @@
-## Functional interfaces and lambda expressions
+## Functional interfaces and lambda expressions 
 
 A new topic presented itself to me (yes, all in relation to 1Z0-819), namely functional interfaces and lambda expressions. I was not aware of functional interfaces at all and lambdas were a kind of unexplored territory.
 
