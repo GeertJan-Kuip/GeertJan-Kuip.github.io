@@ -43,7 +43,7 @@ myThing.someMethod();  // returns 😃
 int myNameLength = myThing.someOtherMethod("Geert-Jan");  // returns 9
 ```
 
-With functional interfaces, this process is being made less verbose. First of all, you do not have to create your basic interface. Java already made them for you in a lot of different variants like Function{% raw %}<K,V>, Supplier<K>, Predicate<R> and Consumer<U>{% endraw %}. They are mostly generic and they have just one abstract method. They differ with respect to their arguments (number and type) and return type (or the absence thereof). 
+With functional interfaces, this process is being made less verbose. First of all, you do not have to create your basic interface. Java already made them for you in a lot of different variants like Function\<K,V\>, Supplier\<K\>, Predicate\<R\> and Consumer\<U\>. They are mostly generic and they have just one abstract method. They differ with respect to their arguments (number and type) and return type (or the absence thereof). 
 
 These functional interfaces can be used instead of step 1, which saves time and reduces complexity.
 
