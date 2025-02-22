@@ -1,4 +1,4 @@
-## Comparing collections
+## Comparing collections 
 
 Below I created two tables comparing the different Java collection types. It is mainly relevant with regards to 1Z0-819.
 
