@@ -1,17 +1,18 @@
 ## Using the command line, imports and packages
 
-Chapter one of the [Comlplete Study Guide](https://www.amazon.com/gp/product/B08DF4R2V9/ref=ppx_yo_dt_b_d_asin_title_351_o00?ie=UTF8&psc=1) for 1Z0-819 is about Java basics, with explanations on how to use the command line, how to write a file with a class containing main, how comments work and how to do import- and package declaration. It is all very basic but because I never use the command line (Intellij has buttons and menus for that) I learned a lot anyway.
+
+Chapter one of the [Complete Study Guide](https://www.amazon.com/gp/product/B08DF4R2V9/ref=ppx_yo_dt_b_d_asin_title_351_o00?ie=UTF8&psc=1) for 1Z0-819 is about Java basics, with explanations on how to use the command line, how to write a file with a class containing main, how comments work and how to do import- and package declaration. It is all very basic but because I never use the command line (Intellij has buttons and menus for that) I learned a lot anyway.
 
 After studying it my score on the 20 questions at the end of the chapter was 65%, and I can definitely improve on that if I get used to using the terminal for compiling, running and packaging stuff.
 
-#### Something about comments
-They might ask about code with comments, whether it compiles or not. I learned that this patter:
+### Something about comments
+They might ask about code with comments, whether it compiles or not. I learned that this pattern:
 
 ```
 /**  */ 
 ```
 
-is called Javadoc multi-line comment. It is what you see in the source files. One question in the chapter asked whther comments would compilate and I was tricked by this one, which (of course) doesn't compile. Remember, /* and */ are not anaolgous to brackets.
+is called Javadoc multi-line comment. It is what you see in the source files. One question in the chapter asked whether comments would compilate and I was tricked by this one, which (of course) doesn't compile. Remember, /* and */ are not anaolgous to brackets.
 
 ```
 /*
@@ -19,7 +20,7 @@ is called Javadoc multi-line comment. It is what you see in the source files. On
 */
 ```
 
-#### java and javac command
+### java and javac command
 
 The ```javac``` command compiles the code and the ```java``` command runs the code. The following lines compile and run a single .java file which has to have a main function.
 
@@ -49,7 +50,7 @@ PS C:\Kuips files\Java projects\working-with-modules\module1\src\main\java\utili
 Hi
 ```
 
-By adding -cp (-classpath and --class-path would also work) and a . , which denotes the current directory, and .java, it worked. But actually this solution did not rely on the .class file I created earlier, as this is an example of a single-file source-code command, which can be applied when only one class without dependencies is used. It is a sort of hack whereby no .class file is used or generated and the bytecode of the Printing file is stored in memory. So this actually works as well:
+By adding -cp (-classpath and --class-path would also work) and a . , which denotes the current directory, and .java, it worked. But actually this solution did not rely on the .class file I created earlier, as this is an example of a **single-file source-code command**, which can be applied when only one class without dependencies is used. It is a sort of hack whereby no .class file is used or generated and the bytecode of the Printing file is stored in memory. So this actually works as well:
 
 ```
 PS C:\Kuips files\Java projects\working-with-modules\module1\src\main\java\utilities> java Printing.java
@@ -65,26 +66,26 @@ PS C:\Kuips files\Java projects\working-with-modules\module1\src\main\java> java
 Hi
 ```
 
-Next update (written 3 hours later): I start to understand what a classpath is. I am now able to create compiled files anywhere in my pc folder structure and make them run. The crux of it all is that you need to think of the full path to the .class file, and split that path in two. The first part is the part that you describe with the -d or the -cp (-classpath, --class-path) thing, the second one is what you describe with dots between the folders. This latter one is called the FQN, the Fully Qualified Name. It is the name of the package as found on top of the file extended by .\<classname\>. That FQN should not depend on where in your pc your project resides. The last folder of the class path is the source folder, and it can vary depending on where things are stored.
+_Next update (written 3 hours later): I start to understand what a classpath is. I am now able to create compiled files anywhere in my pc folder structure and make them run. The crux of it all is that you need to think of the full path to the .class file, and split that path in two. The first part is the part that you describe with the -d or the -cp (-classpath, --class-path) thing, the second one is what you describe with dots between the folders. This latter one is called the FQN, the Fully Qualified Name. It is the name of the package as found on top of the file extended by .\<classname\>. That FQN should not depend on where in your pc your project resides. The last folder of the class path is the source folder, and it can vary depending on where things are stored._
 
 
-#### Compiling packages
+### Compiling packages
 
-To compile a package there is the following command, the code below should work:
+Compile a package requires the following command, the code below should work:
 
 ```
 javac SomePackageName/MyClass.java   --compiles one package with one file
 
-javac SomePackageName/*.java SomeOtherPackageName/*.java  --compiles two packages, both with all .java files in them
+javac SomePackageName/*.java SomeOtherPackageName/*.java  --compiles two packages, all .java files in them will be included
 ```
 
-I tried this in my own dummy project and it did work:
+I tried the following in my own dummy project and it did work:
 
 ```
 PS C:\Kuips files\Java projects\working-with-modules\module1\src\main\java> javac utilities/*.java calculation/*.java
 ```
 
-For every .java file a .class file was generated in the same folder. Better would it be to have it in another folder, there is a command for that:
+For every .java file a .class file was generated in the same folder as the .java file. Better would it be to have it in another folder, there is a -d command for that:
 
 ```
 PS C:\Kuips files\Java projects\working-with-modules\module1\src\main\java> javac -d compiledstuff utilities/*.java calculation/*.java
@@ -99,14 +100,7 @@ PS C:\Kuips files\Java projects\working-with-modules\module1\src\main\java> java
 Note that it is important to separate the classpath from the FQN. The classpath is C:\Kuips files\Java projects\working-with-modules\module1\src\main\java\compiledstuff, the FQN is utilities.Printing. The latter corresponds with the declaration on top of Printing.java.
 
 
-
-
-
-
-
-
-
-#### Compiling with JAR files
+### Compiling with JAR files
 
 
 
