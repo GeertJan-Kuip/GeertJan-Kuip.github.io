@@ -1,12 +1,11 @@
-## Using the command line, imports and packages
-
+## Using the command line for compiling, running the program and jar operations
 
 Chapter one of the [Complete Study Guide](https://www.amazon.com/gp/product/B08DF4R2V9/ref=ppx_yo_dt_b_d_asin_title_351_o00?ie=UTF8&psc=1) for 1Z0-819 is about Java basics, with explanations on how to use the command line, how to write a file with a class containing main, how comments work and how to do import- and package declaration. It is all very basic but because I never use the command line (Intellij has buttons and menus for that) I learned a lot anyway.
 
 After studying it my score on the 20 questions at the end of the chapter was 65%, and I can definitely improve on that if I get used to using the terminal for compiling, running and packaging stuff.
 
-#### Something about comments
-They might ask about code with comments, whether it compiles or not. I learned that this pattern:
+#### Sidenote: something about comments
+This was part of chapter 1. They might ask about code with comments, whether it compiles or not. I learned that this pattern:
 
 ```
 /**  */ 
