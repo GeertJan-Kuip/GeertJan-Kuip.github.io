@@ -6,14 +6,14 @@ I want to get better with the command line but the previous blog post was a bit 
 
 ### The simple jar command
 
-To create a simple jar file you compile your code (or part of it) in some folder. Then you can use '''jar -cf myApp.jar \*'''. A jar file that contains all the files in the current directoryin the correct directory tree, is placed in the current directory. In the jar file a META-INF folder is placed at the root with in it a MANIFEST.MF file. This file contains some information, but not the name of the class with main in it. If the jar is meant as a working program that can be run, it won't because of that.
+To create a simple jar file you compile your code (or part of it) in some folder. Then you can use ```jar -cf myApp.jar *```. A jar file that contains all the files in the current directoryin the correct directory tree, is placed in the current directory. In the jar file a META-INF folder is placed at the root with in it a MANIFEST.MF file. This file contains some information, but not the name of the class with main in it. If the jar is meant as a working program that can be run, it won't because of that.
 
 
 ### Flags
 
 #### Essential flags
 
-The -cf part of the simple Java command contains multiple characters, some more relevant than others. Their order matters, as it has to match the order of the arguments that follow it.
+The -cf part of the simple jar command contains multiple characters, some more relevant than others. Their order matters, as it has to match the order of the arguments that follow it.
 
 The first character is c (create), t (table) or x (extract). To create a jar file use c, to view the contents of a jar file use t, and to extract folders or files from a jar file use x.
 
@@ -29,9 +29,9 @@ Another flag is 0, which results in an uncompressed jar file. A jar file is crea
 
 #### The m flag
 
-The simple command '''jar -cf myApp.jar \*''' creates a jar file but the MANIFEST.MF in it will not have a entrypoint in it. Therefore the jar file will not run, it is just an archive. Adding the m to the list of flags enables you to create a txt file with headers in it. Those headers will be added to the manifest file. If you create a txt file named sometitle.txt in the root folder and write a header-line ```Main-Class: someClass``` in it, you can include that specific header in the manifest file.
+The simple command ```jar -cf myApp.jar *``` creates a jar file but the MANIFEST.MF in it will not have a entrypoint in it. Therefore the jar file will not run, it is just an archive. Adding the m to the list of flags enables you to create a txt file with headers in it. Those headers will be added to the manifest file. If you create a txt file named sometitle.txt in the root folder and write a header-line ```Main-Class: someClass``` in it, you can include that specific header in the manifest file.
 
-To do so, run ```jar -cfm myApp.jar sometitle.txt \*``` in the command line. All headers that are in the sometitle.txt file are added to the MANIFEST.MF file. The jar file can be run now because the JVM can find the entrypoint.
+To do so, run ```jar -cfm myApp.jar sometitle.txt *``` in the command line. All headers that are in the sometitle.txt file are added to the MANIFEST.MF file. The jar file can be run now because the JVM can find the entrypoint.
 
 Few notes:
 - You need to write the FQN (Fully Qualified Name) of the entry class in the header, with dots separating the words.
@@ -46,7 +46,7 @@ You can add M to skip the creation of a MANIFEST.MF file. This option can be use
 
 #### The e flag
 
-This is a very useful one. Adding e enables you to add a FQN entrypoint in the command, that will be added to the MANIFEST.MF file. It is the easiest way to make a jar file that can be run. It will be like ```jar -cfe myApp.jar mypackage.ClassWithMain \*```. A header ```Main-Class: mypackage.ClassWithMain``` is added. Note that the FQN (Fully Qualified Name, the one with the dots) needs to be provided.
+This is a very useful one. Adding e enables you to add a FQN entrypoint in the command, that will be added to the MANIFEST.MF file. It is the easiest way to make a jar file that can be run. It will be like ```jar -cfe myApp.jar mypackage.ClassWithMain *```. A header ```Main-Class: mypackage.ClassWithMain``` is added. Note that the FQN (Fully Qualified Name, the one with the dots) needs to be provided.
 
 
 ### Specifying the input files
