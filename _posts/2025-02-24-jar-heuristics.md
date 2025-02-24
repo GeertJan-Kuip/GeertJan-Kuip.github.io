@@ -1,4 +1,4 @@
-## Jar heuristics
+## JAR heuristics
 
 
 I want to get better with the command line but the previous blog post was a bit messy. In this blog I want to keep the scope smaller, it is just about creating the simplest jar files. No modules, only packages, with methods to create the right MANIFEST.MF file. Below some summarizing of what I learned, mainly from the [Java tutorials](https://docs.oracle.com/javase/tutorial/deployment/jar/index.html).
@@ -6,7 +6,7 @@ I want to get better with the command line but the previous blog post was a bit 
 
 ### The simple jar command
 
-To create a simple jar file you compile your code (or part of it) in some folder. Then you can use ```jar -cf myApp.jar *```. A jar file that contains all the files in the current directoryin the correct directory tree, is placed in the current directory. In the jar file a META-INF folder is placed at the root with in it a MANIFEST.MF file. This file contains some information, but not the name of the class with main in it. If the jar is meant as a working program that can be run, it won't because of that.
+To create a simple jar file you compile your code (or part of it) in some folder. Then you can use ```jar -cf myApp.jar *```. A jar file that contains all the files in the current directory in the correct directory tree, is placed in the current directory. In the jar file a META-INF folder is placed at the root with in it a MANIFEST.MF file. This file contains some information, but not the name of the class with main in it. If the jar is meant as a working program that can be run, it won't because of that.
 
 
 ### Flags
