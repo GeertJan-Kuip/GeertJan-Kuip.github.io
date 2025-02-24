@@ -1,4 +1,4 @@
-## Using the command line for compiling, running the program and jar operations 
+## Using the command line for compiling, running the program and jar operations
 
 Chapter one of the [Complete Study Guide](https://www.amazon.com/gp/product/B08DF4R2V9/ref=ppx_yo_dt_b_d_asin_title_351_o00?ie=UTF8&psc=1) for 1Z0-819 is about Java basics, with explanations on how to use the command line, how to write a file with a class containing main, how comments work and how to do import- and package declaration. It is all very basic but because I never use the command line (Intellij has buttons and menus for that) I learned a lot anyway.
 
