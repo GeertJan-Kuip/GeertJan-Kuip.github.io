@@ -1,4 +1,4 @@
-## Abstract classes vs interfaces 
+## Abstract classes vs interfaces
 
 
 Both abstract classes and interfaces can be used as a type variable, enabling polymorphism, and both can force classes that inherit from them to implement certain methods. What makes this topic a bit more difficult is that both can do more than just providing abstract methods. As the number of things you can do in a class is quite substantial, I'll try to provide a full overview of everything that is possible with a regular class and compare that with the possibilities and limitations of abstract classes and interfaces.
