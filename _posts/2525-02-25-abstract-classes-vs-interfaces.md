@@ -1,11 +1,11 @@
 ## Abstract classes vs interfaces
 
 
-Both abstract classes and interfaces can be used as a type variable, enabling polymorphism, and both can force classes that inherit from them to implement certain methods. What makes this topic a bit more difficult is that both can do more than just providing either abstract methods. As the number of things you can do in a class is quite substantial, I'll try to provide a full overview of everything that is possible with a regular class and compare that with the possibilities and limitations of abstract classes and interfaces.
+Both abstract classes and interfaces can be used as a type variable, enabling polymorphism, and both can force classes that inherit from them to implement certain methods. What makes this topic a bit more difficult is that both can do more than just providing abstract methods. As the number of things you can do in a class is quite substantial, I'll try to provide a full overview of everything that is possible with a regular class and compare that with the possibilities and limitations of abstract classes and interfaces.
 
-A class can be parametrized with the following:
+A class can be parameterized with the following:
 
-- the access modifier of the class itself (public, private, protected or package-protected). The latter is the default.
+- the access modifier of the class itself (public, private, protected or package-protected)
 - an added 'final' modifier for the class
 - the 'extend' part of the class
 - the 'implements' part of the class
@@ -115,7 +115,7 @@ Interfaces don't have instance methods.
 
 ### Static methods and their access modifier
 
-Abstract methods can have static methods that can be called. Static methods are inherited by subclasses. Subclasses can not override these static methods, but they can shadow them with a new implementation. The static method of the superclass can still be called by using SuperClass.somStaticMethod(). Static methods in abstract classes can have any access modifier, default is package-private.
+Abstract methods can have static methods that can be called. Static methods are inherited by subclasses. Subclasses can not override these static methods, but they can shadow them with a new implementation. The static method of the superclass can still be called by using SuperClass.someStaticMethod(). Static methods in abstract classes can have any access modifier, default is package-private.
 
 Interfaces can have public and private static methods. Private static methods can only be used within the class. The default access modifier is public.
 
