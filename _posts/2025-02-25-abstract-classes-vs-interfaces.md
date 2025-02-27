@@ -16,6 +16,7 @@ A class can be parameterized with the following:
 - static variables with their access modifiers
 - the added 'final' modifier for static variables
 - constructors with their access modifier
+- abstract methods and their access modifier
 - instance methods with their access modifier
 - an added 'final' modifier for instance methods 
 - static methods with their access modifier
@@ -99,11 +100,18 @@ Abstract classes can have constructors with any access modifier. Default is pack
 Interfaces can not have a constructor. Constructors are used to initialize object state, and an interface doesn't have object state.
 
 
+### Abstract methods and their access modifier
+
+In abstract classes, abstract methods are package-private by default and can be set to public or protected. Private is not allowed. Unlike in interfaces, you need to explicitly declare abstract methods abstract. Final is not allowed as modifier.
+
+In interfaces, abstract methods are public by default and any other access modifier is not allowed. Final is not allowed either and 'abstract' can be omitted.
+
 ### Instance methods with their access modifiers
 
 Abstract classes can have instance methods with any access modifier, be it private, public, protected or package-private. The latter is the default.
 
 Interfaces can not have instance methods, only abstract methods, static methods and default methods.
+CORRECTION: since Java 9 interfaces can have private instance methods, for the reason that they might be helpful when creating default methods. Private instance variable are not allowed.
 
 
 ### 'final' modifier for instance methods
