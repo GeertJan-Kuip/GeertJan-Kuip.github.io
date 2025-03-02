@@ -5,7 +5,7 @@ The File class is part of Java's IO package and some detailed knowledge about it
 
 ### Absolute and relative paths
 
-Absolute path is the full path of a file or directory. In UNIX systems the root of it is denoted by '/', in Windows it is denoted by either 'C:\' (C can be replaced with any other drive name) or by '\\' or '\\\\'. Relative path is the path starting from the current directory. To get the current directory you can use these Java commands:
+Absolute path is the full path of a file or directory. In UNIX systems the root of it is denoted by '/', in Windows it is denoted by either 'C:\' (C can be replaced with any other drive name) or by '\\\\' or '\\\\\\\\'. Relative path is the path starting from the current directory. To get the current directory you can use these Java commands:
 
 ```
 System.getProperty("user.dir");
@@ -16,7 +16,7 @@ To get the default separator of your operating system, use:
 System.out.println(System.getProperty("file.separator"));
 ```
 
-For Windows it is '\', Unix-based systems use '/'. The value of the File class is that it contains an abstract form of the path so you don't have to worry about writing the path in accordance with some specific operating system in mind.
+For Windows it is '\\', Unix-based systems use '/'. The value of the File class is that it contains an abstract form of the path so you don't have to worry about writing the path in accordance with some specific operating system in mind.
 
 ### Files and directories are one kind
 
