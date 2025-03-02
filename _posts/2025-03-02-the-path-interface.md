@@ -77,6 +77,87 @@ The book doesn't delve into the static methods of Path and actually there is jus
 
 "WARNING: This interface is only intended to be implemented by those developing custom file system implementations. Methods may be added to this interface in future releases."
 
+WAIT: I now see that the abstract methods are actually implemented, namely in the JDK, for example in the file WindowsPath.java. I suppose this means that if you create a path object, on a windows machine you actually create a WindowsPath object, and all the interface methods of Path will really work.
+
+Okay, now that this is out of the way, an overview of the methods that are named in the book:
+
+- Path of(String, String...)
+- URI toURI()
+- File toFile()
+- String toString()
+- int getNameCount()
+- Path getName(int index)
+- Path subpath(int beginindex, int endindex)
+- Path getFileName()
+- Path getParent()
+- Path getRoot()
+- boolean isAbsolute()
+- Path toAbsolutePath()
+- Path relativize(Path other)
+- Path resolve()
+- Path normalize()
+- Path toRealPath(LinkOption...)
+
+The first one is a static factory constructor, 2 and 3 are methods to convert a Path to a different object type (URI and File). The toString method returns the path string, but if you want to print it via System.out.println you can skip .toString because it will automatically do so.
+
+Path.getNameCount() returns the number of directories/files in the path, excluding the root. "C:/My Files/Project Java" as argument returns 2 as "C:", being the root, is not counted. In UNIX the root is "/" and that one is not counted either. Path.getName(int index) returns the file/directory with the corresponding index. Example:
+
+```
+Path p = Path.of("C:/My Files/Project Java/main/java.txt");
+
+p.getNameCount(); 
+-- returns 4
+
+System.out.println(p.getName(0));
+-- prints "My Files"
+System.out.println(p.getName(3));
+-- prints "java.txt"
+```
+
+Path.subpath(int beginindex, int endindex) returns a Path object containing a subpath. It throws an IllegalArgumentException if the index is out of bounds:
+
+```
+Path p = Path.of("C:/My Files/Project Java/main/java.txt").subPath(1,3);
+-- returns "Project Java/main"
+
+Path p = Path.of("C:/My Files/Project Java/main/java.txt").subPath(1,4);
+-- IllegalArgumentException
+```
+
+Path.getFileName() returns the last part of the path, it can be a file or a directory. Note that these methods are not so interested in the difference between file and directory. If there is only a root in the path, the return value is null. Path.getParent() and Path.getRoot() are similar, returning null if they cannot answer differently. Path.getRoot() returns null if the path is not absolute.
+
+Path.isAbsolute() returns true if the path is absolute, given the operating system. For WIndows the path must start with "C:/" or something similar, in UNIX "/". Path.toAbsolutePath() makes an absolute path out of a relative path. The method assumes that the relative path provided starts at the current directory (or actually one level deeper).
+
+Path.relativize() returns a path that indicates how to get from path 1 to path 2. The return path is the thing you would have to type after cd in the terminal assuming that your current directory is path 1 and you want to set your current directory to path 2. Example:
+
+```
+Path mp1 = Path.of("C:/Kuips files/Java projects");
+Path mp2 = Paths.get("C:/Games/replays");
+
+System.out.println(mp1.relativize(mp2));
+
+-- returns "..\\..\\Games\replays" 
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
