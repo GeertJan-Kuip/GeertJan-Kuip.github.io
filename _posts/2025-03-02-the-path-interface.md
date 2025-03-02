@@ -73,7 +73,7 @@ NIO.2 is better than IO in connecting to a remote filesystem, which is a major a
 
 ### Path methods
 
-The book doesn't delve into the static methods of Path and actually there is just one, namely Path.of(String(s) or URI). There is a list of abstract methods in the Path body and actually I don't know what they are used for, as Path is not implemented by other classes. Maybe this text from the Oracle documentation helps us out?
+The book doesn't delve into the static methods of Path and actually there is just one, namely Path.of(String(s) or URI). There is a list of abstract methods and default methods in the Path body and actually I don't know what they are used for, as Path is not implemented by other classes. Maybe this text from the Oracle documentation helps us out?
 
 "WARNING: This interface is only intended to be implemented by those developing custom file system implementations. Methods may be added to this interface in future releases."
 
