@@ -85,9 +85,9 @@ As you see, the FileReader thing can be omitted and you get the same. Btw there 
 
 This is a very convenient way to read all the lines of a textfile into a List variable. No BufferedReader object is required.
 
-#### Managing file attributes
+### Managing file attributes
 
-### 'is' methods
+#### 'is' methods
 
 The Files class has a set of methods to get and set file attributes. The following methods all take Path as argument (and evetually one or more LinkOptions) and return a boolean:
 
@@ -107,7 +107,7 @@ Is meant to be used on files, not directories. When used on directory the outcom
 
 Returns a timestamp which can be converted to milliseconds since January 1, 1970 using toMillis(). This 1970 thing is called the epoch time.
 
-#### <A extends BasicFileAttributes> A readAttributes(Path p)
+#### \<A extends BasicFileAttributes\> A readAttributes(Path p)
 
 This method lets you get all fileattributes in a single call. I do not understand the structure of the interfaces, views etc, but this works:
 
@@ -137,7 +137,7 @@ System.out.format("is other: %s\n", b.isOther());
 -- is other: false
 ```
 
-#### <V extends FileAttributeView> V getFileAttributeView(Path p, Class<V> type, LinkOption... options)
+#### \<V extends FileAttributeView\> V getFileAttributeView(Path p, Class\<V\> type, LinkOption... options)
 
 This one is the counterpart of the previos one, readAttributes, but allows you to change the value of the attributes for as far as the filesystem allows you to. lastModifiedTime for example can be set to a new value.
 
@@ -149,13 +149,13 @@ Some methods in Files return a stream, which means you can chain methods like fi
 
 The list method of Files is similar to File.listFiles(), except that it returns a Stream<Path> instead of File[]. It goes only one level deep. Files.list() can be used to traverse the contents of a folder and, by doing recursive stuff, make a deep copy of it instead of a shallow (as Files.copy() does). The book shows a smart custom recursive method that does that.
 
-#### Stream<Path> walk(Path p, int maxDepth, FileVisitOption... options)
+#### Stream\<Path\> walk(Path p, int maxDepth, FileVisitOption... options)
 
 I used this method already, it builds a stream of all folders and files under the Path p location. You can set a maximum depth, the default is huge (max integer size). 
 
-By default walk does not follow symbolic links. If you want it to, you can set it as option. Beware of symbolic links, as they can point to some directory outside of the scope you had in mind or because they create a circular pattern that results in a FileSystemLoopException. This exception is thrown if a pat is visited twice.
+By default walk does not follow symbolic links. If you want it to, you can set it as option. Beware of symbolic links, as they can point to some directory outside of the scope you had in mind or because they create a circular pattern that results in a FileSystemLoopException. This exception is thrown if a path is visited twice.
 
-#### Stream<Path> find(Path p, int maxDepth, BiPredicate<Path, BasicFileAttributes> matcher, FileVisitOption... options)
+#### Stream\<Path\> find(Path p, int maxDepth, BiPredicate\<Path, BasicFileAttributes\> matcher, FileVisitOption... options)
 
 Files.find() is similar to Files.walk() but can apply a filter during the walk. This is what the BiPredicate is for. The BiPredicate has two arguments, the path and the attributes, so you can filter on both. Btw it throws IO exception. Example as in book:
 
@@ -167,11 +167,11 @@ s.forEach(System.out::println);
 }
 ```
 
-#### Stream<String> lines(Path path)
+#### Stream\<String\> lines(Path path)
 
-Similar to readAllLines() but returns a Stream<String> instead of a List<String>. The downside of storing all lines in a list is that memory consumption can get high as everything needs to be stored at once. Files.lines() doesn't have this problem, it processes lazily and doesn't need much memory.
+Similar to readAllLines() but returns a Stream\<String\> instead of a List\<String\>. The downside of storing all lines in a list is that memory consumption can get high as everything needs to be stored at once. Files.lines() doesn't have this problem, it processes lazily and doesn't need much memory.
 
-Note that while you can use .forEach on both List<String>  and Stream<String>, you cannot make stream chains with filters, maps, distinct etc on the return value of readAllLines().
+Note that while you can use .forEach on both List\<String\>  and Stream\<String\>, you cannot make stream chains with filters, maps, distinct etc on the return value of readAllLines().
 
 
 
