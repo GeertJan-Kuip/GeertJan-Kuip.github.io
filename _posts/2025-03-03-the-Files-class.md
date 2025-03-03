@@ -145,7 +145,7 @@ This one is the counterpart of the previos one, readAttributes, but allows you t
 
 Some methods in Files return a stream, which means you can chain methods like filter and map, and use functional interfaces and lambda expressions.
 
-#### Stream<Path> list(Path dir)
+#### Stream\<Path\> list(Path dir)
 
 The list method of Files is similar to File.listFiles(), except that it returns a Stream<Path> instead of File[]. It goes only one level deep. Files.list() can be used to traverse the contents of a folder and, by doing recursive stuff, make a deep copy of it instead of a shallow (as Files.copy() does). The book shows a smart custom recursive method that does that.
 
