@@ -16,7 +16,7 @@ As Path is an interface, you cannot instantiate it by using "new Path()". But th
 #### 1 - Use its static factory method 'of', like this:
 
 ```
-Path.of("C:\\users\\user\\myProject\\myText.txt");
+Path.of("C:\users\user\myProject\myText.txt");
 ```
 
 You can pass multiple String arguments to the constructor, it is of the varargs type and they will be concatenated.
@@ -75,9 +75,9 @@ NIO.2 is better than IO in connecting to a remote filesystem, which is a major a
 
 The book doesn't delve into the static methods of Path and actually there is just one, namely Path.of(String(s) or URI). There is a list of abstract methods and default methods in the Path body and actually I don't know what they are used for, as Path is not implemented by other classes. Maybe this text from the Oracle documentation helps us out?
 
-"WARNING: This interface is only intended to be implemented by those developing custom file system implementations. Methods may be added to this interface in future releases."
+*"WARNING:* This interface is only intended to be implemented by those developing custom file system implementations. Methods may be added to this interface in future releases."
 
-WAIT: I now see that the abstract methods are actually implemented, namely in the JDK, for example in the file WindowsPath.java. I suppose this means that if you create a path object, on a windows machine you actually create a WindowsPath object, and all the interface methods of Path will really work.
+*WAIT:* I now see that the abstract methods are actually implemented, namely in the JDK, for example in the file WindowsPath.java. I suppose this means that if you create a path object, on a windows machine you actually create a WindowsPath object, and all the interface methods of Path will really work.
 
 Okay, now that this is out of the way, an overview of the methods that are named in the book:
 
