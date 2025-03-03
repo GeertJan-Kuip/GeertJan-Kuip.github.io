@@ -136,9 +136,27 @@ Path mp2 = Paths.get("C:/Games/replays");
 
 System.out.println(mp1.relativize(mp2));
 
--- returns "..\\..\\Games\replays" 
+-- returns "..\..\Games\replays" 
 ```
 
+A caveat here is that both paths need either be absolute or relative. Mixing those results in IllegalArgumentException. If both are absolute and you work on Windows, they need to have the same drive letter. If not, also an IllegalArgumentException.
+
+The normalize() method turns paths with . and/or .. in it into regular paths without them. .. refers to the parent directory while . refers to the current directory. Example:
+
+```
+System.out.println(Path.of("./Java projects/myText.txt").normalize());
+-- returns "Java projects\myText.txt"
+
+System.out.println(Path.of("Java projects/../myText.txt").normalize());
+-- returns "myText.txt"
+
+System.out.println(Path.of("C:/./Java projects/files/../myText.txt").normalize());
+-- returns "C:\Java projects\myText.txt"
+```
+
+The realPath(LinkOption...) method does a few things. It normalizes the path, it makes it an absolute path, and while you can pass symbolic links, it will convert them to their real substitute. Path.realPath(LinkOption...) differs from most other methods in that it is really concerned with the existence of the path. If it doesn't exist, an IOException is thrown. 
+
+If NOFOLLOW_LINKS is added as option, symbolic links will not be resolved.
 
 
 
