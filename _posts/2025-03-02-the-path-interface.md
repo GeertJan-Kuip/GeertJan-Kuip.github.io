@@ -94,7 +94,7 @@ Okay, now that this is out of the way, an overview of the methods that are named
 - boolean isAbsolute()
 - Path toAbsolutePath()
 - Path relativize(Path other)
-- Path resolve()
+- Path resolve(Path other)
 - Path normalize()
 - Path toRealPath(LinkOption...)
 
@@ -140,6 +140,28 @@ System.out.println(mp1.relativize(mp2));
 ```
 
 A caveat here is that both paths need either be absolute or relative. Mixing those results in IllegalArgumentException. If both are absolute and you work on Windows, they need to have the same drive letter. If not, also an IllegalArgumentException.
+
+The resolve(Path other) method concatenates two paths:
+
+```
+Path p1 = Path.of("new folder 2");
+Path p2 = Path.of("text.txt");
+
+Path newpath = p1.resolve(p2);
+-- returns "new folder 2\text.txt"
+```
+
+If the argument (p2) an absolute path while the other (p1) is not, resolve(..) will return p2 as this is sort of the only possible answer. If p1 is an absolute path and p2 isn't, they will be neatly concatenated. If both are absolute, p2 will be returned:
+
+```
+Path p1 = Path.of("new folder 2").toAbsolutePath();
+Path p2 = Path.of("text.txt").toAbsolutePath();
+
+Path newpath = p1.resolve(p2);
+-- returns "C:\Kuips files\Java projects\generics\text.txt"
+```
+
+It works best if p1 is absolute and p2 isn't, or if both are relative.
 
 The normalize() method turns paths with . and/or .. in it into regular paths without them. .. refers to the parent directory while . refers to the current directory. Example:
 
