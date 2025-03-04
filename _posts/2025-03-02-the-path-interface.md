@@ -176,7 +176,19 @@ System.out.println(Path.of("C:/./Java projects/files/../myText.txt").normalize()
 -- returns "C:\Java projects\myText.txt"
 ```
 
-The realPath(LinkOption...) method does a few things. It normalizes the path, it makes it an absolute path, and while you can pass symbolic links, it will convert them to their real substitute. Path.realPath(LinkOption...) differs from most other methods in that it is really concerned with the existence of the path. If it doesn't exist, an IOException is thrown. 
+To predict what normalize() will do, you can do the following: skip the single dots from the path as they are redundant. Read the string from left to right and imagine yourself going up in the directory tree for every .. you encounter, and going down every filename/directoryname you encounter. Going up after going down means that the file/folder created is nullified. 
+
+The toRealPath(LinkOption...) method does a few things. It normalizes the path, it makes it an absolute path, and while you can pass symbolic links, it will convert them to their real substitute and does so in a smarter way than some other Path methods. Path.toRealPath(LinkOption...) differs from most other methods in that it is really concerned with the existence of the path. If it doesn't exist, an IOException is thrown. 
+
+The snippet below shows the smart character. Path p1 indicates a real path, Java projects is indeed two levels higher up than the current directory.
+
+```
+Path p1 = Paths.get("../../Java projects");
+
+System.out.println(p1.toRealPath());
+
+-- returns C:\Kuips files\Java projects
+```
 
 If NOFOLLOW_LINKS is added as option, symbolic links will not be resolved.
 
