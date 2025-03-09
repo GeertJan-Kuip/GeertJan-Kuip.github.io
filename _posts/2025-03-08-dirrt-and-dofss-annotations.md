@@ -1,4 +1,4 @@
-## DIRRT and DOFSS annotations
+## DIRRT and DOFSS annotations 
 
 DIRRT and DOFSS are acronyms I created and they represent the 10 annotations I need to learn for 1Z0-819. Five of them are meta-annotations, to be applied to other annotations, and the other five are regular annotations that you apply to code.
 
