@@ -43,17 +43,17 @@ new Thread(new MyClass()).start();
 #### 3 - Create a lambda
 
 ```
-Runnable runnable = ()->System.out.println("This is my world");
+Runnable runnable = ()-> System.out.println("This is my world");
 new Thread(runnable).start();
 
 --or
 
-new Thread(()-System.out.println("This is my world")).start();
+new Thread(()-> System.out.println("This is my world")).start();
 ```
 
 #### Thread.sleep()
 
-Thread.sleep() can be used to pause a thread. It throws an InterruptedException when interrupted, which mean that you have to deal with that using a try-catch or by changing the signature of the enclosing method.
+Thread.sleep() can be used to pause a thread. It throws an InterruptedException when interrupted, which means that you have to deal with that using a try-catch or by changing the signature of the enclosing method.
 
 
 ### Using the Concurrency API
@@ -129,7 +129,7 @@ Note that the first line in the main method declares the ExecutorService variabl
 
 ### invokeAll() and invokeAny()
 
-These two methods belong to the ExecutorService interface and can also be called for ScheduledExecutorService type objects. They allow you to submit a list of Callables to the service, which will divide them over the threads. With invokeAll(), instead of one Future object as return value you get a list of Future objects, in the same order as the list of Callables. Only after all Callables are either finished or have thrown an exception the program will proceed. With invokeAny(), it is about the task that executes fastest. Only a single Future object is returned, of the Callable that is finished first. All other tasks are cancelled.
+These two methods belong to the ExecutorService interface and can also be called for ScheduledExecutorService type objects. They allow you to submit a list of Callables to the service, which will divide them over the threads. With invokeAll(), instead of one Future object as return value you get a list of Future objects, in the same order as the list of Callables. Only after all Callables are either finished or have thrown an exception the program will proceed. With invokeAny(), it is about the task that executes fastest. Only a single Future object is returned, of the Callable that finished first. All other tasks are cancelled.
 
 Below is sample code using invokeAll():
 
