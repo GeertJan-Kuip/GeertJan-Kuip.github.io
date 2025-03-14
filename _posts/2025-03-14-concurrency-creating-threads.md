@@ -88,12 +88,12 @@ More interesting is the use of _submit_() instead of _execute_(). Submit is a me
 
 ```
 @FunctionalInterface
-public interface Callable<V> {
+public interface Callable\<V\> {
   V call() throws Exception;
 }
 ```
 
-It returns a generic value and it throws an exception if unable to return a result. Secondly, _submit_() returns a result of interface type Future<?>. This object can be used to retrieve the return value of Callable and to get information about the status and progress of the task that was submitted. The following code creates something with multiple threads, submit(), a Callable object and a Future object.
+It returns a generic value and it throws an exception if unable to return a result. Secondly, _submit_() returns a result of interface type Future\<?\>. This object can be used to retrieve the return value of Callable and to get information about the status and progress of the task that was submitted. The following code creates something with multiple threads, submit(), a Callable object and a Future object.
 
 ```
 public class MyClass {
@@ -102,7 +102,7 @@ public class MyClass {
 
     ExecutorService service = null;
     
-    Callable<String> callable01 = ()-> "Result 1";
+    Callable\<String\> callable01 = ()-> "Result 1";
     Callable<String> callable02 = ()-> "Result 2";
     Callable<String> callable03 = ()-> "Result 3";
 
