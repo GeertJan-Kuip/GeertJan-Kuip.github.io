@@ -173,7 +173,7 @@ ScheduledExecutorService has four extra methods, one of them an overloaded one. 
 ScheduledExecutorService are:
 
 - ScheduledFuture<?> **_schedule_**(Runnable command, long delay, TimeUnit unit)
-- \<V\> ScheduledFuture\<V\> **_schedule_**(Callable\<V\> callable, long delay, TimeUnit unit)
+- \<V\> ScheduledFuture<V> **_schedule_**(Callable\<V\> callable, long delay, TimeUnit unit)
 - ScheduledFuture<?> **_scheduleAtFixedRate_**(Runnable command, long initialDelay, long period, TimeUnit unit)
 - ScheduledFuture<?> **_scheduleWithFixedDelay_**(Runnable command, long initialDelay, long delay, TimeUnit unit)
 
