@@ -88,7 +88,7 @@ More interesting is the use of _submit_() instead of _execute_(). Submit is a me
 
 ```
 @FunctionalInterface
-public interface Callable\<V\> {
+public interface Callable<V> {
   V call() throws Exception;
 }
 ```
@@ -102,7 +102,7 @@ public class MyClass {
 
     ExecutorService service = null;
     
-    Callable\<String\> callable01 = ()-> "Result 1";
+    Callable<String> callable01 = ()-> "Result 1";
     Callable<String> callable02 = ()-> "Result 2";
     Callable<String> callable03 = ()-> "Result 3";
 
@@ -173,7 +173,7 @@ ScheduledExecutorService has four extra methods, one of them an overloaded one. 
 ScheduledExecutorService are:
 
 - ScheduledFuture<?> **_schedule_**(Runnable command, long delay, TimeUnit unit)
-- <V> ScheduledFuture<V> **_schedule_**(Callable<V> callable, long delay, TimeUnit unit)
+- <V> ScheduledFuture\<V\> **_schedule_**(Callable\<V\> callable, long delay, TimeUnit unit)
 - ScheduledFuture<?> **_scheduleAtFixedRate_**(Runnable command, long initialDelay, long period, TimeUnit unit)
 - ScheduledFuture<?> **_scheduleWithFixedDelay_**(Runnable command, long initialDelay, long delay, TimeUnit unit)
 
@@ -223,9 +223,9 @@ Various methods use the enum TimeUnit for wait, delay, periodical execution etc.
 |----------|----------|
 |void execute(Runnable command)|Executes a Runnable task at some point in future|
 |Future<?> submit(Runnable task)|Executes a Runnable task at some point in future and returns a Future representing the task|
-|<T> Future<T> submit(Callable<T> task)|Executes a Callable task and returns a Future|
-|<T> List<Future<T>> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException|Executes given tasks and waits for all of them to complete. Returns list of Future instances, in the order of the original collection|
-|<T> T invokeAny(Collection<? extends Callable<T>> tasks) throws InterruptedException, ExecutionException|Executes the given tasks and waits for at least one to complete. Returns a Future for the complete task and cancels the rest of the tasks|
+|\<T\> Future\<T\> submit(Callable<T> task)|Executes a Callable task and returns a Future|
+|\<T\> List\<Future\<T\>\> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException|Executes given tasks and waits for all of them to complete. Returns list of Future instances, in the order of the original collection|
+|\<T\> T invokeAny(Collection\<? extends Callable\<T\>\> tasks) throws InterruptedException, ExecutionException|Executes the given tasks and waits for at least one to complete. Returns a Future for the complete task and cancels the rest of the tasks|
 
 
 
