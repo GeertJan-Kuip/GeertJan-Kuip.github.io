@@ -185,11 +185,11 @@ The Executors class has static methods that can generate 8 different executor ob
 
 | Method | Description |
 |---------|-------------|
-|ExecutorService _newSingleThreadExecutor_() |single thread, unbounded queue, sequential processing in order of submission |
-|ScheduledExecutorService _newSingleThreadScheduledExecutor_()|single thread, schedules commands after given delay or to execute periodically |
-|ExecutorService _newCachedThreadPool_()|creates thread pool, new threads are created as needed and idle old ones are reused |
-|ExecutorService _newFixedThreadPool_(int)|creates fixed number of threads operating of a shared unbounded queue |
-|ScheduledExecutorService _newScheduledThreadPool_(int)|creates thread pool that can schedule commands to run after given delay or to execute periodically |
+|ExecutorService **_newSingleThreadExecutor_**() |single thread, unbounded queue, sequential processing in order of submission |
+|ScheduledExecutorService **_newSingleThreadScheduledExecutor_**()|single thread, schedules commands after given delay or to execute periodically |
+|ExecutorService **_newCachedThreadPool_**()|creates thread pool, new threads are created as needed and idle old ones are reused |
+|ExecutorService **_newFixedThreadPool_**(int)|creates fixed number of threads operating of a shared unbounded queue |
+|ScheduledExecutorService **_newScheduledThreadPool_**(int)|creates thread pool that can schedule commands to run after given delay or to execute periodically |
 
 Calling newFixedThreadPool(1) is identical with calling newSingleThreadExecutor. The newCachedThreadPool creates a thread pool of unbounded size, so no task will have to wait. There is a danger of ending up with too many threads, and for long-lived processes, usage of this executor is strongly discouraged. Its use is for executing many short-lived tasks. 
 
@@ -221,11 +221,11 @@ Various methods use the enum TimeUnit for wait, delay, periodical execution etc.
 
 |Method name|Description|
 |----------|----------|
-|void execute(Runnable command)|Executes a Runnable task at some point in future|
-|Future<?> submit(Runnable task)|Executes a Runnable task at some point in future and returns a Future representing the task|
-|\<T\> Future\<T\> submit(Callable<T> task)|Executes a Callable task and returns a Future|
-|\<T\> List\<Future\<T\>\> invokeAll(Collection<? extends Callable<T>> tasks) throws InterruptedException|Executes given tasks and waits for all of them to complete. Returns list of Future instances, in the order of the original collection|
-|\<T\> T invokeAny(Collection\<? extends Callable\<T\>\> tasks) throws InterruptedException, ExecutionException|Executes the given tasks and waits for at least one to complete. Returns a Future for the complete task and cancels the rest of the tasks|
+|void **_execute_**(Runnable command)|Executes a Runnable task at some point in future|
+|Future<?> **_submit_**(Runnable task)|Executes a Runnable task at some point in future and returns a Future representing the task|
+|\<T\> Future\<T\> **_submit_**(Callable<T> task)|Executes a Callable task and returns a Future|
+|\<T\> List\<Future\<T\>\> **_invokeAll_**(Collection<? extends Callable<T>> tasks) throws InterruptedException|Executes given tasks and waits for all of them to complete. Returns list of Future instances, in the order of the original collection|
+|\<T\> T **_invokeAny_**(Collection\<? extends Callable\<T\>\> tasks) throws InterruptedException, ExecutionException|Executes the given tasks and waits for at least one to complete. Returns a Future for the complete task and cancels the rest of the tasks|
 
 
 
