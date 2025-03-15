@@ -14,7 +14,7 @@ synchronized(someObject) {
 }
 ```
 
-The object can be any object, which makes it a bit strange. The main thing is that it must be the same object for every thread that want to access the code. I asked perplexity and it told me that you should avoid strings and boxed primitives. Strings are in a string pool and some other code might have access to the same string for completely different reasons. Often, in an instance context, 'this' is used, which makes sense given the condition that every thread must deal with the same monitor object.
+The object can be any object, which makes it a bit strange. The main thing is that it must be the same object for every thread that wants to access the code. I asked perplexity and it told me that you should avoid strings and boxed primitives. Strings are in a string pool and some other code might have access to the same string for completely different reasons. Often, in an instance context, 'this' is used, which makes sense given the condition that every thread must deal with the same monitor object.
 
 Synchronized guarantees not only that two threads are running the same code simultaneously, but also that every change of state is visible to all threads.
 
@@ -54,11 +54,11 @@ These classes reside in the java.util.concurrent.atomic package. The three class
 |**_decrementAndGet_**()|Equivalent to --val|
 |**_getAndDecrement_**()|Equivalent to val--|
 
-There are actually many more methods, you can do most thing you would want to with Atomic classes.
+There are actually many more methods, you can do most things you would want to with Atomic classes.
 
 ### The Lock framework
 
-This framework was introduced later, part of the Concurrency API, and has useful functionality that synchronized lacks. Instead of synchronizing on any object, you must now lock on an object that implements the Lock interface. Typical code with Lock looks like this:
+This framework was introduced in version 1.5, as part of the Concurrency API, and has useful functionality that synchronized lacks. Instead of synchronizing on any object, you must now lock on an object that implements the Lock interface. Typical code with Lock looks like this:
 
 ```
 Lock lock = new ReentrantLock();
@@ -72,18 +72,18 @@ try{
 
 The try-finally construct kind of guarantees that locks are released so that other threads can aquire it. The ReentrantLock class is one of the classes that implements Lock and I suppose it is one that works well in many situations.
 
-Important: if you unlock a lock you don't have (you didn't call the lock method, an IllegalMonitorStateException is thrown.
+Important: if you unlock a lock you don't have (you didn't call the lock method or it denied access when you tried), an IllegalMonitorStateException is thrown.
 
 The following Lock methods are to be learned:
 
 |Method|Description|
 |----|----|
-|void **_lock_()|Requests a lock and blocks thread until lock is aquired| 
-|void **_unlock_()|Releases a lock|
+|void **_lock_**()|Requests a lock and blocks thread until lock is aquired| 
+|void **_unlock_**()|Releases a lock|
 |boolean **_tryLock_**()|Requests a lock and returns immediately. Returns a boolean to indicate if it acquired the lock| 
 |boolean **_tryLock_**(long, TimeUnit)|Requests lock and blocks up to the specified time until lock is required. If the lock is not available within set period, returns false, otherwise true|
 
-A lock can only be unlocked if it has been locked first. When using tryLock you should check whether the lock is acquired, because if so, you should call unlock, and if not, you should _not_ call unlock. Therefore the book recommens if-try-finally-else:
+A lock can only be unlocked if it has been locked first. When using tryLock you should check whether the lock is acquired, because if so, you should call unlock, and if not, you should **_not_** call unlock. Therefore the book recommends if-try-finally-else:
 
 ```
 Lock lock = new ReentrantLock();
@@ -98,7 +98,7 @@ if(lock.tryLock()){
 }
 ```
 
-This code prevents using unlock() without lock() and therefore IllegalMonitorStateException. You cannot call unlock just to be sure.
+This code prevents using unlock() without lock() and therefore IllegalMonitorStateException. You cannot call unlock just to be sure. Be aware that lock.tryLock() acquires the lock if it is available. You do not have to call lock.lock() again.
 
 #### More on boolean _tryLock_(long,TimeUnit)
 
