@@ -173,11 +173,35 @@ ScheduledExecutorService has four extra methods, one of them an overloaded one. 
 ScheduledExecutorService are:
 
 - ScheduledFuture<?> **_schedule_**(Runnable command, long delay, TimeUnit unit)
-- \<V\> ScheduledFuture<V> **_schedule_**(Callable\<V\> callable, long delay, TimeUnit unit)
+- \<V\> ScheduledFuture\<V\> **_schedule_**(Callable\<V\> callable, long delay, TimeUnit unit)
 - ScheduledFuture<?> **_scheduleAtFixedRate_**(Runnable command, long initialDelay, long period, TimeUnit unit)
 - ScheduledFuture<?> **_scheduleWithFixedDelay_**(Runnable command, long initialDelay, long delay, TimeUnit unit)
 
 The difference between the latter two methods is that scheduleAtFixedRate() has a fixed time interval between the start points of tasks, while scheduleWithFixedDelay() has a fixed interval between the completion of one task and the start of the next.
+
+### Future methods
+
+|Method name|Description|
+|----------|----------|
+|boolean **_isDone_**()|Returns true if task was completed, threw an exception, or was cancelled|
+|boolean **_isCancelled_**()|Returns true if task was cancelled before completing normally|
+|boolean **_cancel_**(boolean mayInterruptIfRunning)|Attempts to cancel task execution, true if successfully cancelled, false if it could not be cancelled or completed anyway|
+|V **_get_**()|Retrieves result of task (return value Callable), waiting endlessly if not available|
+|V **_get_**(long timeout, TimeUnit unit)|Retrieves result of task, waiting for the specified amount of time. If result is not ready when timeout is reached, a checked TimeoutException will be thrown|
+
+### ExecutorService methods
+
+|Method name|Description|
+|----------|----------|
+|void **_execute_**(Runnable command)|Executes a Runnable task at some point in future|
+|Future<?> **_submit_**(Runnable task)|Executes a Runnable task at some point in future and returns a Future representing the task|
+|\<T\> Future\<T\> **_submit_**(Callable<T> task)|Executes a Callable task and returns a Future|
+|\<T\> List\<Future\<T\>\> **_invokeAll_**(Collection<? extends Callable<T>> tasks) throws InterruptedException|Executes given tasks and waits for all of them to complete. Returns list of Future instances, in the order of the original collection|
+|\<T\> T **_invokeAny_**(Collection\<? extends Callable\<T\>\> tasks) throws InterruptedException, ExecutionException|Executes the given tasks and waits for at least one to complete. Returns a Future for the complete task and cancels the rest of the tasks|
+|void **_shutdown_**()|Initiates an orderly shutdown in which previously submitted tasks are executed, but no new tasks will be accepted|
+|void **_shutdownNow_**()|Attempts to stop all actively executing tasks, halts the processing of waiting tasks, and returns a list of the tasks that were awaiting execution|
+|boolean **_awaitTermination-**(long timeout, TimeUnit unit)|Blocks until all tasks have completed execution after a shutdown request, or the timeout occurs, or the current thread is interrupted, whichever happens first|
+|boolean **_isTerminated_**()|Returns true if all tasks have completed following shut down|
 
 ### List of executor objects 
 
@@ -207,25 +231,7 @@ Various methods use the enum TimeUnit for wait, delay, periodical execution etc.
 |TimeUnit.HOURS||
 |TimeUnit.DAYS||
 
-### Future methods
 
-|Method name|Description|
-|----------|----------|
-|boolean **_isDone_**()|Returns true if task was completed, threw an exception, or was cancelled|
-|boolean **_isCancelled_**()|Returns true if task was cancelled before completing normally|
-|boolean **_cancel_**(boolean mayInterruptIfRunning)|Attempts to cancel task execution, true if successfully cancelled, false if it could not be cancelled or completed anyway|
-|V **_get_**()|Retrieves result of task (return value Callable), waiting endlessly if not available|
-|V **_get_**(long timeout, TimeUnit unit)|Retrieves result of task, waiting for the specified amount of time. If result is not ready when timeout is reached, a checked TimeoutException will be thrown|
-
-### ExecutorService methods
-
-|Method name|Description|
-|----------|----------|
-|void **_execute_**(Runnable command)|Executes a Runnable task at some point in future|
-|Future<?> **_submit_**(Runnable task)|Executes a Runnable task at some point in future and returns a Future representing the task|
-|\<T\> Future\<T\> **_submit_**(Callable<T> task)|Executes a Callable task and returns a Future|
-|\<T\> List\<Future\<T\>\> **_invokeAll_**(Collection<? extends Callable<T>> tasks) throws InterruptedException|Executes given tasks and waits for all of them to complete. Returns list of Future instances, in the order of the original collection|
-|\<T\> T **_invokeAny_**(Collection\<? extends Callable\<T\>\> tasks) throws InterruptedException, ExecutionException|Executes the given tasks and waits for at least one to complete. Returns a Future for the complete task and cancels the rest of the tasks|
 
 
 
