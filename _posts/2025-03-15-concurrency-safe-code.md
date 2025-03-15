@@ -18,11 +18,11 @@ The object can be any object, which makes it a bit strange. The main thing is th
 
 Synchronized guarantees not only that two threads are running the same code simultaneously, but also that every change of state is visible to all threads.
 
-### Synchronized instance method modifier
+#### Synchronized instance method modifier
 
 Similar to synchronized block. You add 'synchronized' as a modifier to an instance method (before return value) and the method becomes thread-safe. You do not have to provide a monitor, as it automatically synchronizes on the object itself.
 
-### Synchronized block in a static context
+#### Synchronized block in a static context
 
 Which object should you use as monitor in a static context, given that it should be the same object for every thread requesting access to the synchronized block? The right answer is the class object. If you add synchronized as modifier to a static method you do not have to mention the monitor object, but if you write a synchronized block within a static method, you must do the following:
 
