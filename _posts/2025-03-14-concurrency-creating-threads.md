@@ -200,7 +200,7 @@ The difference between the latter two methods is that scheduleAtFixedRate() has 
 |\<T\> T **_invokeAny_**(Collection\<? extends Callable\<T\>\> tasks) throws InterruptedException, ExecutionException|Executes the given tasks and waits for at least one to complete. Returns a Future for the complete task and cancels the rest of the tasks|
 |void **_shutdown_**()|Initiates an orderly shutdown in which previously submitted tasks are executed, but no new tasks will be accepted|
 |void **_shutdownNow_**()|Attempts to stop all actively executing tasks, halts the processing of waiting tasks, and returns a list of the tasks that were awaiting execution|
-|boolean **_awaitTermination-**(long timeout, TimeUnit unit)|Blocks until all tasks have completed execution after a shutdown request, or the timeout occurs, or the current thread is interrupted, whichever happens first|
+|boolean **_awaitTermination_**(long timeout, TimeUnit unit)|Blocks until all tasks have completed execution after a shutdown request, or the timeout occurs, or the current thread is interrupted, whichever happens first|
 |boolean **_isTerminated_**()|Returns true if all tasks have completed following shut down|
 
 ### List of executor objects 
