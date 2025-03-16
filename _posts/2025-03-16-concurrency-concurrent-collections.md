@@ -42,14 +42,14 @@ A list of all the static methods in Collections that create thread safe variants
 
 |       |
 |------------|
-|synchronizedCollection(Collection<T> c)|
-|synchronizedList(List<T> list)|
+|synchronizedCollection(Collection\<T\> c)|
+|synchronizedList(List\<T\> list)|
 |synchronizedMap(Map<K,V> m)|
 |synchronizedNavigableMap(NavigableMap<K,V> m)|
-|synchronizedNavigableSet(NavigableSet<T> s)|
-|synchronizedSet(Set<T> s)|
+|synchronizedNavigableSet(NavigableSet\<T\> s)|
+|synchronizedSet(Set\<T\> s)|
 |synchronizedSortedMap(SortedMap<K,V> m)|
-|synchronizedSortedSet(SortedSet<T> s)|
+|synchronizedSortedSet(SortedSet\<T\> s)|
 
 
 
