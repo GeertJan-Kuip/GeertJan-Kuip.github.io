@@ -40,6 +40,7 @@ The difference between these converted classes and the concurrency API collectio
 
 A list of all the static methods in Collections that create thread safe variants (the return values are the thread safe collections:
 
+|       |
 |------------|
 |synchronizedCollection(Collection<T> c)|
 |synchronizedList(List<T> list)|
