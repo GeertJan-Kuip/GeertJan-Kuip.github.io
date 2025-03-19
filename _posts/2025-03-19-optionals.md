@@ -44,7 +44,7 @@ Optional.of(T value) can not be set with a null value, it will throw an exceptio
 
 You can use .stream() on an Optional. It creates a stream consisting of the value, or an empty stream if the Optional is empty. Furthermore there are the methods .map(), .flatMap() and .filter() that can be used on an Optional and they return a new Optional. The first two are part of the exam.
 
-Optional.map(Function\<? super T,? extends U\> mapper) returns an Optional\<U\> containing the return value of the Function. This can be problematic if the function itself returns an Optional, you get an Optional within an optional then. This won't compile.
+Optional.map(Function\<? super T,? extends U\> mapper) returns an Optional\<U\> containing the return value of the Function. This can be problematic if the function itself returns an Optional, you get an Optional within an optional then. This won't compile if you expect just a regular Optional as return value.
 
 To prevent this, use .flatMap(Function\<? super T,? extends Optional\<? extends U\>\> mapper) instead. FlatMap has Optional\<u\> as return type as well, but removes one wrapping layer so you don't end up with a non-compilable nested Optional.
 
