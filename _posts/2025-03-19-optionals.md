@@ -28,7 +28,7 @@ Generally, 6 of the 7 methods return the value if the Optional is not empty. The
 
 In words, you have the option to return nothing, false, an alternative or an exception. The point of all this is that you can write code that deals with Optionals without have to write if-statements or ternary operations. It promotes readability.
 
-Note: I realized that .get() and .orElseThrow() actually do exactly the same. Perplexity told me that it is better to use .orElseThrow() because it has a name that improves code readability. Optional.get() was part of the 2008 introduction, .orElseThrow() came in version 10.
+Note: I realized that .get() and .orElseThrow() actually do exactly the same. Perplexity told me that it is better to use .orElseThrow() because it has a name that improves code readability. Optional.get() was part of the Java 8 introduction, .orElseThrow() came in version 10.
 
 ### Creating Optionals
 
