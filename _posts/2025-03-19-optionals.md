@@ -52,8 +52,8 @@ To prevent this, use .flatMap(Function\<? super T,? extends Optional\<? extends 
 - Both map() and flatmap() propagate empty Optionals.
 - map() will wrap any return value of Function in an Optional, regardless what it is. If the return value is an optional, you get a nested optional. This nesting can go on forever in a long chain where Function outputs Optionals.
 - flatMap() ensures that only one layer of Optional will be returned. No nesting possible
-- If Function returns null, map() will return an empty Optional.
-- If Function returns null, flatMap() will throw NullPointerException
+- If Function returns null, map() will return an empty Optional. As far as I understand, .flatMap() does too.
+- If you supply null as argument instead of Function, then you get a NullPointerException with both.
 
 ### Optionals and primitives
 
