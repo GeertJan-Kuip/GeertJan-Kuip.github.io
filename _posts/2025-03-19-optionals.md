@@ -48,6 +48,13 @@ Optional.map(Function\<? super T,? extends U\> mapper) returns an Optional\<U\> 
 
 To prevent this, use .flatMap(Function\<? super T,? extends Optional\<? extends U\>\> mapper) instead. FlatMap has Optional\<u\> as return type as well, but removes one wrapping layer so you don't end up with a non-compilable nested Optional.
 
+**Addition:** I looked at the implementation in the JDK, you can say the following:
+- Both map() and flatmap() propagate empty Optionals.
+- map() will wrap any return value of Function in an Optional, regardless what it is. If the return value is an optional, you get a nested optional. This nesting can go on forever in a long chain where Function outputs Optionals.
+- flatMap() ensures that only one layer of Optional will be returned. No nesting possible
+- If Function returns null, map() will return an empty Optional.
+- If Function returns null, flatMap() will throw NullPointerException
+
 ### Optionals and primitives
 
 The regular Optional object can only hold object types, not primitives. To work with Optionals and primitives there are some variants on the Option class, namely:
