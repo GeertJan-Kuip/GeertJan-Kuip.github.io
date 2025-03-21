@@ -6,7 +6,7 @@ Spoiler alert: without perplexity.ai I would not have found the solution.
 
 Collect() in IntStream has only one signature and it lacks the ability to work with a Collector object. You cannot use collect(Collectors.<some fancy method>). All there is is this signature:
 
-<R> R **_collect_**(Supplier<R> supplier, ObjIntConsumer<R> accumulator, BiConsumer<R,R> combiner)
+\<R\> R **_collect_**(Supplier\<R\> supplier, ObjIntConsumer\<R\> accumulator, BiConsumer\<R,R\> combiner)
 
 Personally I find it hard to figure out what such signatures, with their generics and in this case an obscure functional interface 'ObjIntConsumer', exactly represent. But I studied it a bit and I understand it a bit better. But let's show the solution first:
 
@@ -71,8 +71,8 @@ There is some arbitrariness about the way Java methods are implemented, therefor
 
 - The mutable result container is the main element
 - It cannot be something immutable, not a string and not a primitive
-- The accumulator must be a BiConsumer<U,T>, because there must be two input values, namely the mutable result container and the element that is streamed
-- BiConsumer will mostly have two type parameters, although not necessarily. In this case ObjIntConsumer<R> suggest there is one parameter type but of course there are two (R and int)
+- The accumulator must be a BiConsumer\<U,T\>, because there must be two input values, namely the mutable result container and the element that is streamed
+- BiConsumer will mostly have two type parameters, although not necessarily. In this case ObjIntConsumer\<R\> suggest there is one parameter type but of course there are two (R and int)
 - The accumulator can not be a BiFunction, this would not give you the leeway to make a proper accumulation
 - The combiner must be a BiConsumer<R>, the elements to be combined are by definition of the same type and that same type is the output type of collect
 
