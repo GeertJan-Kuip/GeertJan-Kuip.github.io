@@ -12,5 +12,7 @@ This was not the end of the story. 'What if we allow developers to write private
 
 Of course these two new members of the Java interface could not have implicit modifiers anymore. They needed to be declared explicitly 'private', as was the case with the instance method, or 'private static', as was the case with the new variable. 
 
+**CORRECTION:** 2025-03-23 I'm in the wrong about the addition of private static variables, they are not allowed. What I should have written was **private static methods**.
+
 This is the reason that there are six interface members instead of two. This is also the reason that some members do not require access modifiers to be written down while others do.
 
