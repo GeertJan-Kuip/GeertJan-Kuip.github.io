@@ -16,7 +16,7 @@ enum Cars{OPEL, FORD;}  // ; is optional as long as no parameters/arguments are 
 
 ### With fields
 
-When adding fields, the declarations of the constants start to look like object initializers but without the new keyword. The parameters in the initializer need to be matched with a field and a constructor:
+When adding fields, the declarations of the constants start to look like object initializers but without the _new_ keyword. The parameters in the initializer need to be matched with a field and a constructor:
 
 ```
 enum Cars{
@@ -90,7 +90,7 @@ The example above shows how you can implement methods. An abstract method is dec
 
 The reason that line 3 doesn't compile is that the private access modifier is more restrictive than the implicit package-private modifier of the abstract class. This is forbidden in general in Java.
 
-That the abstract class has package-private as default is to be expected: in classes (and in enums) all fields and methods (except the constructors in enums) have package-private as default access modifier. This is unlike interfaces and annotations, whose methods and fiels are public by default.
+That the abstract class has package-private as default is to be expected: in classes (and in enums) all fields and methods (except the constructors in enums) have package-private as default access modifier. This is unlike interfaces and annotations, whose methods and fields are public by default.
 
 Question: what is the default access modifier for classes, enums, interfaces, and annotations? The answer is that they are all package-private. 
 
@@ -103,7 +103,7 @@ The sample below shows how to implement a default method. Warning: don't use the
 ```
 enum Cars{
     OPEL(),
-    FORD(){String getColor(){ return "yellow";}};
+    FORD(){String getColor(){ return "yellow";}}; // default method gets overridden here
 
     String getColor(){
         return "red";
@@ -164,7 +164,7 @@ Okay, the answer was already included. But there are a few important mechanisms:
 
 ### Few last things
 
-Enum has some instance methods (**_name()_**, **_ordinal()_**, **_toString()_**, **_compareTo()_**, **_equals()_** and **_hasCode()_**. Note that the last four stem from Object(), which illustrates once again that enums are classes. Btw **_name()_** and **_toString()_** give the same return value ("DIESEL"). **_Ordinal()_** returns the position of a value in the declaration.
+Enum has some instance methods (**_name()_**, **_ordinal()_**, **_toString()_**, **_compareTo()_**, **_equals()_** and **_hasCode()_**). Note that the last four stem from Object(), which illustrates once again that enums are classes. Btw **_name()_** and **_toString()_** give the same return value ("DIESEL"). **_Ordinal()_** returns the position of a value in the declaration.
 
 Static methods are **_values()_**, which returns an array with the enum values, and **_valueOf()_**. The latter can be used like this:
 
@@ -172,12 +172,26 @@ Static methods are **_values()_**, which returns an array with the enum values, 
 Fuel fuel = Fuel.valueOf("DIESEL");  // DIESEL
 ```
 
-This snippet gives compile error if the String argument (case sensitive) does not exist in the enum.
+This snippet gives runtime error if the String argument (case sensitive) does not exist in the enum. The error is IllegalArgumentException. It is not a compile error, as the compiler does not evaluate strings.
 
-Last thing: enum values are written snake case by convention but this is not required.
+Last thing: enum values are written snake case by convention but this is not mandatory.
 
-Last thing 2: in switch-case statements/expression you must use DIESEL, Fuel.DIESEL doesn't compile.
+Last thing 2: in switch-case statements/expressions you must use DIESEL, Fuel.DIESEL doesn't compile: 
 
+```
+Fuel fuel = Fuel.DIESEL;
+
+switch(fuel){
+    case DIESEL:
+        System.out.println("Yes");
+        break;
+    case PETROL:
+        System.out.println("Other");
+        break;
+}
+```
+
+PS Do not forget the break statement in switch statements/expressions.
 
 
 
