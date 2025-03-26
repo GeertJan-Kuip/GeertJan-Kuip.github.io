@@ -38,7 +38,7 @@ abstract class SuperClass extends SuperSuperClass{
     static int statInt = 5;
 
     public SuperClass(){} // again zero argument constructor for the same reason
-    public SuperClass(int a){ super(a);} // using super() imports parent's version
+    public SuperClass(int a){ super(a);} // using super() imports version of parent
     public SuperClass(int a, int b, int c){ super(a); this.b=b; this.c=c;} // using super() partially
 }
 
