@@ -44,6 +44,14 @@ public class Generic<T> {
 }
 ```
 
+By the way it also works like this in interfaces, and it is probably terrible practice:
+
+```
+interface myInterface<T>{  // this <T> has no role since it is shadowed by the <T> of the method.  
+    <T> T work();
+}
+```
+
 The end.
 
 
