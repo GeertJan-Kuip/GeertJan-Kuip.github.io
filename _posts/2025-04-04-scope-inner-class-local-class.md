@@ -66,11 +66,11 @@ public class Shadows extends ShadowParent{
             String instanceString = "Nested in an anonymous class";
         };
 
-        try{class Inner2{String instanceString = "Nested in an anonymous class";}}
+        try{class Inner2{String instanceString = "Nested in a try block";}}
         catch(Exception e){
             class CatchInnerClass{
                 Exception e = new RuntimeException();
-                String instanceString = "Nested in an anonymous class";
+                String instanceString = "Nested in a catch block";
             }
         }
 
