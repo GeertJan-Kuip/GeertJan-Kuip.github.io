@@ -11,6 +11,8 @@ If a subclass wants to define a new constructor with a signature that is differe
 - if a subclass wants to add its own constructor, it can only do if the parent class either has zero constructors, in which case the parent indeed has a (default) zero argument constructor, or if the parent has one constructor, in which case this must be a zero argument constructor, or if the parent has multiple constructors, one of them must be a zero argument constructor.
 - Thus: the introduction of a new constructor fails if the parent class lacks a zero argument constructor.
 
+**UPDATE 2025-04-04:** if a parent has no zero argument constructor, you can use super(<parameters>) in the subclass to make it work anyway. Things actually work differently from stated here in the blog post. I inferred the rules by experimenting, but the underlying princliple is that super() is automatically added to every constructor unless the constructor has this() or super() as first line.
+
 ### Using super()
 
 Constructors are not inherited but you can use the constructors of the parent class by invoking **_super()_** in the constructor body. That constructors are not inherited is logical in the light of naming: the constructor is named after the class so is not identical to the constructor of the parent class.
