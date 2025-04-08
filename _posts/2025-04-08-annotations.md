@@ -50,7 +50,7 @@ Field applies not only to instance and static variables but also to enum values.
 
 These are not on the exam.
 
-## About the other annotations
+### About the other annotations
 
 - For @Retention the default is RetentionPolicy.CLASS. Annotations not available at runtime by default.
 - @Deprecated has two optional elements, namely ```String since() default ""; ``` and ```boolean forRemoved() default false; ```.
