@@ -33,6 +33,7 @@ _Generally, declarations of annotations, classes, enums and interfaces are cover
 - The most complex of all ElementTypes.
 - Can be used anywhere there is a Java type.
 - Can be used on methods but only if they return a value. A void method requires METHOD.
+- When using it ahead of a literal or an expression, it must have the form of a cast: ```int remaining = (@Technical int) 10.0;``` or ```return (@Floats boolean) t.test(12);```
 
 #### PARAMETER
 
@@ -60,6 +61,19 @@ These are not on the exam.
 - @SafeVarargs can **only** be applied to methods that cannot be overridden (final, private or static).
 - @SafeVarargs suppresses warnings related to varags method parameters. 
 - @SafeVarargs gives compiler error when applied to method without varargs parameter or method that is overridable.
+
+### For personal use
+
+List of mistakes I made in review questions chapter 13:
+
+- It is @Documented, not @Document
+- ```int temperature;``` is not valid constant or element, must be ```int temperature()``` or ```int temperature=12```
+- To use annotation without name (shorthand) its only required element must be named value().
+- Check always if the name of an element is value(), relevant for shorthand notation.
+- @SafeVarargs can be applied to both methods and constructors
+- Providing documentation is (always) a reason to add annotations
+- When using TYPE_USE on literals or expressions, use it as a cast with a type between parentheses like ```(@Annotation Integer) 10%3```
+- Default of @Retention is RetentionPolicy.CLASS. This means annotations are no part of runtime.
 
 
 
