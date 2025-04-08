@@ -1,6 +1,6 @@
 ## Annotations
 
-Some facts about annotations
+Some facts about annotations. I left out some rules for applying annotations (allowed types, dealing with array types) and I din't explain @Repeateble. It is in a [previous post](https://geertjan-kuip.github.io/2025/03/08/dirrt-and-dofss-annotations.html).
 
 - An annotation can be declared in a class body. The declaration is implicitly static and can be called by @classname.annotationnam().
 - A marker annotation can contain constants but has no elements.
@@ -32,7 +32,7 @@ _Generally, declarations of annotations, classes, enums and interfaces are cover
 
 - The most complex of all ElementTypes.
 - Can be used anywhere there is a Java type.
-- Can be used on methods but only if they return a vlaue. A void method requires METHOD.
+- Can be used on methods but only if they return a value. A void method requires METHOD.
 
 #### PARAMETER
 
