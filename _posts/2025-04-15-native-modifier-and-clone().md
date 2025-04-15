@@ -5,7 +5,7 @@ While working on chapter 22 of the book about security and the use of copy const
 - Object has an abstract method named clone() that throws a CloneNotSupportedException.
 - When using clone on an instance object that does not implement interface Cloneable, the CloneNotSupportedException is thrown during runtime.
 - When you do implement interface Cloneable without implementing the method, you are able to create shallow copies without problems.
-- This is weird, because Object only has an abstract method clone() and Cloneable only has an empty-bodied method clone.
+- This is weird, because Object only has an abstract method clone() and Cloneable only has an empty-bodied method clone().
 
 All in all, no implementation of clone() is found in either Object or Cloneable and nevertheless the clone() method works without a custom implementation. 
 
