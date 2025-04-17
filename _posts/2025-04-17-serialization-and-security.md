@@ -93,9 +93,9 @@ private void readObject(ObjectInputStream s) throws Exception{
 }
 ```
 
-#### Bodies of writeObject() and readObject()
-
 Perplexity assured me that these methods are not overrides but that the serialization system is checking for these specific signatures at runtime. If they are not provided, the default fallback for Java is ObjectOutputStream.defaultWriteObject() and ObjectInputStream.defaultReadObject(). 
+
+#### Bodies of writeObject() and readObject()
 
 Perplexity pointed to a [website](https://howtodoinjava.com/java/serialization/custom-serialization-readobject-writeobject/) with an example. In this example, the bodies of writeObject and readObject had the following content:
 
@@ -161,7 +161,28 @@ Another btw: this example again used serialPersistentFields.
 
 #### Why writeObject and readObject
 
-It gives you more control about the form in which you export the instance variables. 
+It gives you more control about the form in which you export the instance variables. You can encrypt and decrypt etc.
+
+### About readResolve() and writeReplace()
+
+Under subheader Pre/Post-Serialization Processing the book covers readResolve() and writeReplace(). These methods can be added to a class, just like readObject() and writeObject().
+
+#### readResolve()
+
+The signature is:
+
+```
+[ANY method modifier allowed EXCLUDING static] Object readResolve() throws ObjectStreamException {}
+
+```
+
+I found [documentation](https://docs.oracle.com/en/java/javase/11/docs/specs/serialization/input.html#the-readresolve-method) that says:
+
+_"..the readResolve method allows a class to replace/resolve the object read from the stream before it is returned to the caller."_
+
+_"The readResolve method is called when ObjectInputSTream has read an object from the stream and is preparing to return it to the caller. ObjectInputStream checks whether the class of the Object defines the readResolve method. If the method is defined, the readResolve method is called to allow the object in the stream to designate the object to be returned. The object returned should be of a type that is compatible with all uses. If it is not compatible, a ClassCastException will be thrown when the type mismatch is discovered."_
+
+In the body 
 
 
 
