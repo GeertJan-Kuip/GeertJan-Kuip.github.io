@@ -1,6 +1,6 @@
 ## Serialization and security
 
-This is a topic I'm not very familiar with and serialization is not covered in-depth in the book, nor will it be on the upcoming exam. Nevertheless, serialization is explained in chapter 19 (I/O) and it is a subchapter in chapter 22 (Security). 
+This is a topic I'm not very familiar with but serialization is covered in the book, it will be on the upcoming exam as well. Serialization is explained in chapter 19 (I/O) and it is a subchapter in chapter 22 (Security). 
 
 ### Overview of serialization
 
@@ -183,6 +183,26 @@ _"..the readResolve method allows a class to replace/resolve the object read fro
 _"The readResolve method is called when ObjectInputStream has read an object from the stream and is preparing to return it to the caller. ObjectInputStream checks whether the class of the Object defines the readResolve method. If the method is defined, the readResolve method is called to allow the object in the stream to designate the object to be returned. The object returned should be of a type that is compatible with all uses. If it is not compatible, a ClassCastException will be thrown when the type mismatch is discovered."_
 
 The scenario I can think of is the following: you have an application running and on startup, a singleton is created that does important things for the program. It has instance variables which change during the running of the program. Now you want to load a file (via all the methods we're talking about here). That file also contains that singleton. But if you would load that singleton object, you end up with two instances of that singleton. In the body of readResolve you can write code which decides which instance of the two will prevail, and that one is returned. Or you can be more specific and create some mix between the two instances, and return some new hybrid. That will be the only instance available then and because it is the only one, it is a proper singleton.
+
+_Generally, readResolve ensures that imported objects that are in conflict with objects already present are not simply added to the program._
+
+#### writeReplace()
+
+_"The writeReplace() method is run before writeObject() and allows us to replace the object that gets serialized."_
+
+The declaration of writeReplace() is similar in that it returns Object and allows for freedom in choice of modifiers:
+
+```
+[ANY method modifier allowed EXCLUDING static] Object writeReplace() throws ObjectStreamException {}
+```
+
+Documentation is [here](https://docs.oracle.com/en/java/javase/11/docs/specs/serialization/output.html#the-writereplace-method).
+
+### Concluding
+
+The topic is interesting and it is new for me. When practicing I created my first saved file with objects. Saw a video of Java architect Brian Goetz explaining how unhappy they are with the way serialization is implemented in Java and their ideas about it, I'll keep following that.
+
+
 
 
 
