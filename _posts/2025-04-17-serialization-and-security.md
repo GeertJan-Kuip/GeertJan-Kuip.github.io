@@ -43,12 +43,129 @@ try(var out = new ObjectOutputStream(new BufferedOutputStream(new FileOutputStre
 private static final long serialVersionUID = 10L;
 ```
 
-### Reading an ObjectInputStream
+### Deserialization
 
+Code below is the reverse of code above. It deserializes a stream to get the objects back from the file:
 
+```
+List<Owner> owners = new ArrayList<>();
+
+try(var in = new ObjectInputStream(new BufferedInputStream(new FileInputStream(file)))){
+
+    while(true){
+        var obj = in.readObject();
+        if (obj instanceof Owner) {
+            owners.add((Owner) obj);
+        }
+    }
+}catch(EOFException e){
+    System.out.println("End of file.");
+}
+```
+
+Few things to note:
+- Objects need to be casted back to Owner. I know that type information is stored in the stream but I got a compile error when omitting the cast, and readObject() has Object as return type. See [documentation](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/ObjectInputStream.html#readObject()).
+- There is no way to know when the stream will end (like hasNext()) so you must create a catch with an EOFException.
+- Every serializable object that was referenced to in the Owner object and not marked transient is included as well. In this case, Owner has an instance field of type List<ClassicCar>, which was included, and that collection of classic cars is fully exported and imported.
+
+_Generally: all reading and writing requires handling IOExceptions. The .readObject() method throws a ClassNotFoundException as well._
+
+From the book: 'For the exam, you need to understand how a deserialized object is created. When you deserialize an object, _the constructor of the serialized class, along with any instance initializers, is not called when the object is created._ Java will call the no-arg constructor of the first nonserializable parent class it can find in the class hierarchy. In our Gorilla class, this would be the no-arg constructor of Object.' 'Values that are not provided will be given their default Java value, such as null for String, or 0 for int values.'
 
 
 ### Serialization and security
+
+The most straightforward way to serialize data without exposing secret information to the outer world is by using the transient modifier on fields you want to keep secret. You can as well use the serialPersistentFields variable to indicate which fields are to be serialized, as it forces you to explicitly whitelist the fields to be serialized (whitelisting is safer than blacklisting).
+
+But when you take more control you can do other things as well, for example encrypt certain instance fields before they enter the stream.
+
+#### Adding writeObject() and readObject()
+
+To do so you need to add _writeObject()_ and _readObject()_ methods to your class. Although their names suggest that they are overrides of the readObject and writeObject methods of ObjectInputStream and ObjectOutputStream, they aren't. Their declarations are the following:
+
+```
+private void writeObject(ObjectOutputStream s) throws Exception{
+//code
+}
+
+private void readObject(ObjectInputStream s) throws Exception{
+//code
+}
+```
+
+#### Bodies of writeObject() and readObject()
+
+Perplexity assured me that these methods are not overrides but that the serialization system is checking for these specific signatures at runtime. If they are not provided, the default fallback for Java is ObjectOutputStream.defaultWriteObject() and ObjectInputStream.defaultReadObject(). 
+
+Perplexity pointed to a [website](https://howtodoinjava.com/java/serialization/custom-serialization-readobject-writeobject/) with an example. In this example, the bodies of writeObject and readObject had the following content:
+
+```
+private void writeObject(ObjectOutputStream aOutputStream) throws IOException
+{
+    aOutputStream.writeUTF(firstName);  // writeUTF is a method from ObjectOutputStream
+    aOutputStream.writeUTF(lastName);
+    aOutputStream.writeInt(accountNumber);
+    aOutputStream.writeLong(dateOpened.getTime());
+}
+
+private void readObject(ObjectInputStream aInputStream) throws ClassNotFoundException, IOException
+{
+    firstName = aInputStream.readUTF(); // readUTF is a method from ObjectInputStream
+    lastName = aInputStream.readUTF();
+    accountNumber = aInputStream.readInt();
+    dateOpened = new Date(aInputStream.readLong());
+}
+```
+
+The author stressed that the order in which the instance fields are written must be the same order in which they are read.
+
+#### Better bodies: PutField and GetField
+
+The book has a slightly different approach, using nested static classes of the ObjectOutputStream and ObjectInputStream classes, named PutField and GetField. Instances of them are created with respectively the putFields() and readFields() methods. I tend to think that the PutField instance works like a buffer or a to-do list in which you collect those things you want to add to the stream, and once you have filled it you call the writeFields() method. 
+
+The GetField instance does something similar but reversed, it extracts all the instance fields from the stream and keeps them so you can process them. Creating the GetField instance by calling readFields on the ObjectInputStream immediately fills the GetField instance with all the relevant material. 
+
+This is sample code from the book (chapter 22):
+
+```
+// getters, setters, constructors
+
+private static final ObjectStreamField[] serialPersistentFields = 
+    {new ObjectStreamField("name", String.class),
+    new ObjectStreamField("ssn", String.class)};
+
+private static String encrypt(String input){}
+
+private static String decrypt(String input){}
+
+private void writeObject(ObjectOutputStream s) throws Exception {
+    ObjectOutputStream.PutField fields = s.putFields();
+    fields.put("name", name);  // "name" is the instance variable name, name is the value that is written to the stream
+    fields.put("ssn", encrypt(ssn)); // customization: variable ssn is written to the 
+                                     // stream in encrypted form (encrypt is a custom function in the class).
+    s.writeFields();
+}
+
+private void readObject(ObjectInputSTream s) throws Exception {
+    ObjectInputStream.GetField fields = s.readFields();
+    this.name = (String) fields.get("name", null);  // null is a value used when the stream does not have a value for it
+    this.ssn = decrypt((String) fields.get("ssn", null));
+}
+```
+
+I wondered about 'null' in ```this.name = (String) fields.get("name", null);``` but this is the value used if no other value available. See [Oracle documentation](https://docs.oracle.com/en/java/javase/11/docs/api/java.base/java/io/ObjectInputStream.GetField.html#get(java.lang.String,java.lang.Object)).
+
+Btw encrypting and decrypting must not be done with passwords, store them only in encrypted form with salt and never decrypt them. 
+
+Another btw: this example again used serialPersistentFields.
+
+#### Why writeObject and readObject
+
+It gives you more control about the form in which you export the instance variables. 
+
+
+
+
 
 
 
