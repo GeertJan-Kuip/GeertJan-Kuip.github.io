@@ -180,9 +180,9 @@ I found [documentation](https://docs.oracle.com/en/java/javase/11/docs/specs/ser
 
 _"..the readResolve method allows a class to replace/resolve the object read from the stream before it is returned to the caller."_
 
-_"The readResolve method is called when ObjectInputSTream has read an object from the stream and is preparing to return it to the caller. ObjectInputStream checks whether the class of the Object defines the readResolve method. If the method is defined, the readResolve method is called to allow the object in the stream to designate the object to be returned. The object returned should be of a type that is compatible with all uses. If it is not compatible, a ClassCastException will be thrown when the type mismatch is discovered."_
+_"The readResolve method is called when ObjectInputStream has read an object from the stream and is preparing to return it to the caller. ObjectInputStream checks whether the class of the Object defines the readResolve method. If the method is defined, the readResolve method is called to allow the object in the stream to designate the object to be returned. The object returned should be of a type that is compatible with all uses. If it is not compatible, a ClassCastException will be thrown when the type mismatch is discovered."_
 
-In the body 
+The scenario I can think of is the following: you have an application running and on startup, a singleton is created that does important things for the program. It has instance variables which change during the running of the program. Now you want to load a file (via all the methods we're talking about here). That file also contains that singleton. But if you would load that singleton object, you end up with two instances of that singleton. In the body of readResolve you can write code which decides which instance of the two will prevail, and that one is returned. Or you can be more specific and create some mix between the two instances, and return some new hybrid. That will be the only instance available then and because it is the only one, it is a proper singleton.
 
 
 
