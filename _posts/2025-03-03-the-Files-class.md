@@ -11,14 +11,14 @@ Last thing: the Files class relies strongly on the Path class in the sense that 
 Addition 2025-04-18: Here a listing, more details on each method further on:
 
 General
-- Path _**createDirectory**(Path dir, FileAttribute<?>... attrs)_ throws IOException
-- Path _**createDirectories**(Path dir, FileAttribute<?>... attrs)_ throws IOException
-- Path _**copy**(Path source, Path target, CopyOption... options)_ throws IOException
-- Path _**move**(Path source, Path target, CopyOption... options)_
-- void _**delete**(Path p) and boolean deleteIfExists(Path p)_
-- BufferedReader _**newBufferedReader**(Path p)_ 
-- BufferedWriter _**newBufferedWriter**(Path p)_
-- List<String> _**readAllLines**(Path p)_
+- Path **createDirectory**(Path dir, FileAttribute<?>... attrs) throws IOException
+- Path **createDirectories**(Path dir, FileAttribute<?>... attrs) throws IOException
+- Path **copy**(Path source, Path target, CopyOption... options) throws IOException
+- Path **move**(Path source, Path target, CopyOption... options)
+- void **delete**(Path p) and boolean deleteIfExists(Path p)
+- BufferedReader **newBufferedReader**(Path p) 
+- BufferedWriter **newBufferedWriter**(Path p)
+- List<String> **readAllLines**(Path p)
 
 Returns boolean
 - boolean exists(Path p, LinkOption... options)
