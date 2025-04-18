@@ -8,6 +8,41 @@ Last thing: the Files class relies strongly on the Path class in the sense that 
 
 ### Methods of the Files class
 
+Addition 2025-04-18: Here a listing, more details on each method further on:
+
+General
+- Path createDirectory(Path dir, FileAttribute<?>... attrs) throws IOException
+- Path createDirectories(Path dir, FileAttribute<?>... attrs) throws IOException
+- Path copy(Path source, Path target, CopyOption... options) throws IOException
+- Path move(Path source, Path target, CopyOption... options)
+- void delete(Path p) and boolean deleteIfExists(Path p)
+- BufferedReader newBufferedReader(Path p) 
+- BufferedWriter newBufferedWriter(Path p)
+- List<String> readAllLines(Path p)
+
+Returns boolean
+- boolean exists(Path p, LinkOption... options)
+- boolean isSameFile(Path p1, Path p2)
+- boolean isDirectory(Path path, LinkOption... options)
+- boolean isSymbolicLink(Path path)
+- boolean isRegularFile(Path path, LinkOption... options)
+- boolean isHidden(Path path)
+- boolean isReadable(Path path)
+- boolean isWritable(Path path)
+- boolean isExecutable(Path path)
+
+File attrubutes and properties
+- long size(Path path)
+- FileTime getLastModifiedTime(Path p, LinkOption... options)
+- \<A extends BasicFileAttributes\> A readAttributes(Path p)
+- \<V extends FileAttributeView\> V getFileAttributeView(Path p, Class\<V\> type, LinkOption... options)
+
+Returns Stream
+- Stream\<Path\> list(Path dir)
+- Stream\<Path\> walk(Path p, int maxDepth, FileVisitOption... options)
+- Stream\<Path\> find(Path p, int maxDepth, BiPredicate\<Path, BasicFileAttributes\> matcher, FileVisitOption... options)
+- Stream\<String\> lines(Path path)
+
 #### boolean exists(Path p, LinkOption... options)
 
 Returns true or false. Symbolic links are followed unless you provide NOFOLLOW_LINKS. There is also a method called notExists(..) which does the opposite.
