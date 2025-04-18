@@ -110,6 +110,26 @@ I was wondering why so much complexity was involved, knowing that the Files clas
 - Files.setAttribute is more error prone as it uses string-based names for attributes, won't be checked at compile time.
 - While BasicAttributeView only lets you modify FileTime values of created, modified and last access, DosFileAttributeView does some more, also things that cannot be done easily in any other way (I have to check this).
 
+Update: you can shorten things a bit codewise. To change an attribute you can do this:
+
+```
+Path path = Path.of("C:/temp2/old.txt");
+
+Files.getFileAttributeView(path, DosFileAttributeView.class).setReadOnly(false);
+```
+
+To change an attribute of all files in a certain folder, this works. The try-catch makes it less concise but otherwise it didn't compile. You can increase the second argument to go deeper into the directory tree:
+
+```
+Files.find(somePath, 1, (p, a)->a.isRegularFile()).forEach(x->{
+    try {
+        Files.getFileAttributeView(x, DosFileAttributeView.class).setReadOnly(false);
+    } catch (IOException e) {
+        throw new RuntimeException(e);
+    }
+});
+```
+
 Anyhow, I know a bit more about _Files.readAttributes_, that returns the \<A extends BasicFileAttributes\> object, and _Files.getFileAttributeView_, that returns the \<A extends FileAttributeView\> object. The latter is a bit contrived but I suppose there are situations in which you have to deal with large batches where outcome and processing speed is more important than minimal coding effort.
 
 
