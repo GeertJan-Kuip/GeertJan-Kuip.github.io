@@ -4,7 +4,7 @@ In an earlier post I covered the Files class with its methods but upon revisitin
 
 ### The BasicFileAttributes interface
 
-This is an interface in the java.nio.file.attribute package. It's documentation says: _Basic file attributes are attributes that are common to many file systems and consist of mandatory and optional file attributes as defined by this interface._ This interface is extend by interfaces DosFileAttributes and PosixFileAttributes. DosFileAttributes is implemented by class WindowFileAttributes, PosixFileAttributes by classes related to Unix-based systems. 
+This is an interface in the java.nio.file.attribute package. It's documentation says: _Basic file attributes are attributes that are common to many file systems and consist of mandatory and optional file attributes as defined by this interface._ This interface is extended by interfaces DosFileAttributes and PosixFileAttributes. DosFileAttributes is implemented by class WindowFileAttributes, PosixFileAttributes by classes related to Unix-based systems. 
 
 BasicFileAttributes defines nine abstract methods, namely:
 - FileTime **creationTime**()
