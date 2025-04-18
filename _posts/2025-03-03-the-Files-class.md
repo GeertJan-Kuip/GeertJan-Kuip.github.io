@@ -15,7 +15,8 @@ General
 - Path **createDirectories**(Path dir, FileAttribute<?>... attrs) throws IOException
 - Path **copy**(Path source, Path target, CopyOption... options) throws IOException
 - Path **move**(Path source, Path target, CopyOption... options)
-- void **delete**(Path p) and boolean deleteIfExists(Path p)
+- void **delete**(Path p) 
+- boolean **deleteIfExists**(Path p)
 - BufferedReader **newBufferedReader**(Path p) 
 - BufferedWriter **newBufferedWriter**(Path p)
 - List<String> **readAllLines**(Path p)
