@@ -23,11 +23,11 @@ General
 
 Returns boolean
 - boolean exists(Path p, LinkOption... options)
-- boolean isSameFile(Path p1, Path p2)
+- boolean isSameFile(Path p1, Path p2) throws IOException
 - boolean isDirectory(Path path, LinkOption... options)
 - boolean isSymbolicLink(Path path)
 - boolean isRegularFile(Path path, LinkOption... options)
-- boolean isHidden(Path path)
+- boolean isHidden(Path path) throws IOException
 - boolean isReadable(Path path)
 - boolean isWritable(Path path)
 - boolean isExecutable(Path path)
