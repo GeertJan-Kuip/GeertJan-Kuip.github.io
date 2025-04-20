@@ -8,7 +8,7 @@ For the Udemy test I scored 66% some days ago, for the first Enthuware test done
 
 This is some things I learned from my wrong answers:
 
-- The condition expression in an if statement can be a method call as long as the method returns a boolean. Of course it can, sill me. ```if(str.length()<5) {}```
+- The condition expression in an if statement can be a method call as long as the method returns a boolean. Of course it can, sill me. ```if(opt.isPresent()) {}```
 - The statement ```if (false) ; else ; ;``` is legal. Both the if and the else clause can have empty statements. A semicolon signifies an empty statement.
 - @SuppresWarnings and @Override are defined with @Retention(SOURCE).
 - @SafeVarargs, @FunctionalInterface and @Deprecated are defined with @Retention(RUNTIME) 
@@ -30,7 +30,7 @@ byte b2 =  t;  // compile error, cast required. Apparently only int works
 - Optional labels can be applied almost anywhere, there seems to be no clear restriction.
 - The charAt() method can take a char value as an argument. It will be implicitly promoted to int.
 - A module that uses a service must require the module that defines the service interface. It also must have a uses clause, like 'uses org.printservice.api.Print;
-- ```while ( ) break ;``` is invalid as a condition expression in a while header is required.
+- ```while ( ) break ;``` is invalid as a condition expression because in a while header a condition is required.
 - In a 'normal' if or else block you cannot use 'break' or 'continue', unless you place a loop within that block. One exception:
 
 ```
