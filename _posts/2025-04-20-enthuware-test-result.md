@@ -10,22 +10,22 @@ This is the review of my wrong answers on the first Enthuware test. I marked the
 
 **Question 5** - _Which of the following are valid command line options and their one character shortcuts related to the Java module system? Select 2._
 
-- [ ] - [ ]\--module -p
-- [x] - [x]\--module-path -p
-- [ ] - [ ]\--module-source-path -s
-- [ ] - [ ]---module-source-path -m
-- [ ] - [x]\--list-modules -l
-- [ ] - [ ]\--show-module-resolution -s
-- [x] - [ ]\--module -m
+- [ ] - [ ] \--module -p
+- [x] - [x] \--module-path -p
+- [ ] - [ ] \--module-source-path -s
+- [ ] - [ ] \---module-source-path -m
+- [ ] - [x] \--list-modules -l
+- [ ] - [ ] \--show-module-resolution -s
+- [x] - [ ] \--module -m
 
 I simply had little clue, just started the Modules chapter.
 
 **Question 8** -_Which of the following annotations are retained for run time? Select 3._
 
-- [ ] - [x]@SuppressWarnings
-- [ ] - [ ]@Override
-- [x] - [x]@SafeVarargs
-- [x] - [ ]@FunctionalInterface
-- [x] - [x]@Deprecated
+- [ ] - [x] @SuppressWarnings
+- [ ] - [ ] @Override
+- [x] - [x] @SafeVarargs
+- [x] - [ ] @FunctionalInterface
+- [x] - [x] @Deprecated
 
 @SuppressWarnings and @Override are defined with @Retention(SOURCE), the others with @Retention(RUNTIME). I thought @SuppressWarnings would be a better candidate, at least it would have the same retention policy as @SafeVarargs given their similar role of suppressors. There seems to be some randomness in it, why would @FunctionalInterface need to be available at runtime?
