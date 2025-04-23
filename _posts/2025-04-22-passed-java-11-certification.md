@@ -20,7 +20,35 @@ In the week before the exam I also bought the [Enthuware](https://enthuware.com/
 
 The last thing I had were online tests from [Udemy](https://www.udemy.com/course/java-se-11-developer-1z0-819-ocp-course-part-1/?couponCode=ST8MT220425G1). I did one or two tests of them, a bit similar to Enthuware, with slightly easier questions. In the week up to the exam I had scores of around 55% on the mock exams of Enthuware and those of Jeanne and Scott, and a 66% on a Udemy exam. Nevertheless, for a price of 10 or 15 euros it is great value. You might also argue that the mock exams were I got 55% were slightly too difficult (although I don't think so).
 
-more to come..
+### Source code and the JLS
+
+The best investment I did, apart from thoroughly reading the Complete Study Guide and creating all sorts of coding examples from it, was reading the Java code in the standard library and reading parts of the [Java Language Specification](https://docs.oracle.com/javase/specs/jls/se11/html/index.html). 
+
+#### Standard library
+
+It is hard to obtain a good mental representation of quasi-abstract things like 'the Object class,' the 'Collection interface' or 'Throwable'. What helps is to study the .java files from the JDK. The moment you have seen with your own eyes that all the basic content of Exception classes can be found in Throwable gives you immediately more feeling for the inheritance structure of exceptions. Viewing class 'Object' for yourself will keep you reminded all the time that a specific set of methods is implicitly to be found in every class. It also makes you understand what the logic is of 'synchronized(someObject)'. Learning functional interfaces becomes much easier when you have seen how incredibly simple the implementation is, and the mysterious 'System.out.println' becomes sort of obvious once you know where to find the class System and once you realize that 'out' is a static field of type PrintStream, and that print, printf and println are instance methods from the PrintStream class. 
+
+All in all, studying implementations as found in the standard library helps to both understand and remember things better. On top of that, there is a personal touch to it as you can directly see who is the [author of the code](https://geertjan-kuip.github.io/2025/01/04/arthur-van-hoff.html) , which makes remembering even easier.
+
+#### Java Language Specification
+
+I probably should have spent even more time reading the JLS. It is tremendously helpful in learning to think as a compiler. A topic where carefull study of the JLS helped me was [scope](https://geertjan-kuip.github.io/2025/04/03/scope.html), to be found in [paragraph 6.3](https://docs.oracle.com/javase/specs/jls/se11/html/jls-6.html#jls-6.3). The alternative for reading the JLS is reading books, which are by definition less precise or less complete, or trying to figure out the rules of the compiler just by experiment. While this is a good excercise, it is probably impossible to infer the working of the compiler just by doing code experiments. The JLS is simply a gem.
+
+### What's next
+
+I want a Java job and I have some first urgent new learning objectives. About the latter, there's the observation that preparing for the exam learned me a lot of things theoretically which I have actually not tried out, or just very limited, in practice. To name a few:
+
+- compiling source files, manually creating appropriate directory trees.
+- create working JARs of packages and modules from command line.
+- create a working application with modules, also using services.
+- using annotations in a meaningful way.
+
+These things all play out on a level above that of class files or even packages. What I notice is that it it easy and convenient to fiddle around with simple classes and methods in the safe environment of Intellij (or even some simple sandbox as the [Java playground](https://dev.java/playground/) but that this safe environment is not very conducive to learning to manage large applications. So that's the next objective.
+
+About the Java job: I hope I can get in touch with team leads or other managers etc in the Java world to learn more about what it is that I can do as a starting Java developer. At least I have a badge to show now.
+
+
+
 
 
 
