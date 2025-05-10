@@ -50,7 +50,8 @@ I bought ['Spring Start Here' from Laurentiu Spilca](https://www.amazon.com/gp/p
 - @RequestMapping is the general annotation for methods in the controller class that return webviews. There is also @GetMapping, @PostMapping, @DeleteMapping and @UpdateMapping. 
 - Curly braces are used inside the mapping path to capture dynamic values from the url. You can do a lot with regex, pattern matching, wildcards etcetera.
 
-### AOP
+
+### Aspect Oriented Programming
 
 - AOP stands for Aspect Oriented Programming. It lets you define code snippets and apply them to multiple methods. If, for example, you want a log that logs the convocation of certain methods, you can write the log method as an aspect and add it to the methods you want to log.
 - To create an ‘aspect’, create a class and annotate it with @Aspect and @Component. It is important to note that @Aspect is not a stereotype annotation so you need to either give it @Component or construct it with @Bean in the configuration class.
