@@ -2,6 +2,8 @@
 
 I bought ['Spring Start Here' from Laurentiu Spilca](https://www.amazon.com/gp/product/B09HJLK2BN/), I found the [Spring reference](https://docs.spring.io/spring-framework/reference/) and I used ChatGPT to get up and running with Spring. Below is just a grocery list of things I learned up till now. There might be mistakes in it but I tried to be precise:
 
+### Spring context and beans
+
 - IoC, ApplicationContext is name of the interface of the container.
 - Generally, the term ‘Spring context’ is being used.
 - ApplicationContext is a subinterface of BeanFactory.
@@ -21,6 +23,9 @@ I bought ['Spring Start Here' from Laurentiu Spilca](https://www.amazon.com/gp/p
 - A bean created by a constructor in the configuration class is named after the method name of the constructor method that creates it. So two instances of the same Singleton bean cannot have the same name.
 - Singleton beans are stored in a special object, DefaultSingletonBeanRegistry. This class has a field of type Map for it. If you create a singleton scoped bean that already exists, Spring will return the existing one.
 
+
+### Proxy class
+
 - Important term: proxy class. When Java creates a bean instance it constructs not the original Java defined object but a sort of enhanced object. This alteration/enhanced version of the class is the result of annotations like @Transactional, @Async, @Cacheable, @Secured and @Aspect. 
 - This proxy object has its own .class definition that is stored in-memory.
 - If the class to be proxied implements an interface, Spring uses JDK Dynamic Proxies. A proxy is generated based on the implemented interface.
@@ -33,6 +38,8 @@ I bought ['Spring Start Here' from Laurentiu Spilca](https://www.amazon.com/gp/p
 - ByteBuddy is a more up-to-date variant of CGLIB and will replace it.
 
 
+### Webserver
+
 - To start the TomCat webserver, you need to call SpringApplication.run(). Instead of TomCat you can set other webservers, Jetty and Undertow.
 - TomCat is the default if you do not choose. If you want another one, you need to add the dependency for it in the pom.xml file and you need to exclude TomCat in the pom with the <exclusion> tags
 - TomCat is written in pure Java and runs in the JVM. In Spring, TomCat is added as a library and just part of Spring running. So Spring and webserver are one application.
@@ -42,6 +49,8 @@ I bought ['Spring Start Here' from Laurentiu Spilca](https://www.amazon.com/gp/p
 - If you want dynamic pages, you can include Thymeleaf in the pom.xml. Thymeleaf is a simple template engine. It can do conditionals, for-each etc. The th: tag is typical for Thymeleaf templates.
 - @RequestMapping is the general annotation for methods in the controller class that return webviews. There is also @GetMapping, @PostMapping, @DeleteMapping and @UpdateMapping. 
 - Curly braces are used inside the mapping path to capture dynamic values from the url. You can do a lot with regex, pattern matching, wildcards etcetera.
+
+### AOP
 
 - AOP stands for Aspect Oriented Programming. It lets you define code snippets and apply them to multiple methods. If, for example, you want a log that logs the convocation of certain methods, you can write the log method as an aspect and add it to the methods you want to log.
 - To create an ‘aspect’, create a class and annotate it with @Aspect and @Component. It is important to note that @Aspect is not a stereotype annotation so you need to either give it @Component or construct it with @Bean in the configuration class.
@@ -59,6 +68,7 @@ I bought ['Spring Start Here' from Laurentiu Spilca](https://www.amazon.com/gp/p
 - Better practice is to use @Autowired on the constructor (the ‘real’ constructor in the component class). You add the annotation on a constructor that has the dependency as parameter/argument and voila. The field containing the dependency can now be made final (remember that an instance field can only be made final if it is initialized immediately, in an instance initializer block or in the constructor). 
 - (3) Old school via xml file: within <bean></bean>, add <property name=”..” ref=”..”/>. This is called ‘wiring’, as opposed to ‘auto-wiring’.
 
+### Database, repository
 
 - Database use is simplified by Spring. You don’t have to create Connection, PreparedStatement, ResultSet etc.
 - If you include spring-boot-starter-data-jpa to dependencies then you can create/define your own versions of interface JpaRepository (interface MyRepository extends JpaRepository). 
