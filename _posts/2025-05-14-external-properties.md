@@ -92,7 +92,11 @@ public void setApiUrl(String apiUrl) {
 
 #### @ConfigurationProperties
 
-Using @Value makes things a bit messy. A more concise and structured way to get more than one external value inject is to use @ConfigurationProperties. There is some boilerplate involved as this requires getters and setters (or not if the instance fields are made public). The example below is the most basic variant but you can use constructor injection as well with @ConfigurationProperties, that requires a constructor that sets all instance fields. You can use Lombok as well, I don't know what it is exactly but a quick lookup tells me that it allows you to omit setters and getters (Lombok will add them to the class file 'lazily'.
+Using @Value makes things a bit messy. A more concise and structured way to get more than one external value inject is to use @ConfigurationProperties. There is some boilerplate involved as this requires getters and setters (or not if the instance fields are made public). The example below is the most basic variant.
+
+You can use constructor injection as well with @ConfigurationProperties, that requires a constructor that sets all instance fields. There are some rules around this, [see the documentation](https://docs.spring.io/spring-boot/reference/features/external-config.html#features.external-config.typesafe-configuration-properties.constructor-binding).
+
+You can use Lombok as well, I don't know what it is exactly but a quick lookup tells me that it allows you to omit setters and getters (Lombok will add them to the class file 'lazily'.
 
 Anyhow, a basic example:
 
@@ -169,12 +173,61 @@ environment.getProperty("my.shoecolor")
 
 You can create multiple variants of the application.properties or application.yml file to allow for different configurations in different contexts (develop, test, production etc). Spring Boot will attempt to load profile-specific files using the naming convention application-{profile}. Those have precedence over the non-specific file, which means you can use the non-specific file as a base layer and use the specific files only to override the values that need to be different.
 
+You can set the profile in multiple ways, always with the ```spring.profiles.active``` variable:
 
+In the configuration file itself (not recommended):
 
+```
+spring.profiles.active=prod
+```
 
+As a command line argument (very common):
 
+```
+java -jar myapp.jar --spring.profiles.active=prod
+```
 
-### Some interesting things
+As an environment variable (UNIX style):
+
+```
+export SPRING_PROFILES_ACTIVE=prod
+```
+
+In all these cases, Spring will load both ```application.properties``` and ```application-prod.properties```. If you don't do anything, then only ```application.properties``` will be loaded.
+
+Based on the active profile, you can define beans that are only created if a certain profile is active:
+
+```
+@Bean
+@Profile("prod")
+public MyService devService() {
+    return new MyService("Development config");
+}
+```
+
+Or you can use ```Environment``` to do some inquiring about the profile. This example shows that multiple profiles can be active at the same time, they are not mutually exclusive. 
+
+```
+@Component
+public class ProfileChecker {
+
+    @Autowired
+    private Environment environment;
+
+    public void printActiveProfiles() {
+        for (String profile : environment.getActiveProfiles()) {
+            System.out.println("Active profile: " + profile);
+        }
+
+        String timeout = environment.getProperty("feature.timeout");
+        System.out.println("Feature timeout: " + timeout);
+    }
+}
+```
+
+Btw, the name of the default profile is 'default'. ```@Profile("default")```. 
+
+### Miscellaneous
 
 #### spring.application.json
 
@@ -184,7 +237,7 @@ This ```spring.application.json``` can be set as a system environment variable u
 
 #### Using placeholders in configuration files
 
-You can use ```${}```` type placeholders in configuration files like application.properties to insert environment or system variables. This can be a strategy if you prefer to set database credentials as environment variables or system variables instead of text in a configuration file (although I read someone who argued that you should never use environment variables for this).
+You can use ```${}``` type placeholders in configuration files like application.properties to insert environment or system variables. This can be a strategy if you prefer to set database credentials as environment variables or system variables instead of text in a configuration file (although I read someone who argued that you should never use environment variables for this).
 
 #### Configuring Random Values
 
@@ -202,6 +255,9 @@ my.uuid=${random.uuid}
 Spring Boot supports setting a prefix for environment properties. This is useful if the system environment is shared by multiple Spring Boot applications with different configuration requirements. The prefix for system environment properties can be set directly on ```SpringApplication```.
 
 For example, if you set the prefix to ```input```, a property such as ```remote.timeout``` will also be resolved as ```input.remote.timeout``` in the system environment.
+
+
+
 
 
 
