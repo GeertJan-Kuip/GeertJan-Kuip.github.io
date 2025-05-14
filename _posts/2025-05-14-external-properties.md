@@ -13,7 +13,7 @@ It solves ambiguity by maintaining a precedence order. The order is described [h
 1. Configuration data files
 2. Environment variables from the operating system
 3. JVM System properties
-4. Command line arguments 
+4. Command line arguments (preceeded with -- , like in  ```java -jar app.jar --name="Spring"```
 
 This means you can override variables in your application.properties (or application.yml) file via the command line or via environment variables of the OS. Configuration data files (.properties, .yml, .yaml) have the following precedence order (low to high):
 
@@ -164,3 +164,48 @@ private Environment environment;
 
 environment.getProperty("my.shoecolor")
 ```
+
+### Using profile-specific files
+
+You can create multiple variants of the application.properties or application.yml file to allow for different configurations in different contexts (develop, test, production etc). Spring Boot will attempt to load profile-specific files using the naming convention application-{profile}. Those have precedence over the non-specific file, which means you can use the non-specific file as a base layer and use the specific files only to override the values that need to be different.
+
+
+
+
+
+
+### Some interesting things
+
+#### spring.application.json
+
+```spring.application.json``` is a special property that allows you to provide configuration in JSON format instead of key-value properties — especially useful for setting multiple properties in environments where JSON is more practical (like in environment variables or command-line args). The JSON inside it is flattened into key-value properties and treated as if they were defined normally in ```application.properties```.
+
+This ```spring.application.json``` can be set as a system environment variable under the name ```SPRING_APPLICATION_JSON```. Spring will change it to the lower case with dots variant automatically. It has higher precedence than values from configuration files, regular system environment variables and JVM system properties.
+
+#### Using placeholders in configuration files
+
+You can use ```${}```` type placeholders in configuration files like application.properties to insert environment or system variables. This can be a strategy if you prefer to set database credentials as environment variables or system variables instead of text in a configuration file (although I read someone who argued that you should never use environment variables for this).
+
+#### Configuring Random Values
+
+You can use the RandomValuePropertySource is useful for injecting random values in configuration files. Example:
+
+```
+my.secret=${random.value}
+my.number=${random.int}
+my.bignumber=${random.long}
+my.uuid=${random.uuid}
+```
+
+#### Configuring System Environment Properties
+
+Spring Boot supports setting a prefix for environment properties. This is useful if the system environment is shared by multiple Spring Boot applications with different configuration requirements. The prefix for system environment properties can be set directly on ```SpringApplication```.
+
+For example, if you set the prefix to ```input```, a property such as ```remote.timeout``` will also be resolved as ```input.remote.timeout``` in the system environment.
+
+
+
+
+
+
+
