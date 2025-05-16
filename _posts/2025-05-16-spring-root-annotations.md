@@ -8,7 +8,7 @@ My thought was that it might be better not to learn every annotation as a separa
 
 I asked ChatGPT to provide a list of all Spring annotations that do not have a Spring meta annotation, ie they do not inherit behavior from another Spring annotation. With this list, is the idea, you can compose all other annotations (whereby it is possible that these other annotations show behavior that cannot be explained purely by their meta annotations, although I would hope the makers of Spring are somehow rigorous in this).
 
-Anyhow, the list:
+Anyhow, the list is below. Spoiler: it isn't a perfect list actually, @Component is a meta-annotation of @Service, @Controller, @Configuration and @Repository. 
 
 #### Core Stereotype Annotations
 
@@ -32,7 +32,7 @@ Anyhow, the list:
 
 #### Web
 
-- *@RequestMapping	Maps HTTP requests to handler methods
+- *@RequestMapping* - Maps HTTP requests to handler methods
 - *@RequestBody* - Binds HTTP body to method parameter
 - *@ResponseBody* - Binds method return value to HTTP response body
 - *@PathVariable* - Binds URL path segments to parameters
@@ -41,9 +41,9 @@ Anyhow, the list:
 - *@ExceptionHandler* - Handles exceptions thrown by controller methods
 - *@CrossOrigin* - Enables CORS support on controllers
 
+#### Aspect-Oriented Programming (AOP)- 
 
-#### Aspect-Oriented Programming (AOP)- *@Aspect* - Defines an aspect class
-
+- *@Aspect* - Defines an aspect class
 - *@Before, @After, @Around, @AfterReturning, @AfterThrowing* - Advice annotations
 
 #### Transaction Management 
@@ -77,3 +77,10 @@ Anyhow, the list:
 - *@Scope* - Defines bean scope
 - *@Lazy* - Lazy initialization
 - *@PostConstruct and @PreDestroy* -  (Java standard, not Spring)
+
+### Incomplete
+
+This list is incomplete, it is missing data/JPA related annotations. Probably I won't use this list in the future, it is still too exhaustive. But I might become more aware of inheritance/composition structures when applying annotations and that is a win.
+
+
+
