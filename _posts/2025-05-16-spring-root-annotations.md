@@ -30,6 +30,18 @@ Anyhow, the list:
 - *@Value* - Injects values from properties
 - *@Primary* - Indicates a preferred bean when multiple candidates exist
 
+#### Web
+
+- *@RequestMapping	Maps HTTP requests to handler methods
+- *@RequestBody* - Binds HTTP body to method parameter
+- *@ResponseBody* - Binds method return value to HTTP response body
+- *@PathVariable* - Binds URL path segments to parameters
+- *@RequestParam* - Binds query parameters to method parameters
+- *@ModelAttribute* - Binds form data to model objects
+- *@ExceptionHandler* - Handles exceptions thrown by controller methods
+- *@CrossOrigin* - Enables CORS support on controllers
+
+
 #### Aspect-Oriented Programming (AOP)- *@Aspect* - Defines an aspect class
 
 - *@Before, @After, @Around, @AfterReturning, @AfterThrowing* - Advice annotations
@@ -41,6 +53,24 @@ Anyhow, the list:
 #### Scheduling
 
 - *@Scheduled* - Marks scheduled methods
+
+#### Testing
+
+- *@TestExecutionListeners* - Registers custom listeners that hook into the test lifecycle
+- *@TestPropertySource* - Provides property overrides for integration tests
+- *@ContextConfiguration* - Loads a Spring application context for testing
+- *@DirtiesContext* - Marks the context as "dirty" after the test — it will be reloaded
+- *@IfProfileValue* - Conditionally run tests based on active profiles
+- *@Repeat* - Runs the same test multiple times
+
+#### Web Testing
+
+- *@WebAppConfiguration* - Declares that a WebApplicationContext should be loaded for the test
+
+#### Transactional Tests
+
+- *@Rollback* - Indicates whether the test transaction should be rolled back after the test
+- *@Transactional* -  is shared between core and test modules and isn't strictly test-specific.
 
 #### Others
 
