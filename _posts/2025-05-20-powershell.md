@@ -188,6 +188,26 @@ gc example.txt | Select-Object -First 10
 gc example.txt | Select-Object -Last 10
 ```
 
+## Filtering and searching file content
 
+#### Select-String
+
+An easy way to get only the lines that contain some specific word is this. You start with the string you search for and you end with -Path + file:
+
+```
+Select-String "error" -Path "log.txt"
+```
+
+#### Where-Object
+
+A more sophisticated method is this, _using Where-Object_. You can add an extra element to limit the output:
+
+```
+Get-Content "example.txt" | Where-Object { $_ -like "*error*" }
+
+Get-Content "example.txt" | Where-Object { $_ -like "*error*" } | Select-Object -First 10
+```
+
+Here some superpower of PowerShell appears. The Get-Content creates a sort of iteration over all lines in the file, and on each line the second statement ```Where-Object { $_ -like "*error*" }``` is applied. $_ represents an element in the iteration (a line). ```-like "*error*"``` means that you search for the word error. If it would be ```*error``` it would mean 'ends with error'. There are other operators than like, such as 'match', 'contains' and 'lt' (less than). The {} thing is called a script block, it is in here where you can set the conditions.
 
 
