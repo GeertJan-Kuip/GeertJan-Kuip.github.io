@@ -210,4 +210,54 @@ Get-Content "example.txt" | Where-Object { $_ -like "*error*" } | Select-Object 
 
 Here some superpower of PowerShell appears. The Get-Content creates a sort of iteration over all lines in the file, and on each line the second statement ```Where-Object { $_ -like "*error*" }``` is applied. $_ represents an element in the iteration (a line). ```-like "*error*"``` means that you search for the word error. If it would be ```*error``` it would mean 'ends with error'. There are other operators than like, such as 'match', 'contains' and 'lt' (less than). The {} thing is called a script block, it is in here where you can set the conditions.
 
+## Writing custom functions
+
+This is a great topic. There is a file ```Microsoft.PowerShell_profile.ps1``` in ```C:\Users\User\Documents\WindowsPowerShell``` in which you can write your own custom functions. This reminds me of my days with 3D Studio Max and maxscript. It is rather simple but effective if using the scripts is part of your daily routine. To get the ps1 file, type ```notepad $PROFILE```. It opens the specific file for you.
+
+Within the file you can create functions> Naming convention is that it must start with a letter or underscore but numbers are allowed.
+
+Important: by default PowerShell didn't allow me to run the scripts. Upon restarting PowerShell (as administrator) it gave a warning that I had no permission to use scripts. This policy could be changed by typing: 
+
+```
+Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy RemoteSigned  // you get asked to confirm, type Y
+```
+
+After this, to see what you have changed, type ```Get-ExecutionPolicy -List```. 
+
+#### My first function
+
+I want to be able to get to the right directory faster. Having a method setting the Java projects folder as cuurent seems handy:
+
+```
+function Kuip2 {
+    cd "C:/Kuips files/Java projects"
+}
+```
+
+Very straightforward indeed. You can make a parameterized function as well:
+
+```
+function Kuip1 {
+    param (
+        [string]$d
+    )
+
+    if ($d -eq "java") {
+        cd "C:/Kuips files/Java projects"
+    } elseif ($d -eq "kuip") {
+        cd "C:/Kuips files"
+    } else {}
+}
+```
+
+Microsoft has documented it well and ChatGPT helps as well. I'm gonna think what sort of functions I need.
+
+## Not the end
+
+This is not the end of my PowerShell research, I actually like the whole idea of doing things from a terminal. I'm almost ready for touch typing as well, as I practice it on [keybr](https://www.keybr.com/) and only have to learn the Q, X and Y plus the non-letters.
+
+
+
+
+
 
