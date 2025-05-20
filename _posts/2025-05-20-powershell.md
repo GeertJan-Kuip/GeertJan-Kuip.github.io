@@ -1,8 +1,8 @@
-## PowerShell
+# PowerShell
 
 Learning Spring is quite hard, there is a lot in it. To keep myself motivated I'm gonna learn the things I hate to be bad at, one of them having control over my pc via PowerShell. In this blog post I will make a list of commands and techniques that help me to do less with a mouse and get closer to the OS. In the near future I will make similar posts for curl, jq and Maven. Yes, I want to do all Maven things via the command line.
 
-### Files and folders
+## Navigating Files and folders
 
 #### Change directory
 
