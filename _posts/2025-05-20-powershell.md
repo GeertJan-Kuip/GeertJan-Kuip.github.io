@@ -40,6 +40,8 @@ There are shorthands for many commands. Get-ChildItem has gci, Sort-Object has s
 
 If you have a directory listing and want to navigate to one of those directories, you do not have to type the full name. After you have typed the first letter, you can use Tab and you get autocomplete. If multiple folders fit, use Tab repeatedly until you have the right one.
 
+### Creating files and folders
+
 #### Create a file with Notepad (fast method)
 
 ChatGPT provided this method to quickly create a file and open it in Notepad. Notepad will open and complain that it cannot find the file and will ask if it has to create it. Confirm and you will have the file created and open for editing in Notepad. It works for .txt but also for other extensions.
@@ -50,7 +52,7 @@ notepad "example.txt"  // creates in current dir
 notepad "C:/example.properties"  // creates it somewhere else, with different extension
 ```
 
-#### Using Out-File
+#### Using Out-File to create
 
 This is relatively easy too:
 
@@ -74,7 +76,7 @@ The Set-Content will overwrite a file if it already exists. The Add-Content meth
 "Another line" | Add-Content "example.txt"   //  adds a new line
 ```
 
-#### Using New-Item for file or dirctory
+#### Using New-Item for file or directory
 
 The more verbose way, whereby any filetype can be created, is this:
 
@@ -90,12 +92,41 @@ It will give a warning if the file already exists. You can also create a directo
 
 ```
 ni -p "MyDir" -ItemType Directory
+
+ni MyDir -ItemType Directory  // even shorter, works as well
+
 ```
 
+#### Using classic mkdir
+
+This is a sort of universal classic notation and it works in PowerShell. ```mkdir MyDirectory```.
 
 
+### Deleting files and folders
 
+#### Deleting files
 
+Removing can be done with _Remove-Item_, which can be shortened to _rm_, or with _del_. The three methods below all do the same:
+
+```
+Remove-Item "index.html"
+
+rm "index.html"
+
+del "index.html"
+```
+
+#### Deleting folders
+
+With folders you need *-Recurse* to indicate that a folder with content can be deleted, including the content. If you do not add -Recurse, PowerShell will ask you to confirm that you want to delete the folder with all content.
+
+```
+Remove-Item "MyFolder"  // will ask for confirmation
+
+Remove-Item "MyFolder" -Recurse  // won't ask
+```
+
+There is a -Force argument as well to suppress warnings but I don't think I'll need it.
 
 
 
