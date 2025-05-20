@@ -40,7 +40,7 @@ There are shorthands for many commands. Get-ChildItem has gci, Sort-Object has s
 
 If you have a directory listing and want to navigate to one of those directories, you do not have to type the full name. After you have typed the first letter, you can use Tab and you get autocomplete. If multiple folders fit, use Tab repeatedly until you have the right one.
 
-### Creating files and folders
+## Creating files and folders
 
 #### Create a file with Notepad (fast method)
 
@@ -76,6 +76,8 @@ The Set-Content will overwrite a file if it already exists. The Add-Content meth
 "Another line" | Add-Content "example.txt"   //  adds a new line
 ```
 
+If you add content to a textfile and want to have line breaks, use \`n. 
+
 #### Using New-Item for file or directory
 
 The more verbose way, whereby any filetype can be created, is this:
@@ -102,7 +104,7 @@ ni MyDir -ItemType Directory  // even shorter, works as well
 This is a sort of universal classic notation and it works in PowerShell. ```mkdir MyDirectory```.
 
 
-### Deleting files and folders
+## Deleting files and folders
 
 #### Deleting files
 
@@ -127,6 +129,65 @@ Remove-Item "MyFolder" -Recurse  // won't ask
 ```
 
 There is a -Force argument as well to suppress warnings but I don't think I'll need it.
+
+## File properties and preview
+
+#### File properties
+
+There is the simple properties you can get via Get-Item or Get-ChildItem. For this Get-ChildItem is faster, and you can abbreviate it to gci:
+
+```
+Get-Item myFile.yml
+
+Get-ChildItem   // or just gci
+```
+
+If you want one specific property, either a hidden or a non-hidden one:
+
+```
+(Get-Item "myFile.yml").Length
+
+(Get-Item "myFile.yml").Exists   // Exists is a hidden property
+```
+
+For a more extensive overview of all properties, including the hidden ones:
+
+```
+Get-Item "myFile.yml" | Format-List *
+or 
+Get-Item "myFile.yml" | fl *
+```
+
+Some properties are not retrieved by Get-Item but by Get-Acl. Acl stands for Access Control List.
+
+```
+(Get-Acl "myFile.yml").Owner  // gives specific Acl property
+
+Get-Acl "myFile.yml" | fl *
+```
+
+The Format-List * is important, otherwise it is unreadable. It can be abbreviated to fl.
+
+By the way everything you can do with files can be done with folders as well. They have properties, retrievable via Get-Item and Get-Acl.
+
+#### File preview
+
+The straight way to preview the first n lines of a file containing text:
+
+```
+Get-Content "example.txt" -TotalCount 10
+or 
+gc example.txt -TotalCount 10
+```
+
+You can also be a more sophisticated with *Select-Object*. This allows you to do the last n lines if you want:
+
+```
+gc example.txt | Select-Object -First 10
+
+gc example.txt | Select-Object -Last 10
+```
+
 
 
 
