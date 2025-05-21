@@ -252,10 +252,182 @@ function Kuip1 {
 
 Microsoft has documented it well and ChatGPT helps as well. I'm gonna think what sort of functions I need.
 
+## Environment and system variables
+
+#### Environment variables
+
+PowerShell has ```$env```, which according to ChatGPT: _$env in PowerShell is not a reserved variable, but rather a special drive provider—specifically, it's a shortcut to the Environment Provider, which exposes environment variables as if they were part of a file system._
+
+If you want to have a list of all environment variables, simply do:
+
+```
+gci $env
+or
+Get-ChildItem $env
+```
+
+If you want a specific one, or use a wildcard, do:
+
+```
+gci env:OS // returns the OS environment variable
+
+gci env:*java*  // returns all environment variables containig java (case insensitive)
+```
+
+#### Path variables
+
+Here you need ```-split``` because the path variables are some sort of string.
+
+```
+$env:path -split ";"  // all path variables
+
+$env:path -split ";" | where-object {$_ -like "*Users*"} // only those containing "users" (case-insensitive)
+```
+
+The above samples indicate that you sometimes need to use ```env:``` and sometimes ```$env:```. This has to do with the fact that certain methods ('cmdlets') understand that when you write ```env:```, you mean ```$env:```. The ```$``` indicates it is a variable, which it is, but somehow you can sometimes refer to it as ```env:```. 
+
+It is important not to assign a new value to ```$env``` as you will loose access to this specific use. If you have overwritten it anyway, you can revert it by:
+
+```
+Remove-Variable env
+```
+
+#### Setting environment variables
+
+When setting environment variables via PowerShell you need to be aware that by default they will only last as long as the PowerShell session. This is the basic command:
+
+```
+$env:BLA_BLA = "Hello guys"
+
+gci env:BLA_BLA  // returns "Hello guys"
+```
+
+To make it persistent, for all users with administration rights:
+
+```
+[System.Environment]::SetEnvironmentVariable("MY_VARIABLE", "MyValue", "Machine")
+```
+
+The "Machine" parameter indicates that this will be the same for every user. If you replace "Machine" with "User", the variable will only be part of the profile of "User".
+
+Note: changes in persistent variables won't be reflected in the current session, you need to restart PowerShell.
+
+To persistently change variables:
+
+```
+# For the current user
+[Environment]::SetEnvironmentVariable("MY_VARIABLE", "NewValue", "User")
+
+# For all users (requires admin)
+[Environment]::SetEnvironmentVariable("MY_VARIABLE", "NewValue", "Machine")
+```
+
+And to remove a variable (again, restarting PS is needed to see the changes):
+
+```
+# Remove from current user scope
+[Environment]::SetEnvironmentVariable("MY_VARIABLE", $null, "User")
+
+# Remove from system scope (requires admin)
+[Environment]::SetEnvironmentVariable("MY_VARIABLE", $null, "Machine")
+```
+
+#### Setting path variables
+
+ChatGPT warns that this is a risky operation and advises to make a backup of path variables before attempting to add or remove paths. The advice:
+
+- Always backup the current PATH before making changes.
+- Use absolute paths.
+- Avoid adding duplicate entries.
+- You may need to restart your system or log out/in for system-wide changes to take effect.
+
+The code to save a backup:
+
+```
+# Save User PATH
+[Environment]::GetEnvironmentVariable("Path", "User") | Out-File -FilePath "$HOME\user_path_backup.txt"
+
+# Save System PATH (requires elevated permissions to view fully)
+[Environment]::GetEnvironmentVariable("Path", "Machine") | Out-File -FilePath "$HOME\system_path_backup.txt"
+```
+
+To restore the backup:
+
+```
+# Restore User PATH from backup
+$originalPath = Get-Content "$HOME\user_path_backup.txt" -Raw
+[Environment]::SetEnvironmentVariable("Path", $originalPath, "User")
+```
+
+The code to add a Path:
+
+```
+-- add to user path (no admin required)
+$oldPath = [Environment]::GetEnvironmentVariable("Path", "User")
+$newPath = "$oldPath;C:\My\New\Folder"
+[Environment]::SetEnvironmentVariable("Path", $newPath, "User")
+
+-- add to system path (requires admin)
+$oldPath = [Environment]::GetEnvironmentVariable("Path", "Machine")
+$newPath = "$oldPath;C:\My\New\Folder"
+[Environment]::SetEnvironmentVariable("Path", $newPath, "Machine")
+```
+
+Removing goes like this (change "User" to "Machine" to do it for System paths):
+
+```
+$path = [Environment]::GetEnvironmentVariable("Path", "User") -split ';'
+$newPath = ($path | Where-Object { $_ -ne "C:\Old\Path" }) -join ';'
+[Environment]::SetEnvironmentVariable("Path", $newPath, "User")
+```
+
+To check the result (_Always check the result_):
+
+```
+[Environment]::GetEnvironmentVariable("Path", "User") -split ';'
+
+[Environment]::GetEnvironmentVariable("Path", "Machine") -split ';'
+```
+
+## Inquiring the hardware
+
+Here some handy commands:
+
+```
+-- returns a large object with many specs
+Get-ComputerInfo
+
+-- legacy command
+systeminfo
+
+-- OS details
+Get-CimInstance Win32_OperatingSystem
+
+-- processor
+Get-CimInstance Win32_Processor
+Get-CimInstance Win32_Processor | fl *  -- looks better, more info
+
+-- BIOS
+Get-CimInstance Win32_BIOS
+
+-- RAM
+Get-CimInstance Win32_PhysicalMemory
+
+-- Disk info
+Get-PSDrive -PSProvider FileSystem
+
+-- GPU info
+Get-CimInstance Win32_VideoController | Select-Object Name, DriverVersion
+
+-- Network info
+Get-NetIPAddress
+
+```
+
+
 ## Not the end
 
 This is not the end of my PowerShell research, I actually like the whole idea of doing things from a terminal. I'm almost ready for touch typing as well, as I practice it on [keybr](https://www.keybr.com/) and only have to learn the Q, X and Y plus the non-letters.
-
 
 
 
