@@ -1,6 +1,8 @@
 ## Maven sheet
 
-Below an annotated .xml file with all tags of the Maven pom.xml. To be used as a reference.
+Below an annotated .xml file with all tags of the Maven pom.xml. To be used as a reference. It looks messy, work in progress.
+
+Nice example: Maven's base pom: https://github.com/apache/maven/blob/master/pom.xml
 
 ```
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -12,76 +14,124 @@ Below an annotated .xml file with all tags of the Maven pom.xml. To be used as a
 	<version>
 	<packaging>
 		jar (default), war, rar, pom, ear, maven-plugin, ejb.
-		Packaging type 'pom' is used when the project is a parent project or an aggregation (multi-module) project.
+		Packaging type 'pom' is used when the project is a 
+      parent project or an aggregation (multi-module) project.
 
 	<dependencies>
 		<dependency>
 			<groupId>
 			<artifactId>
 			<version>
-				mandatory, unless declared in parent pom or <dependencyManagement>
+				mandatory, unless declared in parent pom 
+            or <dependencyManagement>
 			<type>
-				jar (default),war,ejb,ejb-client,test-jar,java-source,javadoc,bundle
+				jar (default),war,ejb,ejb-client,test-jar,
+            java-source,javadoc,bundle
 			<classifier>
-				postfix to version, like -tests, -sources or -javadoc
+				postfix to version, like -tests, -sources or 
+            -javadoc
 			<scope>
 				compile (default), provided, runtime, test, system
-				compile dependencies are available in all classpaths of a project. Furthermore, those dependencies are propagated to dependent projects.
-				provided means that at runtime you expect the JDK to provide the dependency.
-				runtime: Maven includes a dependency with this scope in the runtime and test classpaths, but not the compile classpath.
-				test: dependency not required for normal use, only available for the test compilation and execution phases. Not transitive.
+				compile dependencies are available in all classpaths 
+            of a project. Furthermore, those dependencies are 
+            propagated to dependent projects.
+				provided means that at runtime you expect the JDK to 
+            provide the dependency.
+				runtime: Maven includes a dependency with this scope 
+            in the runtime and test classpaths, but not the 
+            compile classpath.
+				test: dependency not required for normal use, only 
+            available for the test compilation and execution 
+            phases. Not transitive.
 				system: see below.
 			<systemPath>
-				Is used only if the dependency scope is system. The path must be absolute, so it is recommended to use a property to specify the machine-specific path. 
-				When scope is system, the depencency will not be searched for in repositories but only on the path provided here. You must ensure the dependency is available on the path on every machine in every phase.
+				Is used only if the dependency scope is system. 
+            The path must be absolute, so it is recommended 
+            to use a property to specify the machine-specific path. 
+				When scope is system, the depencency will not be 
+            searched for in repositories but only on the path 
+            provided here. You must ensure the dependency is 
+            available on the path on every machine in every phase.
 				Note: this feature is deprecated.
 			<optional>
-				false(default). If true, dependency is included but if this project becomes a dependency for some other project, it is not included anymore. Prevents including too many unused transitive dependencies (think of all possible database drivers).
+				false(default). If true, dependency is included but 
+            if this project becomes a dependency for some other 
+            project, it is not included anymore. Prevents including 
+            too many unused transitive dependencies (think of all 
+            possible database drivers).
 			<exclusions>
-				Under exclusions you list transitive dependencies of the dependency at hand that you want to exclude for some reason.
-				It might still be possible that this excluded dependency enters your project via another route, and that is okay and that might even be your aim.
+				Under exclusions you list transitive dependencies of 
+            the dependency at hand that you want to exclude for 
+            some reason.
+				It might still be possible that this excluded dependency 
+            enters your project via another route, and that is okay 
+            and that might even be your aim.
 				Maven itself calls exclusions an option of 'last resort.'
-				You can use wildcards * in groupId and artifactId to exclude all transitive dependencies.
+				You can use wildcards * in groupId and artifactId to 
+            exclude all transitive dependencies.
 				<exclusion>
 					<groupId>org.apache.maven</groupId>
 					<artifactId>maven-core</artifactId>
 				</exclusion>
 				
 	<parent>
-		The parent's packaging value must be 'pom' if you declare a parent. All values of parent pom are inherited, except for artifactId, name, prerequisites and profiles.
-		There is a super POM from which every pom inherits. To see how the super pom affects your pom, make your own pom and use 'mvn help:effective-pom'.
-		An effective use of parent pom is centralized uniform version resolution. Create a dependencyManagement section in the parent and declare versions of dependencies. In the child poms you 
-		still have to declare the dependency but you can omit version number. Always check the dependency tree to avoid unwanted effects.
+		The parent's packaging value must be 'pom' if you declare a 
+      parent. All values of parent pom are inherited, except for 
+      artifactId, name, prerequisites and profiles.
+		There is a super POM from which every pom inherits. To see 
+      how the super pom affects your pom, make your own pom and use 
+      'mvn help:effective-pom'.
+		An effective use of parent pom is centralized uniform version 
+      resolution. Create a dependencyManagement section in the parent 
+      and declare versions of dependencies. In the child poms you 
+		still have to declare the dependency but you can omit version 
+      number. Always check the dependency tree to avoid unwanted effects.
 		<groupId>org.codehaus.mojo</groupId>
 		<artifactId>my-parent</artifactId>
 		<version>2.0</version>
 		<relativePath>../my-parent</relativePath>
-			Optional. Tells where to search for the parent pom. If not provided, will search in the local and remote repositories.
+			Optional. Tells where to search for the parent pom. If not 
+         provided, will search in the local and remote repositories.
 			
 	<modules>	
-		For modular builds to work, packaging of parent pom must be set to 'pom'. Poms of modules do not have to declare a parent. It is called 'aggregation'.
-		It is possible and might be good practice to combine 'inheritance' with 'aggregation.'
-		Here you list the module base directories, or the path of the pom.xml files that reside in those directories. Module order is not important here, Maven figures it out itself based on the module poms.
+		For modular builds to work, packaging of parent pom must be set to 
+      'pom'. Poms of modules do not have to declare a parent. It is called 
+      'aggregation'.
+		It is possible and might be good practice to combine 'inheritance' 
+      with 'aggregation.'
+		Here you list the module base directories, or the path of the pom.xml 
+      files that reside in those directories. Module order is not important 
+      here, Maven figures it out itself based on the module poms.
 		<module>my-project</module>
 		<module>another-project</module>
 		<module>third-project/pom-example.xml</module>	
 			
 	<dependencyManagement>
 		Resolves version conflicts of transitive dependencies.
-		Without dependencyManagement, Maven picks the nearest version of a transitive dependency to your project or the first it encounters.
-		With dependencyManagement you can decide which version to use of a transitive dependency.
-		The dependency has a child tag 'scope' equal to that of regular dependency but with one extra scope type, namely 'import'.
+		Without dependencyManagement, Maven picks the nearest version of a 
+      transitive dependency to your project or the first it encounters.
+		With dependencyManagement you can decide which version to use of a 
+      transitive dependency.
+		The dependency has a child tag 'scope' equal to that of regular 
+      dependency but with one extra scope type, namely 'import'.
 		<dependencies>
 			<dependency>
 				<groupId>
 				<artifactId>
 				<version>
-					Special syntax. Difference between soft and hard requirement and using of either [] or ().
-					Soft requirement: version written without brackets or parentheses. 'Use 1.0 if no other version appears earlier in the dependency tree.'
-					Hard requirement: use brackets/parentheses. [1.0] - use only 1.0 ; [1.0,) - use 1.0 or higher ; (,1.0] use 1.0 or lower ; [1.0,2.0)- any version between 1.0 and 2.0 but not 2.0 itself.
-					(,1.2),(1.2) - any version except 1.2 ; (,1.2],[1.4,) - (1.2 or lower) or (1.4 or higher)
+					Special syntax. Difference between soft and hard requirement 
+               and using of either [] or ().
+					Soft requirement: version written without brackets or parentheses. 
+               'Use 1.0 if no other version appears earlier in the dependency tree.'
+					Hard requirement: use brackets/parentheses. [1.0] - use only 1.0 ; 
+               [1.0,) - use 1.0 or higher ; (,1.0] use 1.0 or lower ; 
+               [1.0,2.0)- any version between 1.0 and 2.0 but not 2.0 itself.
+					(,1.2),(1.2) - any version except 1.2 ; (,1.2],[1.4,) - (1.2 or lower) 
+               or (1.4 or higher)
 					
-					Maven has its own rules for reading version strings and comparing different versions (which one is greater). Too much detail to describe here.
+					Maven has its own rules for reading version strings and comparing 
+               different versions (which one is greater). Too much detail to 
+               describe here.
 				<exclusions>
 					<exclusion>
 						<groupId>com.group.something</groupId>
@@ -567,9 +617,8 @@ Below an annotated .xml file with all tags of the Maven pom.xml. To be used as a
 		</profile>		
 	
 </project>
-
+  
 ```
-
   
 
   
