@@ -1,21 +1,40 @@
-## Maven sheet
+# Maven sheet
 
-Below an annotated .xml file with all tags of the Maven pom.xml. To be used as a reference. It looks messy, work in progress.
+Below a lot of annotated .xml file with all of the relevant tags that can be used in Maven's pom.xml. To be used as a reference. It looks messy, work in progress. I used Maven documentation and ChatGPT as guide. [This page](https://maven.apache.org/pom.html) gives much explanation and I used it a lot. 
 
-Nice example: Maven's base pom: https://github.com/apache/maven/blob/master/pom.xml
+Nice example for a pom.xml in action: [Maven's base pom](https://github.com/apache/maven/blob/master/pom.xml)
+
+
+### Minimal POM
+
+A minimal pom can do with very little. Use modelVersion (use 4.0.0). The properties I added here can be omitted but it helps to add them, Maven output might complain if you omit it. The 'maven.compiler.release' tag is a wondeful thing.
 
 ```
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>
 
-	<!-- The Basics -->
 	<groupId>
 	<artifactId>
 	<version>
-	<packaging>
-		jar (default), war, rar, pom, ear, maven-plugin, ejb.
-		Packaging type 'pom' is used when the project is a 
-      parent project or an aggregation (multi-module) project.
+
+	<properties>
+		 <java.version>21</java.version>
+		 <maven.compiler.release>${java.version}</maven.compiler.release>		
+		 <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		 <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+		 <project.build.outputEncoding>UTF-8</project.build.outputEncoding> 
+	</properties>
+```
+
+'Packaging' is not required because it has a default of jar that is often okay. The interesting value is 'pom' that is used either for parent projects (you can even make a minimal project consisting of a folder with artifactId name and a pom.xml) in which you resolve dependency versions in the dependencyManagement section, or for multi-module projects where the are stored in the root folder.
+
+```
+	<packaging> jar (default), war, rar, pom, ear, maven-plugin, ejb.
+```
+
+Dependencies is where it began with Maven. Version is mandatory unless declared in dependencyManagement or parent POM.
+
+```
 
 	<dependencies>
 		<dependency>
