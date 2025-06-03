@@ -1,6 +1,6 @@
-## PowerShell 2
+# PowerShell 2
 
-### Creating scripts, modules, and loading them
+## Creating scripts, modules, and loading them
 
 #### Microsoft.PowerShell_profile.ps1
 
@@ -51,7 +51,7 @@ What I noticed was that when you make changes in module files you need to do dot
 
 Now if you type ```. $profile```, the individual .ps1 file from the module folders get a forced reload. It is not pretty but assuming that the scripts are to be used instead of to be altered most of the time it is okay. 
 
-### Some specifics about PowerShell script
+# Some specifics about PowerShell script
 
 #### Object collections
 
