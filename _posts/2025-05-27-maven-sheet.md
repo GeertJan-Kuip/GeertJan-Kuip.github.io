@@ -396,7 +396,7 @@ Below another example, I wanted to use the shade plugin in a aggregated (multi-m
 ### Pluginmanagement
 
 		
-Just like there is <dependencyManagement> there is also <pluginManagement>. What you define here is not for the project itself but for every POM that inherits from this POM. The child must declare this project as parent to make it work. This makes it different from inheritance of the values of the dependencyManagement section, that can be inherited without a parent-child relationship (via import). This here is from the documentation as example. A child inheriting does only have to declare groupId and artifactId to make the plugin work for itself.
+Just like there is ```<dependencyManagement>``` there is also ```<pluginManagement>```. What you define here is not for the project itself but for every POM that inherits from this POM. The child must declare this project as parent to make it work. This makes it different from inheritance of the values of the dependencyManagement section, that can be inherited without a parent-child relationship (via import). This here is from the documentation as example. A child inheriting does only have to declare groupId and artifactId to make the plugin work for itself.
 
 ```
 		<pluginManagement>
@@ -454,11 +454,11 @@ The other Build type element is extensions. Extensions are a bit obscure, as Cha
 
 ### Reporting
 
-Reporting is a top-level tag that. Just like 'build' configures the built product, 'reporting' configures the generated documentation. Reporting is part of the 'site' phase and can include the generation of static webpages, javadoc content etc. There are specific plugins that can be used here, just as there are specific plugins for build. You can very precisely configure things, whereby the role of <execution> is played by <reportSet>. 
+Reporting is a top-level tag that. Just like 'build' configures the built product, 'reporting' configures the generated documentation. Reporting is part of the 'site' phase and can include the generation of static webpages, javadoc content etc. There are specific plugins that can be used here, just as there are specific plugins for build. You can very precisely configure things, whereby the role of ```<execution>``` is played by ```<reportSet>```. 
 		
-Important note: the maven-javadoc-plugin can be found in the super-POM under <profile><build>, not under <reporting>. This is because maven-javadoc-plugin can be used to create a Jar with metadata that is packaged with the rest of the build product during the package phase, not the 'site' phase.	
+Important note: the maven-javadoc-plugin can be found in the super-POM under <profile><build>, not under ```<reporting>```. This is because maven-javadoc-plugin can be used to create a Jar with metadata that is packaged with the rest of the build product during the package phase, not the 'site' phase.	
 
-One more note: the reporting section is only tied to the 'site' phase. Therefore you can say it doesn't have the impact that the <build><plugins> section has.
+One more note: the reporting section is only tied to the 'site' phase. Therefore you can say it doesn't have the impact that the ```<build><plugins>``` section has.
 
 Another note: 'mvn site' command automatically runs the maven-project-info-reports-plugin, even though this plugin isn't mentioned in the superPOM. You can turn this defalt behavior off with the Boolean excludeDefaults element. A more verbose way is shown below (note the amount of nesting):
 
@@ -512,7 +512,7 @@ Another example with a heavy configuration. The maven-javadoc-plugin has multipl
 
 ### General project information
 
-``
+```
 	<name> <!--Name differs from artifactId. The latter has a somewhat technical name with hyphens. Under name you can be poetic: Word, AutoCAD or 'GitHub Desktop'-->
 		
 	<description> <!-- A short, human readable description of the project. -->
