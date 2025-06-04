@@ -137,11 +137,12 @@ Here you resolves version conflicts of transitive dependencies. Without dependen
 There is special syntax that gives precise control over allowed versions. 
 
 Difference between soft and hard requirement and using of either [] or (). Soft requirement: version written without brackets or parentheses. 'Use 1.0 if no other version appears earlier in the dependency tree.' Hard requirement: use brackets/parentheses. 
-[1.0] - use only 1.0 ; 
-[1.0,) - use 1.0 or higher ; (,1.0] use 1.0 or lower ; 
-[1.0,2.0)- any version between 1.0 and 2.0 but not 2.0 itself; 
-(,1.2),(1.2) - any version except 1.2 ; 
-(,1.2],[1.4,) - (1.2 or lower) or (1.4 or higher)
+
+- [1.0] : use only 1.0 ; 
+- [1.0,) : use 1.0 or higher ; (,1.0] use 1.0 or lower ; 
+- [1.0,2.0) : any version between 1.0 and 2.0 but not 2.0 itself; 
+- (,1.2),(1.2) : any version except 1.2 ; 
+- (,1.2],[1.4,) : (1.2 or lower) or (1.4 or higher)
 
 Maven has its own rules for reading version strings and comparing different versions (which one is greater). Too much detail to describe here.
 
