@@ -75,7 +75,7 @@ Is used only if the dependency scope is system. The path must be absolute, so it
 			<optional> <!-- default is false -->
 ```
 
-If <optional is set to true, the dependency is included but if this project becomes a dependency for some other project, it is not included anymore. Prevents including too many unused transitive dependencies (think of all possible database drivers).
+If ```<optional>``` is set to true, the dependency is included but if this project becomes a dependency for some other project, it is not included anymore. Prevents including too many unused transitive dependencies (think of all possible database drivers).
 
 #### Exclusions
 
@@ -94,7 +94,7 @@ Under exclusions you list transitive dependencies of the dependency at hand that
 
 ### Parent
 
-The parent's packaging value must be 'pom' if you declare a parent. All values of parent pom are inherited, except for artifactId, name, prerequisites and profiles. There is a super POM from which every pom inherits. To see how the super pom affects your pom, make your own pom and use 'mvn help:effective-pom'. An effective use of parent pom is centralized uniform version resolution. Create a dependencyManagement section in the parent and declare versions of dependencies. In the child poms you still have to declare the dependency but you can omit version number. Always check the dependency tree to avoid unwanted effects. <relativePath> is optional. Tells where to search for the parent pom. If not provided, will search in the local and remote repositories.
+The parent's packaging value must be 'pom' if you declare a parent. All values of parent pom are inherited, except for artifactId, name, prerequisites and profiles. There is a super POM from which every pom inherits. To see how the super pom affects your pom, make your own pom and use 'mvn help:effective-pom'. An effective use of parent pom is centralized uniform version resolution. Create a dependencyManagement section in the parent and declare versions of dependencies. In the child poms you still have to declare the dependency but you can omit version number. Always check the dependency tree to avoid unwanted effects. ```<relativePath>``` is optional. Tells where to search for the parent pom. If not provided, will search in the local and remote repositories.
 
 ```			
 	<parent>
@@ -107,7 +107,7 @@ The parent's packaging value must be 'pom' if you declare a parent. All values o
 
 ### Modules
 
-For modular builds to work, packaging of parent pom must be set to 'pom'. Poms of modules do not have to declare a parent. It is called 'aggregation'. It is possible and might be good practice to combine 'inheritance' with 'aggregation.' In <modules> you list the names of the module base directories, or the path of the pom.xml files that reside in those directories. Module order is not important here, Maven figures it out itself based on the module poms. If a module requires another module, it will have to declare that other module as a dependency and that gives Maven the possibility to create a dependency tree.
+For modular builds to work, packaging of parent pom must be set to 'pom'. Poms of modules do not have to declare a parent. It is called 'aggregation'. It is possible and might be good practice to combine 'inheritance' with 'aggregation.' In ```<modules>``` you list the names of the module base directories, or the path of the pom.xml files that reside in those directories. Module order is not important here, Maven figures it out itself based on the module poms. If a module requires another module, it will have to declare that other module as a dependency and that gives Maven the possibility to create a dependency tree.
 
 ```
 	<modules>
@@ -146,7 +146,7 @@ Difference between soft and hard requirement and using of either [] or (). Soft 
 
 Maven has its own rules for reading version strings and comparing different versions (which one is greater). Too much detail to describe here.
 
-Transitive dependencies can be excluded, just like in the <dependencies> section.
+Transitive dependencies can be excluded, just like in the ```<dependencies>``` section.
 
 ```			
 	<dependencyManagement>
@@ -164,9 +164,9 @@ Transitive dependencies can be excluded, just like in the <dependencies> section
 
 #### Type and scope
 
-The <type> tag, child of <dependency>, has jar as default and the options differ from those of dependency declarations in <dependencies>. Note that 'pom' can be a type here, but not in a dependency that is not part of the dependencyManagement section.
+The ```<type>``` tag, child of ```<dependency>```, has jar as default and the options differ from those of dependency declarations in ```<dependencies>```. Note that 'pom' can be a type here, but not in a dependency that is not part of the dependencyManagement section.
 
-There is a child tag <scope> equal to that of regular dependency but with one extra scope type, namely 'import'. Import requires 'pom' as dependency type. Projects can import managed dependencies from other projects. This is accomplished by declaring a POM artifact as a dependency with a scope of "import". The typical practice is to create a 'BOM' (Bill of Materials). This is a parent pom.xml with packaging value of 'pom'. It has a dependencyManagement section where you specify the versions of libraries, and it can be used by different projects to inherit from. The BOM has the form of the simplest java project, only a root folder (named after artifactID) with a pom.xml file in it. The BOM can be put into a central repository and used by everyone for consistency. When using import, beware of circular dependencies and never do import a pom that is in a submodule.
+There is a child tag ```<scope>``` equal to that of regular dependency but with one extra scope type, namely 'import'. Import requires 'pom' as dependency type. Projects can import managed dependencies from other projects. This is accomplished by declaring a POM artifact as a dependency with a scope of "import". The typical practice is to create a 'BOM' (Bill of Materials). This is a parent pom.xml with packaging value of 'pom'. It has a dependencyManagement section where you specify the versions of libraries, and it can be used by different projects to inherit from. The BOM has the form of the simplest java project, only a root folder (named after artifactID) with a pom.xml file in it. The BOM can be put into a central repository and used by everyone for consistency. When using import, beware of circular dependencies and never do import a pom that is in a submodule.
 
 ```
 
@@ -202,7 +202,7 @@ Build does some special thing that relates to inheritance. Build can be a top-le
 
 Maven distinguishes between the 'BaseBuild' type and the 'Build' type. Elements belonging to the BaseBuild type can be used in a top-level build section and in a nested build section (under profiles). Elements belonging to the Build type can only be part of a top-level build section. Practically this means that <extensions> and <..Directory> cannot be used in a build section in a profile as they belong to the Build type. 
 
-Some confusion exists about <plugins>. https://maven.apache.org/xsd/maven-4.0.0.xsd implicates that <plugins> cannot be part of <profile><build>, but the Maven documentation states that they can. ChatGPT struggled with it and suggested that even though the .xsd is very strict, Maven allows a <plugin> section in <profile><build>. So it is just <..Directory> (there are several) and <extensions> that cannot be used in <profile><build>.	
+Some confusion exists about ```<plugins>```. https://maven.apache.org/xsd/maven-4.0.0.xsd implicates that ```<plugins>``` cannot be part of ```<profile><build>```, but the Maven documentation states that they can. ChatGPT struggled with it and suggested that even though the .xsd is very strict, Maven allows a ```<plugin>``` section in ```<profile><build>```. So it is just ```<..Directory>``` (there are several) and ```<extensions>``` that cannot be used in ```<profile><build>```.	
 	
 ```	
 	<build>	
@@ -224,7 +224,7 @@ Filter files have a .properties extension and their default location is ${projec
 
 #### Resources
 		
-Resources indicate where the resources are. Default is src/main/resources. You can omit the resources section but not if you want to set 'filtering' to true for the src/main/resources or any other folder. With filtering, placeholders in configuration files found here will be replaced with their counterparts in pom, env, system and filter files. The resources section is already available in the super POM but without the filtering tag. As the default value of filtering is false, filtering is not enabled by default.
+Resources indicate where the resources are. Default is src/main/resources. You can omit the resources section but not if you want to set 'filtering' to true for the src/main/resources or any other folder, because setting it to true must be done within ```<resource>``` With filtering, placeholders in configuration files found here will be replaced with their counterparts in pom, env, system and filter files. The resources section is already available in the super POM but without the filtering tag. As the default value of filtering is false, filtering is not enabled by default.
 
 ```
 		<resources>
@@ -236,7 +236,7 @@ Resources indicate where the resources are. Default is src/main/resources. You c
 
 #### More extended resource example
 		
-This is code from the Maven documentation. I asked ChatGPT why <targetPath> and <directory> where split the way they were, it looked arbitrarry. Got a good explanation: upon compiling, the configuration.xml file will be stored in target/classes/META-INF/plexus. The <targetPath> directory tree is copied, the <directory> directory tree isn't. In other words, targetPath lets you control the directory layout within the classes directory and thus in the final jar.
+This is code from the Maven documentation. I asked ChatGPT why ```<targetPath>``` and ```<directory>``` where split the way they were, it looked arbitrarry. Got a good explanation: upon compiling, the configuration.xml file will be stored in target/classes/META-INF/plexus. The ```<targetPath>``` directory tree is copied, the ```<directory>``` directory tree isn't. In other words, targetPath lets you control the directory layout within the classes directory and thus in the final jar.
 
 ```
 		<resources>	
@@ -257,12 +257,12 @@ This is code from the Maven documentation. I asked ChatGPT why <targetPath> and 
 
 ### Testresources
 			
-What you can do within <resources> can be done within <testResources> as well. Testresources are not deployed. The default directory is a different one so I mention it below.
+What you can do within ```<resources>``` can be done within ```<testResources>``` as well. Testresources are not deployed. The default directory is a different one so I mention it below.
 
 ```
 		<testResources>
 			<testResource>
-				The default directory is ${project.basedir}/src/test/resources. You need to specify if you want another one.
+				<!-- The default directory is ${project.basedir}/src/test/resources. You need to specify if you want another one.-->
 				<directory>${project.basedir}/src/myTest/utilityfiles</directory>
 				...
 			</testResource>
@@ -270,7 +270,7 @@ What you can do within <resources> can be done within <testResources> as well. T
 
 ### Plugins
 			
-Plugins are very relevant in customizing builds and have some specifics. Especially the inheritance of configuration values is, you can perfectly customize at the cost of complexity. This below is code copied from the Maven documentation with my annotations.
+Plugins are very relevant in customizing builds. You often need to use the ```<executions>``` section to tell Maven what the plugin should do (goal) and when (phase). This below is code copied from the Maven documentation with my annotations.
 
 ```
 		<plugins>
