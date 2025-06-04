@@ -46,6 +46,8 @@ Dependencies is where it began with Maven. groupId and artifactId mandatory. Ver
 			<classifier> <!-- postfix to version, like -tests, -sources or -javadoc  -->
 ```
 
+#### Scope
+
 Scope is an important one and can have the values compile(default), provided, runtime, test or system.
 
 ```         
@@ -58,18 +60,24 @@ Scope is an important one and can have the values compile(default), provided, ru
 - **test**. Dependency not required for normal use, only available for the test compilation and execution phases. Not transitive.
 - **system**. See below. Requires <systempath> to be set.
 
+#### Systempath
+
 ```
 			<systemPath>
 ```
 
 Is used only if the dependency scope is system. The path must be absolute, so it is recommended to use a property to specify the machine-specific path. When scope is system, the depencency will not be searched for in repositories but only on the path provided here. You must ensure the dependency is available on the path on every machine in every phase. Note: this feature is deprecated.
 
+#### Optional
+
 ```
 
 			<optional> <!-- default is false -->
 ```
 
-If <optional is set to truee, dependency is included but if this project becomes a dependency for some other project, it is not included anymore. Prevents including too many unused transitive dependencies (think of all possible database drivers).
+If <optional is set to true, the dependency is included but if this project becomes a dependency for some other project, it is not included anymore. Prevents including too many unused transitive dependencies (think of all possible database drivers).
+
+#### Exclusions
 
 ```
 			<exclusions>
@@ -185,85 +193,96 @@ The sample below shows 2 self-made properties and one property with a special me
 	</properties>
 ```
 
-		
+### Build		
 
-		
+Build does some special thing that relates to inheritance. Build can be a top-level section on its own but it can also be a section under 'profile' or under 'plugin'. A build section can also be in a parent pom and be inherited. 
 
-	<!-- Build Settings -->
-	<build>
-		Build does some special thing that relate to inheritance. Build can be a top-level section on its own but it can also be a section under 'profile' or under 'plugin'.
-		A build section can also be in a parent pom and be inherited. 
-		Maven distinguishes between the 'BaseBuild' type and the 'Build' type.
-		Elements belonging to the BaseBuild type can be used in a top-level build section and in a nested build section (under profiles).
-		Elements belonging to the Build type can only be part of a top-level build section. 
-		Practically this means that <extensions> and <..Directory> cannot be used in a build section in a profile as they belong to the Build type.
-		Some confusion exists about <plugins>. https://maven.apache.org/xsd/maven-4.0.0.xsd implicates that <plugins> cannot be part of <profile><build>, but the Maven documentation states that they 
-		can. ChatGPT struggled with it and suggested that even though the .xsd is very strict, Maven allows a <plugin> section in <profile><build>.
-		So it is just <..Directory> (there are several) and <extensions> that cannot be used in <profile><build>.
+#### Build and BaseBuild
+
+Maven distinguishes between the 'BaseBuild' type and the 'Build' type. Elements belonging to the BaseBuild type can be used in a top-level build section and in a nested build section (under profiles). Elements belonging to the Build type can only be part of a top-level build section. Practically this means that <extensions> and <..Directory> cannot be used in a build section in a profile as they belong to the Build type. 
+
+Some confusion exists about <plugins>. https://maven.apache.org/xsd/maven-4.0.0.xsd implicates that <plugins> cannot be part of <profile><build>, but the Maven documentation states that they can. ChatGPT struggled with it and suggested that even though the .xsd is very strict, Maven allows a <plugin> section in <profile><build>. So it is just <..Directory> (there are several) and <extensions> that cannot be used in <profile><build>.	
+	
+```	
+	<build>	
+		<defaultGoal>install</defaultGoal> <!-- If no goal is provided somehow, Maven resorts to this value. It means you can just type 'mvn' in the command line.-->
+		<directory> <!-- Default: ${project.basedir}/target. This is where the resulting file(s) is/are saved.-->
+		<finalName> <!-- Default: ${artifactId}-${version}. This is the name of the resulting file. It is possible that the name will be extended with a classifier defined elsewhere.-->
+```
+
+#### Filters
+
+The default value for <filters> is ${project.basedir}/src/main/filters/. The file(s) you put here contain key-value pairs that will be used to replace the appropriate placeholders in configuration files, following the principles of resource filtering. Resource filtering let you adjust configuration files, so that for example the version mentioned in the pom or in a filter will also be part of application.properties. Perfect for packaged versions that need actual and relevant info in their metadata/config files.
+
+Filter files have a .properties extension and their default location is ${project.basedir}/src/main/filters/. Nevertheless, you must specify them individually. No wildcards possible. What you can do is put a property-placeholder here (${env.filter}) and supply the filter path as -Denv.filter=PathToFile argument in the build command.
+
+```
+		<filters>			
+			<filter>  </filter>				
+```
+
+#### Resources
 		
-```		
-		<defaultGoal>install</defaultGoal>
-			If no goal is provided somehow, Maven resorts to this value. It means you can just type 'mvn' in the command line.
-		<directory>
-			Default: ${project.basedir}/target. This is where the resulting file(s) is/are saved.
-		<finalName>
-			Default: ${artifactId}-${version}. This is the name of the resulting file. It is possible that the name will be extended with a classifier defined elsewhere.
-		<filters>
-			Default: ${project.basedir}/src/main/filters/. 
-			The file(s) you put here contain key-value pairs that will be used to replace the appropriate placeholders in configuration files, following the principles of resource filtering.
-			Resource filtering let you adjust configuration files, so that for example the version mentioned in the pom or in a filter will also be part of application.properties.
-			<filter>
-				Filter files have a .properties extension and their default location is ${project.basedir}/src/main/filters/. 
-				Nevertheless, you must specify them individually. No wildcards possible.
-				What you can do is put a property-placeholder here (${env.filter}) and supply the filter path as -Denv.filter=PathToFile argument in the build command. 
-			</filter>
-		
-		Resources indicate where the resources are. Default is src/main/resources. 
-		You can omit the resources section but not if you want to set 'filtering' to true for the src/main/resources or any other folder.
-		With filtering, placeholders in configuration files found here will be replaced with their counterparts in pom, env, system and filter files.
-		The resources section is already available in the super POM but without the filtering tag.
-		As the default value of filtering is false, filtering is not enabled by default.
+Resources indicate where the resources are. Default is src/main/resources. You can omit the resources section but not if you want to set 'filtering' to true for the src/main/resources or any other folder. With filtering, placeholders in configuration files found here will be replaced with their counterparts in pom, env, system and filter files. The resources section is already available in the super POM but without the filtering tag. As the default value of filtering is false, filtering is not enabled by default.
+
+```
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
 				<filtering>true</filtering>
 			</resource>
+```
+
+#### More extended resource example
 		
-		This is code from the Maven documentation. I asked ChatGPT why <targetPath> and <directory> where split the way they were, it looked arbitrarry.
-		Got a good explanation: upon compiling, the configuration.xml file will be stored in target/classes/META-INF/plexus. The <targetPath> directory tree is copied, the <directory> directory tree isn't.
-		In other words, targetPath lets you control the directory layout within the classes directory and thus in the final jar.
+This is code from the Maven documentation. I asked ChatGPT why <targetPath> and <directory> where split the way they were, it looked arbitrarry. Got a good explanation: upon compiling, the configuration.xml file will be stored in target/classes/META-INF/plexus. The <targetPath> directory tree is copied, the <directory> directory tree isn't. In other words, targetPath lets you control the directory layout within the classes directory and thus in the final jar.
+
+```
 		<resources>	
 			<resource>
 				<targetPath>META-INF/plexus</targetPath>
 				<filtering>false</filtering>
-				<directory>${project.basedir}/src/main/plexus</directory>
-				Which files to include. Wildcards allowed.
+				<directory>${project.basedir}/src/main/plexus</directory> <!-- Which files to include. Wildcards allowed. -->
+				
 				<includes>
 					<include>configuration.xml</include>
-				</includes>
-				Which files to exclude. In conflicts between include and exclude, exclude wins.
+				</includes>				
 				<excludes>
-					<exclude>**/*.properties</exclude>
+					<exclude>**/*.properties</exclude> <!--Which files to exclude. In conflicts between include and exclude, exclude wins.-->
 				</excludes>
+
 			</resource>
+```
+
+### Testresources
 			
-		What you can do within <resources> can be done within <testResources> as well. Testresources are not deployed.
-		The default directory is a different one so I mention it below.
+What you can do within <resources> can be done within <testResources> as well. Testresources are not deployed. The default directory is a different one so I mention it below.
+
+```
 		<testResources>
 			<testResource>
 				The default directory is ${project.basedir}/src/test/resources. You need to specify if you want another one.
 				<directory>${project.basedir}/src/myTest/utilityfiles</directory>
 				...
 			</testResource>
+```
+
+### Plugins
 			
-		Plugins have some specifics. Especially the inheritance of configuration values is, you can perfectly customize at the cost of complexity. 
-		This below is code copied from the Maven documentation with my annotations.
+Plugins are very relevant in customizing builds and have some specifics. Especially the inheritance of configuration values is, you can perfectly customize at the cost of complexity. This below is code copied from the Maven documentation with my annotations.
+
+```
 		<plugins>
 			<plugin>				
-				<groupId>org.apache.maven.plugins</groupId>		
-					For groupId 'org.apache.maven.plugins' is the default so here it could be omitted.
+				<groupId>org.apache.maven.plugins</groupId> <!--For groupId 'org.apache.maven.plugins' is the default so here it could be omitted.-->					
 				<artifactId>maven-jar-plugin</artifactId>
-				<version>2.6</version>				
+				<version>2.6</version>	
+```
+
+#### Extensions
+
+The extensions tag can be set to true or false, default is false. 
+			
 				<extensions>false</extensions>
 					Default value for extensions is 'false'. Extensions is a topic on its own, more later on.				
 				<inherited>true</inherited>
