@@ -26,6 +26,8 @@ A minimal pom can do with very little. Use modelVersion (use 4.0.0). The propert
 	</properties>
 ```
 
+### Packaging
+
 'Packaging' is not required because it has a default of jar that is often okay. The interesting value is 'pom' that is used either for parent projects (you can even make a minimal project consisting of a folder with artifactId name and a pom.xml) in which you resolve dependency versions in the dependencyManagement section, or for multi-module projects where the are stored in the root folder.
 
 ```
@@ -94,7 +96,9 @@ Under exclusions you list transitive dependencies of the dependency at hand that
 
 ### Parent
 
-The parent's packaging value must be 'pom' if you declare a parent. All values of parent pom are inherited, except for artifactId, name, prerequisites and profiles. There is a super POM from which every pom inherits. To see how the super pom affects your pom, make your own pom and use 'mvn help:effective-pom'. An effective use of parent pom is centralized uniform version resolution. Create a dependencyManagement section in the parent and declare versions of dependencies. In the child poms you still have to declare the dependency but you can omit version number. Always check the dependency tree to avoid unwanted effects. ```<relativePath>``` is optional. Tells where to search for the parent pom. If not provided, will search in the local and remote repositories.
+The parent's packaging value must be 'pom' if you declare a parent. All values of parent pom are inherited, except for artifactId, name, prerequisites and profiles. There is a super POM from which every pom inherits. To see how the super pom affects your pom, make your own pom and use 'mvn help:effective-pom'. It will show even things that are not in the super POM but do their work by default anyway. 
+
+An effective use of parent pom is centralized uniform version resolution. Create a dependencyManagement section in the parent and declare versions of dependencies. In the child poms you still have to declare the dependency but you can omit version number. Always check the dependency tree to avoid unwanted effects. ```<relativePath>``` is optional. Tells where to search for the parent pom. If not provided, will search in the local and remote repositories.
 
 ```			
 	<parent>
@@ -282,22 +286,34 @@ Plugins are very relevant in customizing builds. You often need to use the ```<e
 
 #### Extensions
 
-The extensions tag can be set to true or false, default is false. 
+The extensions tag can be set to true or false, default is false. Some plugins need this set to true to be able to do something. Under the hood it means that such plugins start to mess with Maven internals, possibly with side effects. Therefore it needs a specific declaration, or you might say permission, to do this.
+
+```
 			
-				<extensions>false</extensions>
-					Default value for extensions is 'false'. Extensions is a topic on its own, more later on.				
-				<inherited>true</inherited>
-					Default is true. If true, child poms will inherit the plugin configuration as defined here.
+				<extensions>false</extensions> <!-- Default value for extensions is 'false'. -->
+
+#### Inherited
+
+Default is true. If true, child poms will inherit the plugin configuration as defined here.
+
+```									
+				<inherited>true</inherited> 
+```
+
+#### Configuration
+					
 				
-				The specific values to set within the configuration and their defaults are plugin-specific. You need to look them up via help or documentation.
-				If your POM declares a parent, it inherits plugin configuration from either the build/plugins or pluginManagement sections of the parent.
-				The rules for plugin configuration inheritance are very specific. It defaults to merge but this can be adjusted with combine.children and combine.self. 
+The specific values to set within the configuration and their defaults are plugin-specific. You need to look them up via help or documentation. If your POM declares a parent, it inherits plugin configuration from either the build/plugins or pluginManagement sections of the parent. The rules for plugin configuration inheritance are very specific. It defaults to merge but this can be adjusted with combine.children and combine.self. 
+
+```
 				<configuration>
 					<classifier>test</classifier>
-				</configuration>				
+				</configuration>
+```				
 				
-				You can have nested stuff. Below a code sample where the configuration gets more extense. combine.children and combine.self are added to regulate inheritance behavior.
-				Again, documentation explains it better. (https://maven.apache.org/pom.html#advanced%20configuration%20inheritance)
+You can have nested stuff. Below a code sample where the configuration gets more extense. combine.children and combine.self are added to regulate inheritance behavior. Again, documentation explains it better. (https://maven.apache.org/pom.html#advanced%20configuration%20inheritance)
+
+```
 				<configuration>
 					<items combine.children="append">
 						<item>parent-1</item>
@@ -306,10 +322,14 @@ The extensions tag can be set to true or false, default is false.
 					<properties combine.self="override">
 						<parentKey>parent</parentKey>
 					</properties>
-				</configuration>				
+				</configuration>
+```
+
+#### Dependencies (plugin)
 				
-				You can be specific about the dependencies of the plugin. This nested dependencies section works like the top level dependencies section. 
-				Two main uses for adding this dependencies here is to change a version of a dependency or to exclude a transitive dependency. 
+You can be specific about the dependencies of the plugin. This nested dependencies section works like the top level dependencies section. Two main uses for adding this dependencies here is to change a version of a dependency or to exclude a transitive dependency. 
+
+```
 				<dependencies>...</dependencies>
 					<dependency>
 						<groupId>
@@ -325,34 +345,60 @@ The extensions tag can be set to true or false, default is false.
 								<groupId>org.apache.maven</groupId>
 								<artifactId>..</artifactId>
 							</exclusion>			
-				
-				
-				The plugins 'maven-antrun-plugin' and 'maven-assembly-plugins' are both plugins that can be active in different phases with different goals. To specify what they should exactly do 
-				you use this <executions> section. Below is a possible executions section for the antrun plugin. Note: you can add multiple <execution> sections within <executions>, 
-				for example if you want the assembly plugin to generate multiple files on one Maven run.
+```
+
+#### Execution
+
+The plugins 'maven-antrun-plugin' and 'maven-assembly-plugins' are both plugins that can be active in different phases with different goals. To specify what they should exactly do you use this <executions> section. Below is a possible executions section for the antrun plugin. Note: you can add multiple <execution> sections within <executions>, for example if you want the assembly plugin to generate multiple files on one Maven run.
+
+```
 				<executions>
 					<execution>
-						<id>echodir</id>
-							Setting an id value is optional but it makes Maven output better readable (it uses the id values in there).
+						<id>echodir</id> <!--Setting an id value is optional but it makes Maven output better readable (it uses the id values in there).-->							
 						<goals>
-							<goal>run</goal>
-								You can specify more than one goal
+							<goal>run</goal> <!-- You can specify more than one goal -->								
 						</goals>
-						<phase>verify</phase>
-							ChatGPT listed 23 different phases. Quite a lot..
-						<inherited>false</inherited>
-							Only relevant for parent poms. Children will inherit execution values.
+						<phase>verify</phase> <!-- ChatGPT listed 23 different phases. Quite a lot.. -->							
+						<inherited>false</inherited> <!-- Only relevant for parent poms. Children will inherit execution values. -->							
 						<configuration>
 							<tasks>
 								<echo>Build Dir: ${project.build.directory}</echo>
 							</tasks>
 						</configuration>
 					</execution>
+```
+
+Below another example, I wanted to use the shade plugin in a aggregated (multi-module) project to create a single, runnable jar of all the modules. By default Maven will create a separate jar for every module. In the pom of the central module I had to put this to make it work:
+
+```
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.6.0</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<createDependencyReducedPom>false</createDependencyReducedPom>
+							<transformers>
+								<transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+									<mainClass>com.geertjankuip.garage.Garage</mainClass>
+								</transformer>
+							</transformers>
+						</configuration>
+					</execution>
+				</executions>
+```
+
+### Pluginmanagement
+
 		
-		Just like there is <dependencyManagement> there is also <pluginManagement>.
-		What you define here is not for the project itself but for every POM that inherits from this POM. The child must declare this project as parent to make it work. This makes it different 
-		from inheritance of the values of the dependencyManagement section, that can be inherited without a parent-child relationship (via import).
-		This here is from the documentation as example. A child inheriting does only have to declare groupId and artifactId to make the plugin work for itself.
+Just like there is <dependencyManagement> there is also <pluginManagement>. What you define here is not for the project itself but for every POM that inherits from this POM. The child must declare this project as parent to make it work. This makes it different from inheritance of the values of the dependencyManagement section, that can be inherited without a parent-child relationship (via import). This here is from the documentation as example. A child inheriting does only have to declare groupId and artifactId to make the plugin work for itself.
+
+```
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -373,25 +419,28 @@ The extensions tag can be set to true or false, default is false.
 					</executions>
 				</plugin>
 			</plugins>
+```
+
+### Build Type elements
 		
-	Build Type elements
-	Now we arrive at the elements that belong to the Build type and can only be used in <project><build>. No override from more nested build sections is possible. 	
-	First is <..Directory>. There are several types of directories that can be set. If the values of a *Directory element above is set as an absolute path 
-	(when their properties are expanded) then that directory is used. Otherwise, it is relative to the base build directory: ${project.basedir}.		
+#### source- and other directories
+	
+Now we arrive at the elements that belong to the Build type and can only be used in <project><build>. No override from more nested build sections is possible. First is <..Directory>. There are several types of directories that can be set. If the values of a *Directory element is set as an absolute path (when their properties are expanded) then that directory is used. Otherwise, it is relative to the base build directory: ${project.basedir}.
+
+```		
 	<build>
 		<sourceDirectory>${project.basedir}/src/main/java</sourceDirectory>
 		<testSourceDirectory>${project.basedir}/src/test/java</testSourceDirectory>
 		<outputDirectory>${project.basedir}/target/classes</outputDirectory>
 		<testOutputDirectory>${project.basedir}/target/test-classes</testOutputDirectory>
 	</build>
+```
+
+#### Extensions		
 		
-		
-	The other Build type element is extensions. Extensions are a bit obscure, as ChatGPT noted.
-	Extensions are different from a plugin as they do not have a specific task in the build process. Instead, they alter the build process itself. They are 
-	loaded before the plugins and change the way Maven works.
-	The example below is sort of typical. The wagon-ftp extension enables Maven to use FTP as a transport protocol when interacting with remote repositories. 
-	Maven doesn't have this capability by default.
-	It thus alters the specification of the methods Maven uses under the hood during build processes.
+The other Build type element is extensions. Extensions are a bit obscure, as ChatGPT noted. Extensions are different from a plugin as they do not have a specific task in the build process. Instead, they alter the build process itself. They are loaded before the plugins and change the way Maven works. The example below is sort of typical. The wagon-ftp extension enables Maven to use FTP as a transport protocol when interacting with remote repositories. Maven doesn't have this capability by default. It thus alters the specification of the methods Maven uses under the hood during build processes.
+
+```
 	<build>
 		<extensions>
 			<extension>
@@ -401,21 +450,20 @@ The extensions tag can be set to true or false, default is false.
 			</extension>
 		</extensions>
 	</build>	
-		
-		
-	<reporting>
-		Reporting is a top-level tag that. Just like 'build' configures the built product, 'reporting' configures the generated documentation.
-		Reporting is part of the 'site' phase and can include the generation of static webpages, javadoc content etc. There are specific plugins 
-		that can be used here, just as there are specific plugins for build. You can very precisely configure things, whereby the role of <execution> is played 
-		by <reportSet>. 
-		
-		Important note: the maven-javadoc-plugin can be found in the super-POM under <profile><build>, not under <reporting>. This is because 
-		maven-javadoc-plugin can be used to create a Jar with metadata that is packaged with the rest of the build product during the package phase, not the 'site' phase.	
+```		
 
-		One more note: the reporting section is only tied to the 'site' phase. Therefore you can say it doesn't have the impact that the <build><plugins> section has.
+### Reporting
 
-		Another note: 'mvn site' command automatically runs the maven-project-info-reports-plugin, even though this plugin isn't mentioned in the superPOM. You can turn this 
-		defalt behavior off with the Boolean excludeDefaults element. A more verbose way is shown below (note the amount of nesting):
+Reporting is a top-level tag that. Just like 'build' configures the built product, 'reporting' configures the generated documentation. Reporting is part of the 'site' phase and can include the generation of static webpages, javadoc content etc. There are specific plugins that can be used here, just as there are specific plugins for build. You can very precisely configure things, whereby the role of <execution> is played by <reportSet>. 
+		
+Important note: the maven-javadoc-plugin can be found in the super-POM under <profile><build>, not under <reporting>. This is because maven-javadoc-plugin can be used to create a Jar with metadata that is packaged with the rest of the build product during the package phase, not the 'site' phase.	
+
+One more note: the reporting section is only tied to the 'site' phase. Therefore you can say it doesn't have the impact that the <build><plugins> section has.
+
+Another note: 'mvn site' command automatically runs the maven-project-info-reports-plugin, even though this plugin isn't mentioned in the superPOM. You can turn this defalt behavior off with the Boolean excludeDefaults element. A more verbose way is shown below (note the amount of nesting):
+
+		
+```
 	<reporting>
 		<plugins>
 			<plugin>
@@ -430,9 +478,12 @@ The extensions tag can be set to true or false, default is false.
 				</reportSets>
 			</plugin>
 		</plugins>
+```
 
-		Another example with a heavy configuration. The maven-javadoc-plugin has multiple goals available, in this example we only want the javadoc goal (and not one of the other 15 goals). 
-		In the configuration there apparently is a 'link' value that can be set, which is done in the configuration setting.
+
+Another example with a heavy configuration. The maven-javadoc-plugin has multiple goals available, in this example we only want the javadoc goal (and not one of the other 15 goals). In the configuration there apparently is a 'link' value that can be set, which is done in the configuration setting.
+
+```
 	<reporting>
 		<plugins>
 			<plugin>
@@ -457,34 +508,48 @@ The extensions tag can be set to true or false, default is false.
 				</reportSets>
 			</plugin>
 		</plugins>
+```
 
-	<!-- More Project Information -->
-	<name>
-		Name differs from artifactId. The latter has a somewhat technical name with hyphens. Under name you can be poetic: Word, AutoCAD or 'GitHub Desktop'
-	<description>
-		A short, human readable description of the project.
-	<url>
-		The project's home page
-	<inceptionYear>
-		The year the project was first created.
-	<licenses>
-		Licenses are legal documents defining how and when a project (or parts of a project) may be used.
+### General project information
+
+``
+	<name> <!--Name differs from artifactId. The latter has a somewhat technical name with hyphens. Under name you can be poetic: Word, AutoCAD or 'GitHub Desktop'-->
+		
+	<description> <!-- A short, human readable description of the project. -->
+		
+	<url> <!-- The project's home page -->
+		
+	<inceptionYear> <!-- The year the project was first created. -->
+```
+
+### Licenses
+
+Licenses are legal documents defining how and when a project (or parts of a project) may be used. ```<distribution>```describes how the project may be legally distributed. The two stated methods are repo (they may be downloaded from a Maven repository) or manual (they must be manually installed).
+
+```
+	<licenses>		
 		<license>
 			<name>Apache-2.0</name>
 			<url>https://www.apache.org/licenses/LICENSE-2.0.txt</url>
-			<distribution>repo</distribution>
-				 This describes how the project may be legally distributed. The two stated methods are repo (they may be downloaded from a Maven repository) or manual (they must be manually installed).
+			<distribution>repo</distribution>				 
 			<comments>A business-friendly OSS license</comments>
 		</license>
+```
 
+### Organization, developers, contributors
+
+Under organization, only two child elements are allowed, name and url. For more, do a workaround via the properties section. 
+
+<developers> and <contributors> have many available fields, the same for each. Note that you can add extra info under the properties section.
+
+```
 	<organization>
-		Only two child elements are allowed. For more, do a workaround via the properties section.
+		
 		<name>Codehaus Mojo</name>
 		<url>http://mojo.codehaus.org</url>
 		
 	<developers>
 		<developer>
-			Many available fields. Note that you can add extra info under the properties section.
 			<id>jdoe</id>
 			<name>John Doe</name>
 			<email>jdoe@example.com</email>
@@ -500,20 +565,32 @@ The extensions tag can be set to true or false, default is false.
 				<picUrl>http://www.example.com/jdoe/pic</picUrl>
 			</properties>
 
-	<contributors>
-		Same fields as <developer>
+	<contributors> <!-- Same fields as <developers> -->		
+```
 
-	<!-- Environment Settings -->
-	<issueManagement>
-		This section contains info on defect tracking system. Mainly for documentation purposes.
+## Environment settings
+
+There are many high level tags concerning environment settings, therefore this big heading.
+
+
+### Issuemanagement
+
+This section contains info on defect tracking system. Mainly for documentation purposes.
+
+```
+	<issueManagement>		
 		<issueManagement>
 			<system>Bugzilla</system>
 			<url>http://127.0.0.1/bugzilla/</url>
-		</issueManagement>	
-		
-	<ciManagement>
-		Stands for Continuous Integration Management, tools that do automatic builds upon timing or triggers. Maven has captured a few of the recurring settings within the set of notifier elements.
-		Example:
+		</issueManagement>
+```
+
+### ciManagement
+
+Stands for Continuous Integration Management, tools that do automatic builds upon timing or triggers. Maven has captured a few of the recurring settings within the set of notifier elements. Example:
+
+```	
+	<ciManagement>		
 		<system>continuum</system>
 		<url>http://127.0.0.1:8080/continuum</url>
 		<notifiers>
@@ -526,12 +603,15 @@ The extensions tag can be set to true or false, default is false.
 				<configuration><address>continuum@127.0.0.1</address></configuration>
 			</notifier>
 		</notifiers>
+```
 
+### Mailinglists
 
+Mailing lists are a great tool for keeping in touch with people about a project. Most mailing lists are for developers and users. Example from docs:
 
+```
 	<mailingLists>
-		Mailing lists are a great tool for keeping in touch with people about a project. Most mailing lists are for developers and users.
-		Example from docs:
+		
 		<mailingList>
 			<name>User List</name>
 			<subscribe>user-subscribe@127.0.0.1</subscribe>
@@ -542,96 +622,114 @@ The extensions tag can be set to true or false, default is false.
 				<otherArchive>http://base.google.com/base/1/127.0.0.1</otherArchive>
 			</otherArchives>
 		</mailingList>
+```
 
+### SCM
+
+Software Configuration Management, also called Source Code/Control Management or, succinctly, version control.
+
+```
 	<scm>
-		Software Configuration Management, also called Source Code/Control Management or, succinctly, version control.
+		
 		<connection>scm:svn:http://127.0.0.1/svn/my-project</connection>
 		<developerConnection>scm:svn:https://127.0.0.1/svn/my-project</developerConnection>
 		<tag>HEAD</tag>
 		<url>http://127.0.0.1/websvn/my-project</url>
-		
-		
-	<prerequisites>
-		The POM may have certain prerequisites in order to execute correctly. The only element that exists as a 
-		prerequisite in POM 4.0.0 is the maven element, which takes a minimum version number.
+```
+
+### Prerequisites
+
+The POM may have certain prerequisites in order to execute correctly. The only element that exists as a prerequisite in POM 4.0.0 is the maven element, which takes a minimum version number.	
+
+```		
+	<prerequisites>		
 		<maven>2.0.6</maven>
-		
+```
+
+### Repositories
+
+Whenever a project has a dependency upon an artifact, Maven will first attempt to use a local copy of the specified artifact. If that artifact does not exist in the local repository, it will then attempt to download from a remote repository. It uses default locations but if you want to modify the defaults, do it here.
+
+The ```<updatePolicy>``` element specifies how often Maven tries to update its local repository from the remote repositories. The choices are: always, daily (default), interval:X (where X is an integer in minutes) or never (only downloads if not yet existing in the local repository).
+
+The ```<checksumPolicy>```tag: When Maven deploys files to the repository, it also deploys corresponding checksum files. Your options are to ignore, fail, or warn on missing or incorrect checksums. The default value is warn.
+
+The ```<id>```tag connects the repository with the servers from settings.xml. Its default value is 'default'. The id is used also in the local repository metadata to store the origin.
+
+```	
 	<repositories>
-		Whenever a project has a dependency upon an artifact, Maven will first attempt to use a local copy of the 
-		specified artifact. If that artifact does not exist in the local repository, it will then attempt to download 
-		from a remote repository. It uses default locations but if you want to modify the defaults, do it here.
+
 		<repository>
 			<releases>
-				<enabled>false</enabled>
-					true or false for whether this repository is enabled for the respective type (releases or snapshots). By default this is true.
+				<enabled>false</enabled> <!-- true or false for whether this repository is enabled for the respective type (releases or snapshots). By default this is true. -->					
 			</releases>
+
 			<snapshots>
-				<enabled>true</enabled>
-					true or false for whether this repository is enabled for the respective type (releases or snapshots). By default this is true.
-				<updatePolicy>always</updatePolicy>
-					This element specifies how often Maven tries to update its local repository from the remote repositories.
-					 The choices are: always, daily (default), interval:X (where X is an integer in minutes) or never (only downloads if not yet existing in the local repository).
-				<checksumPolicy>fail</checksumPolicy>
-					When Maven deploys files to the repository, it also deploys corresponding checksum files. Your options are to ignore, fail, or warn on 
-					missing or incorrect checksums. The default value is warn.
+				<enabled>true</enabled> <!-- default true -->					
+				<updatePolicy>always</updatePolicy>					
+				<checksumPolicy>fail</checksumPolicy>					
 			</snapshots>
-			<name>Nexus Snapshots</name>
-				An optional name for the repository. Used as label when emitting log messages related to this repository.
-			<id>snapshots-repo</id>
-				The repository id is mandatory and connects the repository with the servers from settings.xml. 
-				Its default value is default. The id is used also in the local repository metadata to store the origin.
+
+			<name>Nexus Snapshots</name> <!-- An optional name for the repository. Used as label when emitting log messages related to this repository. -->
+				
+			<id>snapshots-repo</id> <!-- default value is 'default' -->
+				
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-			<layout>default</layout>
-				You probably never use this, has to do with legacy Maven 1. Default value is 'default'
+
+			<layout>default</layout> <!-- You probably never use this, has to do with legacy Maven 1. Default value is 'default' -->
+				
 		</repository>	
-	
+```
+
+### Pluginrepositories
+
+The structure of the pluginRepositories element block is similar to the repositories element. They could have merged them into one.
+
+```	
 	<pluginRepositories>
-		The structure of the pluginRepositories element block is similar to the repositories element. The could have merged them into one.
-		
+```
+
+### Distributionmanagement
+
+This section defines how Maven should distribute/publish the project's output, such as uploading artifacts to a repository, deploying to a website, handling relocation or publishing metadata. It is used by the deploy phase (mvn deploy) and by the site:deploy goal.	
+
+```		
 	<distributionManagement>
-		This section defines how Maven should distribute/publish the project's output, such as uploading artifacts to a repository, deploying to a website, 
-		handling relocation or publishing metadata. It is used by the deploy phase (mvn deploy) and by the site:deploy goal.
-		<repository>
-			Specifies the release repository where Maven should upload your final (non-snapshot) artifacts.
+
+		<repository> <!-- Specifies the release repository where Maven should upload your final (non-snapshot) artifacts. -->			
 			<id>releases</id>
 			<url>https://repo.mycompany.com/releases</url>
 		</repository>
 		
-		<snapshotRepository>
-			Specifies the snapshot repository for deploying snapshot versions (1.0.0-SNAPSHOT). This is kept separate from <repository> 
-			because snapshot artifacts have different handling: they are mutable, versioned with timestamps, etc.
+		<snapshotRepository> <!-- Specifies the snapshot repository for deploying snapshot versions (1.0.0-SNAPSHOT). This is kept separate from <repository> because snapshot artifacts have different handling: they are mutable, versioned with timestamps, etc. -->			
 			<id>snapshots</id>
 			<url>https://repo.mycompany.com/snapshots</url>
 		</snapshotRepository>
 		
-		<site>
-			Defines where to deploy your project's generated documentation site (mvn site:deploy):
+		<site> <!-- Defines where to deploy your project's generated documentation site (mvn site:deploy) -->
+			
 			<id>my-site</id>
 			<url>scp://example.com/www/docs/project</url>
 		</site>
 		
-		<relocation>
-			Used to deprecate or move a project to a new groupId/artifactId/version. This tells consumers that your artifact has been relocated.
+		<relocation> <!-- Used to deprecate or move a project to a new groupId/artifactId/version. This tells consumers that your artifact has been relocated. -->			
 			<groupId>com.newgroup</groupId>
 			<artifactId>new-artifact</artifactId>
 			<version>2.0.0</version>
 			<message>This artifact has moved</message>
 		</relocation>
 		
-		<downloadUrl>https://downloads.example.com/artifacts/myapp-1.0.0.jar</downloadUrl>
-			Deprecated because nowadays it is managed automatically. Used to specify an external URL where the binary can be downloaded.
+		<downloadUrl>https://downloads.example.com/artifacts/myapp-1.0.0.jar</downloadUrl> <!-- Deprecated because nowadays it is managed automatically. Used to specify an external URL where the binary can be downloaded. -->	
 			
-		<status>released</status>
-			Used for publishing the stability or maturity level of the project. Valid values are converted, partner, deployed, verified, released.
-			
-		
-	<profiles>
-		With profiles you can sort of overhaul any pom setting. Key is the <activation> section within <profile>. 
-		If you want to know which profile will be activated, use mvn help:active-profiles . Profiles can be activated manually via the -P flag, followed 
-		by a comma-delimited list of profile IDs to use.
-		Detailed info on https://maven.apache.org/guides/introduction/introduction-to-profiles.html .
-		Here a sample:		
+		<status>released</status> <!-- Used for publishing the stability or maturity level of the project. Valid values are converted, partner, deployed, verified, released. -->
+```
 
+### Profiles			
+
+With profiles you can sort of overhaul any pom setting. Key is the <activation> section within <profile>. If you want to know which profile will be activated, use ```mvn help:active-profiles```. Profiles can be activated manually via the -P flag, followed by a comma-delimited list of profile IDs to use. Detailed info [here](https://maven.apache.org/guides/introduction/introduction-to-profiles.html). Here a sample:			
+
+```		
+	<profiles>
 		<profile>
 			<id>test</id>
 			<activation>
@@ -653,7 +751,7 @@ The extensions tag can be set to true or false, default is false.
 				</file>
 			</activation>
 			
-			If a profile is activated, you can configure with the following tags:
+			// If a profile is activated, you can configure with the following tags:
 
 			<id>test</id>
 			<activation>...</activation>
