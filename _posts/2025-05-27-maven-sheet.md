@@ -7,7 +7,7 @@ Nice example for a pom.xml in action: [Maven's base pom](https://github.com/apac
 
 ### Minimal POM
 
-A minimal pom can do with very little. Use modelVersion (use 4.0.0). The properties I added here can be omitted but it helps to add them, Maven output might complain if you omit it. The 'maven.compiler.release' tag is a wondeful thing.
+A minimal pom can do with very little. Use modelVersion (use 4.0.0). The properties I added here can be omitted but it helps to add them, Maven output might complain if you omit it. ChatGPT strongly advised me to enforce UTF-8 for consistency across platforms. Btw the 'maven.compiler.release' tag is a wondeful thing.
 
 ```
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -32,149 +32,161 @@ A minimal pom can do with very little. Use modelVersion (use 4.0.0). The propert
 	<packaging> jar (default), war, rar, pom, ear, maven-plugin, ejb.
 ```
 
-Dependencies is where it began with Maven. Version is mandatory unless declared in dependencyManagement or parent POM.
+### Dependencies
+
+Dependencies is where it began with Maven. groupId and artifactId mandatory. Version is mandatory unless declared in dependencyManagement or parent POM. The basics:
 
 ```
-
 	<dependencies>
 		<dependency>
 			<groupId>
 			<artifactId>
-			<version>
-				mandatory, unless declared in parent pom 
-            or <dependencyManagement>
-			<type>
-				jar (default),war,ejb,ejb-client,test-jar,
-            java-source,javadoc,bundle
-			<classifier>
-				postfix to version, like -tests, -sources or 
-            -javadoc
+			<version> <!-- mandatory, unless declared in parent pom or <dependencyManagement> -->
+			<type> <!-- jar(default),war,ejb,ejb-client,test-jar, java-source,javadoc,bundle -->
+			<classifier> <!-- postfix to version, like -tests, -sources or -javadoc  -->
+```
+
+Scope is an important one and can have the values compile(default), provided, runtime, test or system.
+
+```         
 			<scope>
-				compile (default), provided, runtime, test, system
-				compile dependencies are available in all classpaths 
-            of a project. Furthermore, those dependencies are 
-            propagated to dependent projects.
-				provided means that at runtime you expect the JDK to 
-            provide the dependency.
-				runtime: Maven includes a dependency with this scope 
-            in the runtime and test classpaths, but not the 
-            compile classpath.
-				test: dependency not required for normal use, only 
-            available for the test compilation and execution 
-            phases. Not transitive.
-				system: see below.
+```
+
+- **compile** (default). Dependencies are available in all classpaths of a project. Furthermore, those dependencies are propagated to dependent projects.
+- **provided**. At runtime you expect the JDK to provide the dependency.
+- **runtime**. Maven includes a dependency with this scope in the runtime and test classpaths, but not the compile classpath.
+- **test**. Dependency not required for normal use, only available for the test compilation and execution phases. Not transitive.
+- **system**. See below. Requires <systempath> to be set.
+
+```
 			<systemPath>
-				Is used only if the dependency scope is system. 
-            The path must be absolute, so it is recommended 
-            to use a property to specify the machine-specific path. 
-				When scope is system, the depencency will not be 
-            searched for in repositories but only on the path 
-            provided here. You must ensure the dependency is 
-            available on the path on every machine in every phase.
-				Note: this feature is deprecated.
-			<optional>
-				false(default). If true, dependency is included but 
-            if this project becomes a dependency for some other 
-            project, it is not included anymore. Prevents including 
-            too many unused transitive dependencies (think of all 
-            possible database drivers).
+```
+
+Is used only if the dependency scope is system. The path must be absolute, so it is recommended to use a property to specify the machine-specific path. When scope is system, the depencency will not be searched for in repositories but only on the path provided here. You must ensure the dependency is available on the path on every machine in every phase. Note: this feature is deprecated.
+
+```
+
+			<optional> <!-- default is false -->
+```
+
+If <optional is set to truee, dependency is included but if this project becomes a dependency for some other project, it is not included anymore. Prevents including too many unused transitive dependencies (think of all possible database drivers).
+
+```
 			<exclusions>
-				Under exclusions you list transitive dependencies of 
-            the dependency at hand that you want to exclude for 
-            some reason.
-				It might still be possible that this excluded dependency 
-            enters your project via another route, and that is okay 
-            and that might even be your aim.
-				Maven itself calls exclusions an option of 'last resort.'
-				You can use wildcards * in groupId and artifactId to 
-            exclude all transitive dependencies.
 				<exclusion>
 					<groupId>org.apache.maven</groupId>
 					<artifactId>maven-core</artifactId>
 				</exclusion>
-				
+			</exclusions>
+		</dependency>
+	</dependencies>
+```
+
+Under exclusions you list transitive dependencies of the dependency at hand that you want to exclude for some reason. It might still be possible that this excluded dependency enters your project via another route, and that is okay and that might even be your aim. Maven itself calls exclusions an option of 'last resort.' You can use wildcards * in groupId and artifactId to exclude all transitive dependencies.
+
+### Parent
+
+The parent's packaging value must be 'pom' if you declare a parent. All values of parent pom are inherited, except for artifactId, name, prerequisites and profiles. There is a super POM from which every pom inherits. To see how the super pom affects your pom, make your own pom and use 'mvn help:effective-pom'. An effective use of parent pom is centralized uniform version resolution. Create a dependencyManagement section in the parent and declare versions of dependencies. In the child poms you still have to declare the dependency but you can omit version number. Always check the dependency tree to avoid unwanted effects. <relativePath> is optional. Tells where to search for the parent pom. If not provided, will search in the local and remote repositories.
+
+```			
 	<parent>
-		The parent's packaging value must be 'pom' if you declare a 
-      parent. All values of parent pom are inherited, except for 
-      artifactId, name, prerequisites and profiles.
-		There is a super POM from which every pom inherits. To see 
-      how the super pom affects your pom, make your own pom and use 
-      'mvn help:effective-pom'.
-		An effective use of parent pom is centralized uniform version 
-      resolution. Create a dependencyManagement section in the parent 
-      and declare versions of dependencies. In the child poms you 
-		still have to declare the dependency but you can omit version 
-      number. Always check the dependency tree to avoid unwanted effects.
 		<groupId>org.codehaus.mojo</groupId>
 		<artifactId>my-parent</artifactId>
 		<version>2.0</version>
-		<relativePath>../my-parent</relativePath>
-			Optional. Tells where to search for the parent pom. If not 
-         provided, will search in the local and remote repositories.
-			
-	<modules>	
-		For modular builds to work, packaging of parent pom must be set to 
-      'pom'. Poms of modules do not have to declare a parent. It is called 
-      'aggregation'.
-		It is possible and might be good practice to combine 'inheritance' 
-      with 'aggregation.'
-		Here you list the module base directories, or the path of the pom.xml 
-      files that reside in those directories. Module order is not important 
-      here, Maven figures it out itself based on the module poms.
+		<relativePath>../my-parent</relativePath>  <!-- optional -->
+	</parent>
+```
+
+### Modules
+
+For modular builds to work, packaging of parent pom must be set to 'pom'. Poms of modules do not have to declare a parent. It is called 'aggregation'. It is possible and might be good practice to combine 'inheritance' with 'aggregation.' In <modules> you list the names of the module base directories, or the path of the pom.xml files that reside in those directories. Module order is not important here, Maven figures it out itself based on the module poms. If a module requires another module, it will have to declare that other module as a dependency and that gives Maven the possibility to create a dependency tree.
+
+```
+	<modules>
 		<module>my-project</module>
 		<module>another-project</module>
 		<module>third-project/pom-example.xml</module>	
-			
+	</modules>
+```
+
+#### Modules, file placement and naming
+
+I was confused about naming conventions for modules. In Java world you use dot.case, in Maven world kebab-case (with hyphens). ChatGPT explained these two can live together. For Maven, name the module folders kebab-case and refer to them in your poms with that name. For module-info.java, use dot.case, yes, for the same module. For every module, the pom.xml must be in the root, while the module-info.jave file must ly deeper, in the Java folder, just beneath where the groupId folder names start. In general, every module has an extensive directory tree as to follow Maven conventions. Summary:
+
+```
+my-project/my-module/pom.xml
+my-project/my-module/src/main/java/module-info.txt
+my-project/my-module/src/main/java/com/geertjankuip/somename/<here are the packages, java files>
+```
+
+### Dependency management			
+
+
+Here you resolves version conflicts of transitive dependencies. Without dependencyManagement, Maven picks the nearest version of a transitive dependency to your project or the first it encounters. With dependencyManagement you can decide which version to use of a transitive dependency. 
+
+#### Minimum and maximum versions
+
+There is special syntax that gives precise control over allowed versions. 
+
+Difference between soft and hard requirement and using of either [] or (). Soft requirement: version written without brackets or parentheses. 'Use 1.0 if no other version appears earlier in the dependency tree.' Hard requirement: use brackets/parentheses. 
+[1.0] - use only 1.0 ; 
+[1.0,) - use 1.0 or higher ; (,1.0] use 1.0 or lower ; 
+[1.0,2.0)- any version between 1.0 and 2.0 but not 2.0 itself; 
+(,1.2),(1.2) - any version except 1.2 ; 
+(,1.2],[1.4,) - (1.2 or lower) or (1.4 or higher)
+
+Maven has its own rules for reading version strings and comparing different versions (which one is greater). Too much detail to describe here.
+
+Transitive dependencies can be excluded, just like in the <dependencies> section.
+
+```			
 	<dependencyManagement>
-		Resolves version conflicts of transitive dependencies.
-		Without dependencyManagement, Maven picks the nearest version of a 
-      transitive dependency to your project or the first it encounters.
-		With dependencyManagement you can decide which version to use of a 
-      transitive dependency.
-		The dependency has a child tag 'scope' equal to that of regular 
-      dependency but with one extra scope type, namely 'import'.
 		<dependencies>
 			<dependency>
 				<groupId>
 				<artifactId>
 				<version>
-					Special syntax. Difference between soft and hard requirement 
-               and using of either [] or ().
-					Soft requirement: version written without brackets or parentheses. 
-               'Use 1.0 if no other version appears earlier in the dependency tree.'
-					Hard requirement: use brackets/parentheses. [1.0] - use only 1.0 ; 
-               [1.0,) - use 1.0 or higher ; (,1.0] use 1.0 or lower ; 
-               [1.0,2.0)- any version between 1.0 and 2.0 but not 2.0 itself.
-					(,1.2),(1.2) - any version except 1.2 ; (,1.2],[1.4,) - (1.2 or lower) 
-               or (1.4 or higher)
-					
-					Maven has its own rules for reading version strings and comparing 
-               different versions (which one is greater). Too much detail to 
-               describe here.
 				<exclusions>
 					<exclusion>
 						<groupId>com.group.something</groupId>
 						<artifactId>excluded-artifact</artifactId>
 					</exclusion>
-				<type>
-					jar (default),war,ejb,ejb-client,test-jar,java-source,javadoc,bundle,pom,bar. The latter type might be a custom type, ChatGPT didn't recognize it.	
-					Note that 'pom' can be a type here, but not in a dependency that is not part of the dependencyManagement section.
-				<scope>
-					compile (default), provided, runtime, test, system, import (the latter only exists in context of dependencyManagement)
-					For explanation on everything except 'import' see 'dependencies.'
-					import: Requires 'pom' as dependency type. Projects can import managed dependencies from other projects. This is accomplished by declaring a POM artifact as a dependency with a scope of "import".
-					The typical practice is to create a 'BOM' (Bill of Materials). This is a parent pom.xml with packaging value of 'pom'. It has a dependencyManagement section where you specify the versions of libraries, and it can be used by different projects to inherit from.
-					The BOM has the form of the simplest java project, only a root folder (named after artifactID) with a pom.xml file in it.
-					The BOM can be put into a central repository and used by everyone for consistency.
-					When using import, beware of circular dependencies and never do import a pom that is in a submodule.
+```
+
+#### Type and scope
+
+The <type> tag, child of <dependency>, has jar as default and the options differ from those of dependency declarations in <dependencies>. Note that 'pom' can be a type here, but not in a dependency that is not part of the dependencyManagement section.
+
+There is a child tag <scope> equal to that of regular dependency but with one extra scope type, namely 'import'. Import requires 'pom' as dependency type. Projects can import managed dependencies from other projects. This is accomplished by declaring a POM artifact as a dependency with a scope of "import". The typical practice is to create a 'BOM' (Bill of Materials). This is a parent pom.xml with packaging value of 'pom'. It has a dependencyManagement section where you specify the versions of libraries, and it can be used by different projects to inherit from. The BOM has the form of the simplest java project, only a root folder (named after artifactID) with a pom.xml file in it. The BOM can be put into a central repository and used by everyone for consistency. When using import, beware of circular dependencies and never do import a pom that is in a submodule.
+
+```
+
+				<type> <!-- jar (default),war,ejb,ejb-client,test-jar,java-source,javadoc,bundle,pom,bar -->
+					
+				<scope> <!-- compile (default), provided, runtime, test, system, import -->
+```
+
+### Properties
+
+Maven properties can be called by value placeholders (${varName}), anywhere in the POM. You can refer to specific variables:
+- ${env.X} refers to environment variable X, as in ${env.PATH}. The names of environment variables are normalized to all upper-case.
+- ${project.X} refers to variable in pom, as in ${project.version}
+- ${settings.X} refers to variable in settings.xml, as in ${settings.offline}. It doesn't work the other way around, as settings.xml is loaded before pom.xml.
+- ${java.X} refers to Java system variable, such as ${java.home}.
+- ${X} refers to a variable set under the properties tag, such as ${someVar}.
+
+The sample below shows 2 self-made properties and one property with a special meaning, the name is defined.
+
+```
 	<properties>
-		Maven properties are value placeholders. They can be used anywhere in the pom with notation ${X}.
-		You can refer to specific variables:
-		- ${env.X} refers to environment variable X, as in ${env.PATH}. The names of environment variables are normalized to all upper-case.
-		- ${project.X} refers to variable in pom, as in ${project.version}
-		- ${settings.X} refers to variable in settings.xml, as in ${settings.offline}. It doesn't work the other way around, as settings.xml is loaded before pom.xml.
-		- ${java.X} refers to Java system variable, such as ${java.home}.
-		- ${X} refers to a variable set under the properties tag, such as ${someVar}.
+		<someVar>value</someVar>
+		<anotherVar>value</anotherVar>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+```
+
+		
+
 		
 
 	<!-- Build Settings -->
@@ -189,7 +201,7 @@ Dependencies is where it began with Maven. Version is mandatory unless declared 
 		can. ChatGPT struggled with it and suggested that even though the .xsd is very strict, Maven allows a <plugin> section in <profile><build>.
 		So it is just <..Directory> (there are several) and <extensions> that cannot be used in <profile><build>.
 		
-		
+```		
 		<defaultGoal>install</defaultGoal>
 			If no goal is provided somehow, Maven resorts to this value. It means you can just type 'mvn' in the command line.
 		<directory>
