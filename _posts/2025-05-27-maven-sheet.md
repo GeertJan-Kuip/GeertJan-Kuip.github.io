@@ -512,14 +512,13 @@ Another example with a heavy configuration. The maven-javadoc-plugin has multipl
 
 ### General project information
 
+Name differs from artifactId. The latter has a somewhat technical name with hyphens. Under name you can be poetic: Word, AutoCAD or 'GitHub Desktop'. Description gives a short, human readable description of the project. Url provides the project's homepage. Inceptionyear is when the project was first created.
+
 ```
-	<name> <!--Name differs from artifactId. The latter has a somewhat technical name with hyphens. Under name you can be poetic: Word, AutoCAD or 'GitHub Desktop'-->
-		
-	<description> <!-- A short, human readable description of the project. -->
-		
-	<url> <!-- The project's home page -->
-		
-	<inceptionYear> <!-- The year the project was first created. -->
+	<name>		
+	<description>		
+	<url>		
+	<inceptionYear>
 ```
 
 ### Licenses
@@ -540,7 +539,7 @@ Licenses are legal documents defining how and when a project (or parts of a proj
 
 Under organization, only two child elements are allowed, name and url. For more, do a workaround via the properties section. 
 
-<developers> and <contributors> have many available fields, the same for each. Note that you can add extra info under the properties section.
+```<developers>``` and ```<contributors>``` have many available fields, the same for each. Note that you can add extra info under the properties section.
 
 ```
 	<organization>
@@ -610,8 +609,7 @@ Stands for Continuous Integration Management, tools that do automatic builds upo
 Mailing lists are a great tool for keeping in touch with people about a project. Most mailing lists are for developers and users. Example from docs:
 
 ```
-	<mailingLists>
-		
+	<mailingLists>		
 		<mailingList>
 			<name>User List</name>
 			<subscribe>user-subscribe@127.0.0.1</subscribe>
@@ -726,7 +724,7 @@ This section defines how Maven should distribute/publish the project's output, s
 
 ### Profiles			
 
-With profiles you can sort of overhaul any pom setting. Key is the <activation> section within <profile>. If you want to know which profile will be activated, use ```mvn help:active-profiles```. Profiles can be activated manually via the -P flag, followed by a comma-delimited list of profile IDs to use. Detailed info [here](https://maven.apache.org/guides/introduction/introduction-to-profiles.html). Here a sample:			
+With profiles you can sort of overhaul any pom setting. Key is the ```<activation>``` section within ```<profile>```. If you want to know which profile will be activated, use ```mvn help:active-profiles```. Profiles can be activated manually via the -P flag, followed by a comma-delimited list of profile IDs to use. Detailed info [here](https://maven.apache.org/guides/introduction/introduction-to-profiles.html). Here a sample:			
 
 ```		
 	<profiles>
