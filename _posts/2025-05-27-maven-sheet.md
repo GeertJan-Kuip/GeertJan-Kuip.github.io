@@ -1,6 +1,6 @@
 # Maven sheet
 
-Below a lot of annotated .xml file with all of the relevant tags that can be used in Maven's pom.xml. To be used as a reference. It looks messy, work in progress. I used Maven documentation and ChatGPT as guide. [This page](https://maven.apache.org/pom.html) gives much explanation and I used it a lot. 
+Below a lot of annotated .xml file with all of the relevant tags that can be used in Maven's pom.xml. To be used as a reference. It is a work in progress. I used Maven documentation and ChatGPT as guide. [This page](https://maven.apache.org/pom.html) gives much explanation and I used it a lot. 
 
 Nice example for a pom.xml in action: [Maven's base pom](https://github.com/apache/maven/blob/master/pom.xml)
 
@@ -217,7 +217,7 @@ Some confusion exists about ```<plugins>```. https://maven.apache.org/xsd/maven-
 
 #### Filters
 
-The default value for <filters> is ${project.basedir}/src/main/filters/. The file(s) you put here contain key-value pairs that will be used to replace the appropriate placeholders in configuration files, following the principles of resource filtering. Resource filtering let you adjust configuration files, so that for example the version mentioned in the pom or in a filter will also be part of application.properties. Perfect for packaged versions that need actual and relevant info in their metadata/config files.
+The default value for ```<filters>``` is ${project.basedir}/src/main/filters/. The file(s) you put here contain key-value pairs that will be used to replace the appropriate placeholders in configuration files, following the principles of resource filtering. Resource filtering let you adjust configuration files, so that for example the version mentioned in the pom or in a filter will also be part of application.properties. Perfect for packaged versions that need actual and relevant info in their metadata/config files.
 
 Filter files have a .properties extension and their default location is ${project.basedir}/src/main/filters/. Nevertheless, you must specify them individually. No wildcards possible. What you can do is put a property-placeholder here (${env.filter}) and supply the filter path as -Denv.filter=PathToFile argument in the build command.
 
@@ -288,9 +288,9 @@ Plugins are very relevant in customizing builds. You often need to use the ```<e
 
 The extensions tag can be set to true or false, default is false. Some plugins need this set to true to be able to do something. Under the hood it means that such plugins start to mess with Maven internals, possibly with side effects. Therefore it needs a specific declaration, or you might say permission, to do this.
 
-```
-			
+```			
 				<extensions>false</extensions> <!-- Default value for extensions is 'false'. -->
+```
 
 #### Inherited
 
