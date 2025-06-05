@@ -2,9 +2,9 @@
 
 The Maven jar plugin can be configured in pom.xml to customize the packaged product. This configuring takes mostly place in the plugins section of the build section. Documentation can be found [here](https://maven.apache.org/plugins/maven-jar-plugin/).
 
-A key line from the documentation: "The plugin uses Maven Archiver to handle jar content and manifest configuration." Maven Archiver belongs to the shared components, which can be utilized by plugins. Its documentation is [here](https://maven.apache.org/shared/maven-archiver/).
+A key line from the documentation: _"The plugin uses Maven Archiver to handle jar content and manifest configuration."_ Maven Archiver belongs to the shared components, which can be utilized by plugins. Its documentation is [here](https://maven.apache.org/shared/maven-archiver/).
 
-Furthermore, the jar plugin has two goals:
+For the record, the jar plugin has two goals:
 
 - jar:jar create a jar file for your project classes including resources
 - jar:test-jar create a jar file for your project test classes
@@ -80,7 +80,7 @@ You can do this as well: ```<include>**/service/*</include>```. This includes ev
 
 #### Includes is a whitelist
 
-The <includes> section acts as a whitelist and will be processed before <excludes>, even if if <excludes> is declared first. You can specify a selection with <includes> and then remove something from this selection using <excludes>. The process is called file filtering, which is a common pattern in Maven.
+The <includes> section acts as a whitelist and will be processed before ```<excludes>```, even if if <excludes> is declared first. You can specify a selection with ```<includes>``` and then remove something from this selection using <excludes>. The process is called file filtering, which is a common pattern in Maven.
 
 ### Multiple products
 
