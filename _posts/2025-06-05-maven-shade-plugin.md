@@ -60,11 +60,16 @@ If you want to minimize the size of the resulting jar you can omit the unused cl
 
 You can have more fine grained control with filters, includes and excludes, for example if you want to keep some but not all unused classes in your jar file.
 
-### Discarding the skinny jar
+### Naming the fat and skinny jar
 
-According to the documentation, the fat jar will replace the default jar as the only file being produced. ChatGPT disagrees and says that by default, if you configure the shade plugin with an executions section, you get two jars, one default skinny and one fat according to your specific configuration. 
+According to the documentation, the fat jar will replace the default jar as the only file being produced. ChatGPT disagrees and says that by default, if you configure the shade plugin with an executions section, you get two jars, one default skinny and one fat according to your specific configuration. **Update:** I tried and ChatGPT seems to be right, there is always a skinny jar.
 
-Nevertheless, if you only want the fat jar, there is an easy way using ```<shadedArtifactAttached>``` (set it to false) and ```<shadedArtifactId>```. If you set ```<shadedArtifactAttached>``` to true you get two files. Code:
+The tag ```<shadedArtifactAttached>``` does not prevent the skinny jar to be produced but lets you choose which of the two jars will have the default name. Its default value is false, which means that the fat jar will be named ```artifact-name-2-1.0-SNAPSHOT.jar``` and the skinny jar will have a prefix and be named ```original-artifact-name-2-1.0-SNAPSHOT.jar```. 
+
+If you set ```<shadedArtifactAttached>``` to true, the naming will be different. The skinny jar gets the base filename, while the fat jar will get the suffix 'shaded' (```artifact-name-2-1.0-SNAPSHOT-shaded.jar```). 
+
+
+```<shadedArtifactId>``` can be used but only works if ```<shadedArtifactAttached>``` is set to true. It replaces the regular name based on artifactId with your value, resulting in a name like ```somerandomnewname-1.0-SNAPSHOT-shaded.jar```. The skinny jar will have a regular name.
 
 ```
     <plugin>
@@ -78,13 +83,15 @@ Nevertheless, if you only want the fat jar, there is an easy way using ```<shade
             <goal>shade</goal>
           </goals>
           <configuration>
-            <shadedArtifactAttached>false</shadedArtifactAttached>
+            <shadedArtifactAttached>true</shadedArtifactAttached> <!-- '-shaded' suffix -->
             <shadedArtifactId>${project.artifactId}</shadedArtifactId>
           </configuration>
         </execution>
       </executions>
     </plugin>
 ```
+
+Btw with ChatGPT I tried to make a configuration in which only a skinny jar is created but didn't succeed.
 
 ### Executable JAR
 
