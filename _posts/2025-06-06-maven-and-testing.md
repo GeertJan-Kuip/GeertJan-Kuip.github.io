@@ -43,9 +43,10 @@ JUnit has a set of annotations which I have categorized and described below. Tog
 
 Annotations indicating testclass or -method
 
+|    |    |
 |----|----|
-|@Test | Marks a test method  |
-|@ParameterizedTest | Marks a test that runs multiple times. Requires a [@source annotation](https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-sources). There are many types of source annotations|
+|@Test |Marks a test method  |
+|@ParameterizedTest |Marks a test that runs multiple times. Requires a [@source annotation](https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-sources). There are many types of source annotations|
 |@ParameterizedClass | Does the same for a whole class. The @Test methods in the class must all require the type of arguments that the source annotation provides | 
 
 @RepeatedTest
