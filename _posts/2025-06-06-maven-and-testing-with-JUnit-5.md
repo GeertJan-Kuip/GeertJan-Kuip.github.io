@@ -53,7 +53,7 @@ Annotations indicating testclass or -method
 |@TestTemplate |Marks a test that will be executed multiple times using a stream of ```<TestTemplateInvocationContext>``` instances. The test must be able to withstand multiple 'contexts'. The stream of TestTemplateInvocationContext objects is contained in a ```<TestTemplateInvocationContextProvider>```, which you must create and then feed to the method annotated with @TestTemplate using '@ExtendWith.' The latter is the general way of providing contexts to methods.|
 |@ClassTemplate |Same as @TestTemplate but here a class is created with methods in it that will all be tested with a context provided by ClassTemplateInvocationContextProvider, a class that has a 'provideClassTemplateInvocationContexts' method that returns a stream or iterable of ClassTemplateInvocationContext objects.|
 
-|_Execution order_|     |
+|Execution order|   -  |
 |@TestClassOrder| Marking class with this annotation allows you to define in which order nested classes will be executed. It is also possible to define the order of execution of first-order classes, it requires configuration in 'src/test/resources/junit-platform.properties' plus adding the @Order annotation to classes you want to order (or not, if you choose to order alphabetically for example).|
 |@TestMethodOrder| Same as previous, but plays out one level lower. Apply this to the class (with OrderAnnotation.class as argument) and annotate the test methods in the class with @Order(Integer ordernumber).|
 
