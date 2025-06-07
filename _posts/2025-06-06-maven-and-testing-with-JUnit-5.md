@@ -46,44 +46,44 @@ Annotations indicating testclass or -method
 |    |    |
 |----|----|
 |@Test |Marks a test method  |
-|@ParameterizedTest |Marks a test that runs multiple times. Requires a [source annotation](https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-sources). There are many types of source annotations|
-|@ParameterizedClass | Does the same for a whole class. The @Test methods in the class must all require the type of arguments that the source annotation provides | 
-|@RepeatedTest |Does the same test multiple times. Besides n you can set parameters like 'failureThreshold'|
-|@TestFactory |Marks methods that generate a stream, or some object that can be converted to a stream, of type ```<DynamicTest>``` or ```<DynamicNode>```. A DynamicTest object is composed of a display name (String) and a test of type ```<Executable>```, which is a functional interface representing a test. It typically has an 'assert' in its body. It throws a Throwable which makes it different from Runnable. DynamicNode is composed of a display name and an Iterable or Stream of ```<DynamicNode>``` objects. DynamicNode is the abstract parent class of both DynamicNode and DynamicTest. It means you can do nesting with it.|
-|@TestTemplate |Marks a test that will be executed multiple times using a stream of ```<TestTemplateInvocationContext>``` instances. The test must be able to withstand multiple 'contexts'. The stream of TestTemplateInvocationContext objects is contained in a ```<TestTemplateInvocationContext>```, which you must create and then feed to the method annotated with @TestTemplate using '@ExtendWith.' The latter is the general way of providing contexts to methods.|
-|@ClassTemplate ||
+|@ParameterizedTest |Marks a test that runs multiple times. Requires a [source annotation](https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-sources). There are many types of source annotations.|
+|@ParameterizedClass | Does the same for a whole class. The @Test methods in the class must all require the type of arguments that the source annotation provides. | 
+|@RepeatedTest |Does the same test multiple times. Besides n you can set parameters like 'failureThreshold.'|
+|@TestFactory |Marks methods that generate a stream, or some object that can be converted to a stream, of type _DynamicTest_ or _DynamicContainer_. A DynamicTest object is composed of a display name (String) and a test of type ```<Executable>```, which is a functional interface representing a test. It typically has an 'assert' in its body. It throws a Throwable which makes it different from Runnable. DynamicNode is composed of a display name and an Iterable or Stream of ```<DynamicNode>``` objects. DynamicNode is the abstract parent class of both DynamicNode and DynamicTest. It means you can do nesting with it.|
+|@TestTemplate |Marks a test that will be executed multiple times using a stream of ```<TestTemplateInvocationContext>``` instances. The test must be able to withstand multiple 'contexts'. The stream of TestTemplateInvocationContext objects is contained in a ```<TestTemplateInvocationContextProvider>```, which you must create and then feed to the method annotated with @TestTemplate using '@ExtendWith.' The latter is the general way of providing contexts to methods.|
+|@ClassTemplate |Same as @TestTemplate but here a class is created with methods in it that will all be tested with a context provided by ClassTemplateInvocationContextProvider, a class that has a 'provideClassTemplateInvocationContexts' method that returns a stream or iterable of ClassTemplateInvocationContext objects.|
 
-Annotations dealing with test execution order
-@TestClassOrder
-@TestMethodOrder
+|Annotations dealing with test execution order||
+|@TestClassOrder| Marking class with this annotation allows you to define in which order nested classes will be executed. It is also possible to define the order of execution of first-order classes, it requires configuration in 'src/test/resources/junit-platform.properties' plus adding the @Order annotation to classes you want to order (or not, if you choose to order alphabetically for example).|
+|@TestMethodOrder| Same as previous, but plays out one level lower. Apply this to the class (with OrderAnnotation.class as argument) and annotate the test methods in the class with @Order(Integer ordernumber).|
 
 Whether to create separate class instance for every tested method in class
-@TestInstance
+|@TestInstance
 
 Cosmetics
-@DisplayName
-@DisplayNameGeneration
+|@DisplayName
+|@DisplayNameGeneration
 
 Annotations for methods that should before or after method execution(s)
-@BeforeEach
-@AfterEach
-@BeforeAll
-@AfterAll
-@BeforeParameterizedClassInvocation
-@AfterParameterizedClassInvocation
+|@BeforeEach
+|@AfterEach
+|@BeforeAll
+|@AfterAll
+|@BeforeParameterizedClassInvocation
+|@AfterParameterizedClassInvocation
 
 Dealing with nested classes
-@Nested
+|@Nested
 
 What test/method (not) to execute
 @Tag
 @DisAbled
 
 Close resource after use for fields
-@AutoClose
+|@AutoClose
 
 Provide context for more integrated tests
-@TempDir
-@ExtendWith
-@RegisterExtension
+|@TempDir
+|@ExtendWith
+|@RegisterExtension
 
