@@ -1,4 +1,4 @@
-# Maven and testing
+# Maven and testing with JUnit 5
 
 ### Basic pom configuration
 
@@ -49,7 +49,7 @@ Annotations indicating testclass or -method
 |@ParameterizedTest |Marks a test that runs multiple times. Requires a [source annotation](https://junit.org/junit5/docs/current/user-guide/#writing-tests-parameterized-tests-sources). There are many types of source annotations|
 |@ParameterizedClass | Does the same for a whole class. The @Test methods in the class must all require the type of arguments that the source annotation provides | 
 |@RepeatedTest |Does the same test multiple times. Besides n you can set parameters like 'failureThreshold'|
-|@TestFactory ||
+|@TestFactory |Marks methods that generate a stream, or some object that can be converted to a stream, of type /<DynamicTest/> or /<DynamicNode/>. A DynamicTest object is composed of a display name (String) and a test of type /<Executable/>, which is a functional interface representing a test. It throws a Throwable which makes it different from Runnable.|
 |@TestTemplate ||
 |@ClassTemplate ||
 
