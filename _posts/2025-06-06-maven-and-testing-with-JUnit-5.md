@@ -55,28 +55,28 @@ Annotations indicating testclass or -method
 |**EXECUTION ORDER**|     |
 |@TestClassOrder| Marking class with this annotation allows you to define in which order nested classes will be executed. It is also possible to define the order of execution of first-order classes, it requires configuration in 'src/test/resources/junit-platform.properties' plus adding the @Order annotation to classes you want to order (or not, if you choose to order alphabetically for example).|
 |@TestMethodOrder| Same as previous, but plays out one level lower. Apply this to the class (with OrderAnnotation.class as argument) and annotate the test methods in the class with @Order(Integer ordernumber).|
-|**Keeping state**|     |
+|**KEEPING STATE**|     |
 |@TestInstance| By default JUnit creates a new instance for every tested method in a class, to prevent that altered state by one method affects the outcome of a test of another method. If you want to have all methods be tested with a single class instance, annotate the class with @TestInstance(Lifecycle.PER_CLASS). A byeffect is that with one class instance you can use the @AfterAll and @BeforeAll annotations on non-static methods, or at least in a meaningful way.|
 |**Readable output**||
 |@DisplayName|Sets display name of test that will be displayed in test reports and by test runners and IDEs. Special characters and emojis allowed. You can combine it with @ParameterizedTest, @ValueSource and placeholder ({0}) to get readable sentences in your output.|
 |@DisplayNameGeneration|Applied to classes, extra options to get better readable output. For example, can convert class names with hyphens to sentences without hypens.|
-|**Before/After**||
+|**BEFORE/AFTER**||
 |@BeforeEach|Denotes that the annotated method should be executed before each @Test, @RepeatedTest, @ParameterizedTest, or @TestFactory method in the current class.|
 |@AfterEach|Denotes that the annotated method should be executed after each @Test, @RepeatedTest, @ParameterizedTest, or @TestFactory method in the current class.|
 |@BeforeAll|Denotes that the annotated method should be executed before all @Test, @RepeatedTest, @ParameterizedTest, and @TestFactory methods in the current class. Methods must be static or class must be annotated with @TestInstance. |
 |@AfterAll | Same as previous, only to be executed after all methods. |
 |@BeforeParameterizedClassInvocation|Denotes that the annotated method should be executed once before each invocation of a parameterized class.|
 |@AfterParameterizedClassInvocation | As previous but 'after'.|
-|**Nested classes**||
+|**NESTED CLASSES**||
 |@Nested|Denotes that the annotated class is a non-static nested test class. Nesting is more relevant in testing than in regular Java code, provides opportunities for structured code and structured output.|
-|**Filtering tests**||
+|**FILTERING TESTS**||
 |@Tag|Used to declare tags for filtering tests, either at the class or method level|
 |@Disabled|Disables a test class or test method|
-|**Closing resources**||
+|**CLOSING RESOURCES**||
 |@AutoClose|For fields. The built-in AutoCloseExtension automatically closes resources associated with fields. Field type must have a close() method, if not you can give an argument with the name of another method that must be executed to close the resource.|
-|**Timeout**||
+|**TIMEOUT**||
 |@Timeout|Tells the amount of time a test has to succeed, otherwise makes it a fail.|
-|**Context**||
+|**CONTEXT**||
 |@TempDir|Injects a Path/File instance in field or method parameter if it requires so and cleans it up after execution. If your code does something with file creation, writing, reading, this helps cause there is a Path in which you can create it.|
 |@ExtendWith|Basically about providing classes, methods, parameters, fields with a class/object that acts as a context. Enables integration testing. Good for simple, stateless contexts that can be used throughout the test suite.|
 |@RegisterExtension|Similar, but used _within_ test class. Add it to a field that creates an object, and this object will become the context. More verbose but easier to configure because you can provide runtime arguments for the specific situation. @ExtendWith needs the class name that forms the context as an argument, so that class object is defined elsewhere without custom arguments. Better reusability but less flexibility.|
