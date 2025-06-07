@@ -52,26 +52,25 @@ Annotations indicating testclass or -method
 |@TestFactory |Marks methods that generate a stream, or some object that can be converted to a stream, of type _DynamicTest_ or _DynamicContainer_. A DynamicTest object is composed of a display name (String) and a test of type ```<Executable>```, which is a functional interface representing a test. It typically has an 'assert' in its body. It throws a Throwable which makes it different from Runnable. DynamicNode is composed of a display name and an Iterable or Stream of ```<DynamicNode>``` objects. DynamicNode is the abstract parent class of both DynamicNode and DynamicTest. It means you can do nesting with it.|
 |@TestTemplate |Marks a test that will be executed multiple times using a stream of ```<TestTemplateInvocationContext>``` instances. The test must be able to withstand multiple 'contexts'. The stream of TestTemplateInvocationContext objects is contained in a ```<TestTemplateInvocationContextProvider>```, which you must create and then feed to the method annotated with @TestTemplate using '@ExtendWith.' The latter is the general way of providing contexts to methods.|
 |@ClassTemplate |Same as @TestTemplate but here a class is created with methods in it that will all be tested with a context provided by ClassTemplateInvocationContextProvider, a class that has a 'provideClassTemplateInvocationContexts' method that returns a stream or iterable of ClassTemplateInvocationContext objects.|
-|Execution order|   -  |
+|**Execution order**|     |
 |@TestClassOrder| Marking class with this annotation allows you to define in which order nested classes will be executed. It is also possible to define the order of execution of first-order classes, it requires configuration in 'src/test/resources/junit-platform.properties' plus adding the @Order annotation to classes you want to order (or not, if you choose to order alphabetically for example).|
 |@TestMethodOrder| Same as previous, but plays out one level lower. Apply this to the class (with OrderAnnotation.class as argument) and annotate the test methods in the class with @Order(Integer ordernumber).|
-|_Keeping state_|     |
+|**Keeping state**|     |
 |@TestInstance| By default JUnit creates a new instance for every tested method in a class, to prevent that altered state by one method affects the outcome of a test of another method. If you want to have all methods be tested with a single class instance, annotate the class with @TestInstance(Lifecycle.PER_CLASS). A byeffect is that with one class instance you can use the @AfterAll and @BeforeAll annotations on non-static methods, or at least in a meaningful way.|
-
-Cosmetics
-|@DisplayName
-|@DisplayNameGeneration
+|**Readable output**||
+|@DisplayName|Sets display name of test that will be displayed in test reports and by test runners and IDEs. Special characters and emojis allowed. You can combine it with @ParameterizedTest, @ValueSource and placeholder ({0}) to get readable sentences in your output.|
+|@DisplayNameGeneration|Applied to classes, extra options to get better readable output. For example, can convert class names with hyphens to sentences without hypens.|
 
 Annotations for methods that should before or after method execution(s)
-|@BeforeEach
-|@AfterEach
-|@BeforeAll
-|@AfterAll
-|@BeforeParameterizedClassInvocation
-|@AfterParameterizedClassInvocation
+|@BeforeEach|Denotes that the annotated method should be executed before each @Test, @RepeatedTest, @ParameterizedTest, or @TestFactory method in the current class.|
+|@AfterEach|Denotes that the annotated method should be executed after each @Test, @RepeatedTest, @ParameterizedTest, or @TestFactory method in the current class.|
+|@BeforeAll|Denotes that the annotated method should be executed before all @Test, @RepeatedTest, @ParameterizedTest, and @TestFactory methods in the current class. Methods must be static or class must be annotated with @TestInstance. |
+|@AfterAll | Same as previous, only to be executed after all methods. |
+|@BeforeParameterizedClassInvocation|Denotes that the annotated method should be executed once before each invocation of a parameterized class.|
+|@AfterParameterizedClassInvocation | As previous but 'after'.|
 
 Dealing with nested classes
-|@Nested
+|@Nested|Denotes that the annotated class is a non-static nested test class.|
 
 What test/method (not) to execute
 @Tag
