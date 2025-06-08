@@ -1,8 +1,8 @@
 # Custom JUnit 5 reporting
 
-As the Maven Surefire plugin requires a test library to do the actual testing, I dug into JUnit 5 and was positively surprised. Previously I thought that unit testing was the most boring thing on earth but when you make it part of the Maven build cycle it makes a lot more sense. If you have been trying to improve your code, you can immediately get an idea of how much you have broke while doing so. 
+As the Maven Surefire plugin requires a test library to do the actual testing, I dug into JUnit 5 and was positively surprised. Previously I thought that unit testing was the most boring thing on earth but when you make it part of the Maven build cycle it makes a lot more sense. It seems useful once you have been trying to improve existing code and want to know if you have accidently broken things. 
 
-What annoys me is that the reporting from JUnit is so crap when you work with Maven from the command line. JUnit has annotations that help to create readable reports on test results, namely @DisplayName and @DisplayGeneration but these don't show up in Surefire output, only in IDE's. ChatGPT suggested using Allure as a way to get good testreports but that is sort of too much.
+What annoys me is that the reporting from JUnit is so crap when you work with Maven from the command line. JUnit has annotations that help to create readable reports on test results, namely @DisplayName and @DisplayGeneration but these don't show up in Surefire output, only in IDE's. ChatGPT suggested using Allure as a way to get good testreports but that is sort of too big a solution for now. Btw I tried it a bit but didn't get the configuration right. 
 
 ### Hooking into JUnit lifecycle events
 
@@ -12,7 +12,7 @@ There are three ways to add extra code, or to 'extend the code', to the so-calle
 - Programmatic extension registration (@RegisterExtension)
 - Automatic extension registration
 
-#### Automatic Extension Registration
+### Automatic Extension Registration
 
 It is the latter of the three I am interested in. It is the global variant of extension registration, meaning that it will apply to all classes. It uses Java's ServiceLoader mechanism. To create an automatic extension you need to take the following steps:
 
@@ -68,7 +68,32 @@ The dependencies you need are the following:
 
 #### TestExecutionListener
 
-[TestExecutionListener](https://junit.org/junit5/docs/current/api/org.junit.platform.launcher/org/junit/platform/launcher/TestExecutionListener.html) is an interface that you can implement to create a class that will be the extension to the code related to the lifecycle events. All methods in it are empty default methods, which means that you can choose which ones to override and which ones not to use. 
+[TestExecutionListener](https://junit.org/junit5/docs/current/api/org.junit.platform.launcher/org/junit/platform/launcher/TestExecutionListener.html) is an interface that you can implement to create a class that will be the extension to the code related to the lifecycle events. All eight methods in it are empty default methods, which means that you can choose which ones to override and which ones not to use. These methods get executed on specific moments in the lifecycle of the test and have the following names:
+
+- **dynamicTestRegistered**(**TestIdentifier** testIdentifier)
+- **executionFinished**(**TestIdentifier** testIdentifier, **TestExecutionResult** testExecutionResult)
+- **executionSkipped**(**TestIdentifier** testIdentifier, **String** reason)
+- **executionStarted**(**TestIdentifier** testIdentifier)
+- **fileEntryPublished**(**TestIdentifier** testIdentifier, **FileEntry** file)
+- **reportingEntryPublished**(**TestIdentifier** testIdentifier, **ReportEntry** entry)
+- **testPlanExecutionFinished**(**TestPlan** testPlan)
+- **testPlanExecutionStarted**(**TestPlan** testPlan)
+
+**TestIdentifier** is a class containing methods to retrieve information about the test method. ```getDisplayName()``` returns the value of @DisplayName, I was actually looking for this one. ```getTags()``` returns the set of tags for the tested class(container) or method. ```getSource()``` helps to retrieve the name of the class and eventually method that is being tested. Small code example illustrating the latter:
+
+```
+Optional<TestSource> source = testIdentifier.getSource();
+source.ifPresent(testSource -> {
+    if (testSource instanceof MethodSource methodSource) {
+        System.out.println("Method: " + methodSource.getMethodName());
+        System.out.println("Class: " + methodSource.getClassName());
+    } else if (testSource instanceof ClassSource classSource) {
+        System.out.println("Class: " + classSource.getClassName());
+    }
+});
+```
+
+
 
 
 
