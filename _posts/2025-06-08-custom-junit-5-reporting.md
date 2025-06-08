@@ -141,17 +141,36 @@ public class MyTestExecutionListener implements TestExecutionListener {
 }
 ```
 
-The code is basic, it overrides three of the eight default methods of TestExecutionListener and uses 
+The code is basic, it overrides three of the eight default methods of TestExecutionListener and uses testIdentifier to retrieve @DisplayName values. It prints them to a textfile in the root of the project and I got this output (don't give it interpretation, the test was a silly one fiddling with @CsvSource).
+
+```
+#my-test-report.txt
+
+STARTED: [1] apple, 1
+FINISHED: [1] apple, 1 [SUCCESSFUL]
+STARTED: [2] banana, 2
+FINISHED: [2] banana, 2 [SUCCESSFUL]
+STARTED: [3] lemon, lime, 0xF1
+FINISHED: [3] lemon, lime, 0xF1 [SUCCESSFUL]
+STARTED: [4] strawberry, 700_000
+FINISHED: [4] strawberry, 700_000 [SUCCESSFUL]
+```
 
 ### Under the hood
+
+While making this work I wondered how the TestIdentifier argument was injected in the code. The three methods in MyTestExecutionListener have a TestIdentifier object as argument but someone must have called the methods with a value for this argument and it wasn't me. I asked ChatGPT and it gave a good answer, of which this are the final four bulletpoints:
 
 1.	Launcher discovers and registers your TestExecutionListener.
 2.	Launcher builds a TestPlan using all discovered test engines.
 3.	Each test element (method, class) becomes a TestIdentifier.
 4.	As each test starts/finishes, JUnit calls your listener methods and injects the relevant TestIdentifier.
 
+The involved internal classes that do the invocations are:
 
+- org.junit.platform.launcher.core.DefaultLauncher
+- org.junit.platform.launcher.core.EngineExecutionOrchestrator
  
-
+ChatGPT describes this as a classic _observer_ pattern. Java has a default Observer interface, java.util.Observer, that has an update() method. It can be implemented by Observers, and the call to update() is made by a so called _Observable_. 
+In this case the TestExecutionListener is the observer and the observables must be the classes mentioned above. They are the central hub that broadcast the required information to listeners. 
 
 
