@@ -16,7 +16,7 @@ There are three ways to add extra code, or to 'extend the code', to the so-calle
 
 It is the latter of the three I am interested in. It is the global variant of extension registration, meaning that it will apply to all classes. It uses Java's ServiceLoader mechanism. To create an automatic extension you need to take the following steps:
 
-- Create a class that extends either Extension or TestExecutionListener. I put it in the test part of the directory tree. Don't forget a package name. 
+- Create a class that extends either Extension or TestExecutionListener (there are only 2 you can extend). I put it in the test part of the directory tree. Don't forget a package name. 
 - Write its FQN in a file named either org.junit.jupiter.api.Extension or org.junit.platform.launcher.TestExecutionListener. This file must be in src/test/resources/META-INF/services.
 - Set the junit.jupiter.extensions.autodetection.enabled configuration parameter to true.
 - Make sure to include the right dependencies in the pom.
@@ -93,9 +93,62 @@ source.ifPresent(testSource -> {
 });
 ```
 
+I copied an implementation of TestExecutionListener that ChatGPT provided and it worked after I did all the configuration things right. Code:
 
+```
+package com.geertjankuip.test; // package name terribly chosen, confusing
 
+import org.junit.platform.engine.TestExecutionResult;
+import org.junit.platform.launcher.TestExecutionListener;
+import org.junit.platform.launcher.TestIdentifier;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+
+public class MyTestExecutionListener implements TestExecutionListener {
+    // implementation
+	 
+    private PrintWriter writer;
+
+    public MyTestExecutionListener() {
+        try {
+            writer = new PrintWriter("my-test-report.txt");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Override
+    public void executionStarted(TestIdentifier testIdentifier) {
+        if (testIdentifier.isTest()) {
+            writer.println("STARTED: " + testIdentifier.getDisplayName());
+        }
+    }
+
+    @Override
+    public void executionFinished(TestIdentifier testIdentifier, TestExecutionResult result) {
+        if (testIdentifier.isTest()) {
+            writer.println("FINISHED: " + testIdentifier.getDisplayName() + " [" + result.getStatus() + "]");
+            writer.flush();
+        }
+    }
+
+    @Override
+    public void executionSkipped(TestIdentifier testIdentifier, String reason) {
+        writer.println("SKIPPED: " + testIdentifier.getDisplayName() + " (" + reason + ")");
+        writer.flush();
+    }	 
+}
+```
+
+The code is basic, it overrides three of the eight default methods of TestExecutionListener and uses 
+
+### Under the hood
+
+1.	Launcher discovers and registers your TestExecutionListener.
+2.	Launcher builds a TestPlan using all discovered test engines.
+3.	Each test element (method, class) becomes a TestIdentifier.
+4.	As each test starts/finishes, JUnit calls your listener methods and injects the relevant TestIdentifier.
 
 
  
