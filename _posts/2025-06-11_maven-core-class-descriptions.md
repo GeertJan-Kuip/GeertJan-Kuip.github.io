@@ -16,6 +16,6 @@ It is gonna be extremely laborious work but I might learn a lot. My most importa
 <i>@see <a href="https://maven.apache.org/examples/maven-3-lifecycle-extensions.html">example</a></i><br/> 
 <i>@see <a href="https://issues.apache.org/jira/browse/MNG-4224">MNG-4224</a></i><br/> 
 <i>@since 3.0-alpha-3</i><br/>  
-<i>[code on GitHub](https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/AbstractMavenLifecycleParticipant.java)</i><br/><br/>
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/AbstractMavenLifecycleParticipant.java">Code on GitHub</a></i><br/><br/>
 
 </details>
