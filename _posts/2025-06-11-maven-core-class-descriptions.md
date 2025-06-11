@@ -182,15 +182,15 @@ String repositoryId is an argument for the constructor.<br/>
 <br/>
 Interface defining all sorts of constructors for Artifact object. DEPRECATED.<br/>
 Selection of constructors:<br/>
--> Artifact createArtifact(String groupId, String artifactId, String version, String scope, String type);<br/>
--> Artifact createArtifactWithClassifier(String groupId, String artifactId, String version, String type, String classifier);<br/>
--> Artifact createDependencyArtifact(String groupId, String artifactId, VersionRange versionRange, String type, String classifier, String scope, String inheritedScope, boolean optional);<br/>
--> Artifact createBuildArtifact(String groupId, String artifactId, String version, String packaging);<br/>
--> Artifact createProjectArtifact(String groupId, String artifactId, String version);<br/>
--> Artifact createParentArtifact(String groupId, String artifactId, String version);<br/>
--> Artifact createPluginArtifact(String groupId, String artifactId, VersionRange versionRange);<br/>
--> Artifact createProjectArtifact(String groupId, String artifactId, String version, String scope);<br/>
--> Artifact createExtensionArtifact(String groupId, String artifactId, VersionRange versionRange);<br/>
+-> Artifact <b>createArtifact</b>(String groupId, String artifactId, String version, String scope, String type);<br/>
+-> Artifact <b>createArtifactWithClassifier</b>(String groupId, String artifactId, String version, String type, String classifier);<br/>
+-> Artifact <b>createDependencyArtifact</b>(String groupId, String artifactId, VersionRange versionRange, String type, String classifier, String scope, String inheritedScope, boolean optional);<br/>
+-> Artifact <b>createBuildArtifact</b>(String groupId, String artifactId, String version, String packaging);<br/>
+-> Artifact <b>createProjectArtifact</b>(String groupId, String artifactId, String version);<br/>
+-> Artifact <b>createParentArtifact</b>(String groupId, String artifactId, String version);<br/>
+-> Artifact <b>createPluginArtifact</b>(String groupId, String artifactId, VersionRange versionRange);<br/>
+-> Artifact <b>createProjectArtifact</b>(String groupId, String artifactId, String version, String scope);<br/>
+-> Artifact <b>createExtensionArtifact</b>(String groupId, String artifactId, VersionRange versionRange);<br/>
 
 <br/><i>ArtifactFactory - deprecated.</i><br/>
 
@@ -202,10 +202,9 @@ Selection of constructors:<br/>
 <summary><b>DefaultArtifactFactory</b> : public class implements ArtifactFactory</summary>
 <br/>
 Implementation of interface. The constructor with the complete set of arguments does all the work:<br/>
--> private Artifact createArtifact( String groupId, String artifactId, VersionRange versionRange, String type, String classifier, String scope, String inheritedScope, boolean optional);<br/><br/>
+-> private Artifact <b>createArtifact</b>( String groupId, String artifactId, VersionRange versionRange, String type, String classifier, String scope, String inheritedScope, boolean optional);<br/><br/>
 It is not a static factory, everything instance based. The constructor has an interesting argument:<br/>
--> public DefaultArtifactFactory(ArtifactHandlerManager artifactHandlerManager) { this.artifactHandlerManager = artifactHandlerManager; }<br/>
-
+-> public <b>DefaultArtifactFactory</b>(ArtifactHandlerManager artifactHandlerManager) { this.artifactHandlerManager = artifactHandlerManager; }<br/>
 
 <br/><i>DefaultArtifactFactory.</i><br/>
 
