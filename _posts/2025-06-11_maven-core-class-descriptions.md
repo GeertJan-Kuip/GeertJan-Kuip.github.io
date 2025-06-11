@@ -31,3 +31,24 @@ The classes implementing this class reside in the test directory.
 <summary><b>BuildFailureException</b> : public class extends Exception</summary>
 <br/><i>One or more builds failed.</i><br/>
 </details>
+
+<details>
+<summary><b>DefaultMaven</b> : public class implements Maven</summary>
+<br/>
+Big class. Key terms: profiles, Mavensession, MavenExecutionResult, dependencyGraph, callListeners, validateLocalRepository, getExtensionComponents, getProjectScopedExtensionComponents, validatePrerequisitesForNonMavenPluginProjects, getAllProfiles.<br/>
+
+Interface Maven is an interface in the same folder. <br/>
+Three imports do not work: Model, Prerequisites and Profile. These are created during generate-sources phase by the modello plugin, based on .mdo file.<br/>
+
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/DefaultMaven.java">GitHub</a></i><br/>
+</details>
+
+
+
+
+
+
+
+
+
