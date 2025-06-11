@@ -8,16 +8,16 @@ It is gonna be extremely laborious work but I might learn a lot. My most importa
 #### package org.apache.maven;
 
 <details>
-<summary>public abstract class **AbstractMavenLifecycleParticipant**</summary>
----
-\  
+<summary><b>AbstractMavenLifecycleParticipant</b> : public abstract class</summary>
+  
+
 _Allows core extensions to participate in Maven build session lifecycle._
 
 _All callback methods (will) follow beforeXXX/afterXXX naming pattern to indicate at what lifecycle point it is being called._
 
-_@see <a href="https://maven.apache.org/examples/maven-3-lifecycle-extensions.html">example</a>_
-_@see <a href="https://issues.apache.org/jira/browse/MNG-4224">MNG-4224</a>_
-_@since 3.0-alpha-3_
+_@see <a href="https://maven.apache.org/examples/maven-3-lifecycle-extensions.html">example</a>_  
+_@see <a href="https://issues.apache.org/jira/browse/MNG-4224">MNG-4224</a>_  
+_@since 3.0-alpha-3_  
 
 [link](https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/AbstractMavenLifecycleParticipant.java)
 
