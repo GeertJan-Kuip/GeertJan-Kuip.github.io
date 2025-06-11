@@ -3,9 +3,9 @@
 I want to understand how Maven works so I'm gonna look at all classes.
 
 
-### package org.apache.maven;
+#### package org.apache.maven;
 
-#### public abstract class **AbstractMavenLifecycleParticipant**
+public abstract class **AbstractMavenLifecycleParticipant**
 
 _Allows core extensions to participate in Maven build session lifecycle.
 
