@@ -21,3 +21,13 @@ The classes implementing this class reside in the test directory.
 <i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/AbstractMavenLifecycleParticipant.java">GitHub</a></i><br/><br/>
 
 </details>
+
+<details>
+<summary><b>BuildAbort</b> : public class extends Error</summary>
+<br/><i>A special throwable used to signal a graceful abort of the build.</i><br/>
+</details>
+
+<details>
+<summary><b>BuildFailureException</b> : public class extends Exception</summary>
+<br/><i>One or more builds failed.</i><br/>
+</details>
