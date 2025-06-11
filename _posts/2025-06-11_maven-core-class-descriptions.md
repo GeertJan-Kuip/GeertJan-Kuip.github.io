@@ -8,8 +8,9 @@ It is gonna be extremely laborious work but I might learn a lot. My most importa
 #### package org.apache.maven;
 
 <details>
-<summary>public abstract class **AbstractMavenLifecycleParticipant</summary>
-
+<summary>public abstract class **AbstractMavenLifecycleParticipant**</summary>
+---
+\  
 _Allows core extensions to participate in Maven build session lifecycle._
 
 _All callback methods (will) follow beforeXXX/afterXXX naming pattern to indicate at what lifecycle point it is being called._
