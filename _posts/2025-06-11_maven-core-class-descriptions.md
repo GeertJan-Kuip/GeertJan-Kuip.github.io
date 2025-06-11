@@ -11,14 +11,12 @@ It is gonna be extremely laborious work but I might learn a lot. My most importa
 <summary><b>AbstractMavenLifecycleParticipant</b> : public abstract class</summary>
   
 <br/>
-_Allows core extensions to participate in Maven build session lifecycle._
+<i>Allows core extensions to participate in Maven build session lifecycle.</i>
+<i>All callback methods (will) follow beforeXXX/afterXXX naming pattern to indicate at what lifecycle point it is being called.</i>
+<i>@see <a href="https://maven.apache.org/examples/maven-3-lifecycle-extensions.html">example</a></i>  
+<i>@see <a href="https://issues.apache.org/jira/browse/MNG-4224">MNG-4224</a></i>  
+<i>@since 3.0-alpha-3</i>  
 
-_All callback methods (will) follow beforeXXX/afterXXX naming pattern to indicate at what lifecycle point it is being called._
-
-_@see <a href="https://maven.apache.org/examples/maven-3-lifecycle-extensions.html">example</a>_  
-_@see <a href="https://issues.apache.org/jira/browse/MNG-4224">MNG-4224</a>_  
-_@since 3.0-alpha-3_  
-
-[link](https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/AbstractMavenLifecycleParticipant.java)
+<i>[code on GitHub](https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/AbstractMavenLifecycleParticipant.java)</i>
 
 </details>
