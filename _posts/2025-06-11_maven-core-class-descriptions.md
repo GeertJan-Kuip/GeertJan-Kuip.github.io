@@ -11,8 +11,7 @@ It is gonna be extremely laborious work but I might learn a lot. My most importa
 <summary><b>AbstractMavenLifecycleParticipant</b> : public abstract class</summary>
 
 <br/>
-The classes implementing this class reside in the test directory.
-  
+The classes implementing this class reside in the test directory.  
 <br/><br/>
 <i>Allows core extensions to participate in Maven build session lifecycle.</i><br/>
 <i>All callback methods (will) follow beforeXXX/afterXXX naming pattern to indicate at what lifecycle point it is being called.</i><br/><br/>
