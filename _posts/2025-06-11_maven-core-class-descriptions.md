@@ -9,13 +9,16 @@ It is gonna be extremely laborious work but I might learn a lot. My most importa
 
 <details>
 <summary><b>AbstractMavenLifecycleParticipant</b> : public abstract class</summary>
-  
+
 <br/>
+The classes implementing this class reside in the test directory.
+  
+<br/><br/>
 <i>Allows core extensions to participate in Maven build session lifecycle.</i><br/>
-<i>All callback methods (will) follow beforeXXX/afterXXX naming pattern to indicate at what lifecycle point it is being called.</i><br/>
+<i>All callback methods (will) follow beforeXXX/afterXXX naming pattern to indicate at what lifecycle point it is being called.</i><br/><br/>
 <i>@see <a href="https://maven.apache.org/examples/maven-3-lifecycle-extensions.html">example</a></i> 
 <i>@see <a href="https://issues.apache.org/jira/browse/MNG-4224">MNG-4224</a></i> 
-<i>@since 3.0-alpha-3</i><br/><br/> 
-<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/AbstractMavenLifecycleParticipant.java">Code on GitHub</a></i><br/><br/>
+<i>@since 3.0-alpha-3</i>
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/AbstractMavenLifecycleParticipant.java">GitHub</a></i><br/><br/>
 
 </details>
