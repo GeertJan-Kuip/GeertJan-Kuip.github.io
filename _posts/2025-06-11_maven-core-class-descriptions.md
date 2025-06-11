@@ -5,7 +5,7 @@ I want to understand how Maven works so I'm gonna look at all classes. There are
 It is gonna be extremely laborious work but I might learn a lot. My most important motivation to do this is to get a better understanding of complex codebases which will help me to build and/or find the right tools for quicker and more effective ways of code exploration.
 
 
-#### package org.apache.maven;
+## package org.apache.maven;
 
 <details>
 <summary><b>AbstractMavenLifecycleParticipant</b> : public abstract class</summary>
@@ -149,7 +149,7 @@ Marker annotation, @Retention(RUNTIME)
 </details>
 
 
-#### package org.apache.maven.artifact;
+## package org.apache.maven.artifact;
 
 
 <details>
@@ -175,14 +175,39 @@ String repositoryId is an argument for the constructor.<br/>
 <i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/InvalidRepositoryException.java">GitHub</a></i><br/>
 </details>
 
-#### package org.apache.maven.artifact.factory;
+## package org.apache.maven.artifact.factory;
 
 <details>
-<summary><b>ArtifactFactory</b> : public interface</summary>
+<summary><b>ArtifactFactory</b> : public interface (deprecated)</summary>
 <br/>
-Interface defining all sorts of constructor for Artifact object.<br/>
+Interface defining all sorts of constructors for Artifact object. DEPRECATED.<br/>
+Selection of constructors:<br/>
+-> Artifact createArtifact(String groupId, String artifactId, String version, String scope, String type);<br/>
+-> Artifact createArtifactWithClassifier(String groupId, String artifactId, String version, String type, String classifier);<br/>
+-> Artifact createDependencyArtifact(String groupId, String artifactId, VersionRange versionRange, String type, String classifier, String scope, String inheritedScope, boolean optional);<br/>
+-> Artifact createBuildArtifact(String groupId, String artifactId, String version, String packaging);<br/>
+-> Artifact createProjectArtifact(String groupId, String artifactId, String version);<br/>
+-> Artifact createParentArtifact(String groupId, String artifactId, String version);<br/>
+-> Artifact createPluginArtifact(String groupId, String artifactId, VersionRange versionRange);<br/>
+-> Artifact createProjectArtifact(String groupId, String artifactId, String version, String scope);<br/>
+-> Artifact createExtensionArtifact(String groupId, String artifactId, VersionRange versionRange);<br/>
 
 <br/><i>ArtifactFactory - deprecated.</i><br/>
 
-<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/InvalidRepositoryException.java">GitHub</a></i><br/>
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/ArtifactFactory.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>DefaultArtifactFactory</b> : public class implements ArtifactFactory</summary>
+<br/>
+Implementation of interface. The constructor with the complete set of arguments does all the work:<br/>
+-> private Artifact createArtifact( String groupId, String artifactId, VersionRange versionRange, String type, String classifier, String scope, String inheritedScope, boolean optional);<br/><br/>
+It is not a static factory, everything instance based. The constructor has an interesting argument:<br/>
+-> public DefaultArtifactFactory(ArtifactHandlerManager artifactHandlerManager) { this.artifactHandlerManager = artifactHandlerManager; }<br/>
+
+
+<br/><i>DefaultArtifactFactory.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/DefaultArtifactFactory.java">GitHub</a></i><br/>
 </details>
