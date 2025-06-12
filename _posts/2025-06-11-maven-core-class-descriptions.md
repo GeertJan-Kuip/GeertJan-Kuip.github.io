@@ -194,7 +194,7 @@ Selection of constructors:<br/>
 
 <br/><i>ArtifactFactory - deprecated.</i><br/>
 
-<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/ArtifactFactory.java">GitHub</a></i><br/>
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/factory/ArtifactFactory.java">GitHub</a></i><br/>
 </details>
 
 
@@ -208,5 +208,281 @@ It is not a static factory, everything instance based. The constructor has an in
 
 <br/><i>DefaultArtifactFactory.</i><br/>
 
-<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/DefaultArtifactFactory.java">GitHub</a></i><br/>
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/factory/DefaultArtifactFactory.java">GitHub</a></i><br/>
+</details>
+
+## package org.apache.maven.artifact.handler;
+
+<details>
+<summary><b>DefaultArtifactHandler</b> : public class implements ArtifactHandler</summary>
+<br/>
+Class that creates ArtifactHandler instances. Lot of getters and setters. The constructor with all params is the following:<br/><br/>
+
+-> public <b>DefaultArtifactHandler</b>(final String type, final String extension, final String classifier, final String directory, final String packaging, final boolean includesDependencies, final String language, final boolean addedToClasspath);<br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/handler/DefaultArtifactHandler.java">GitHub</a></i><br/>
+</details>
+
+## package org.apache.maven.artifact.handler.manager;
+
+ 
+<details>
+<summary><b>ArtifactHandlerManager</b> : public interface</summary>
+<br/>
+Interface, one final static field and one method (second method is deprecated):<br/><br/>
+
+-> String ROLE = ArtifactHandlerManager.class.getName();<br/>
+
+-> ArtifactHandler <b>getArtifactHandler</b>(String type);<br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/handler/manager/ArtifactHandlerManager.java">GitHub</a></i><br/>
+</details>
+
+<details>
+<summary><b>DefaultArtifactHandlerManager</b> : public class extends AbstractEventSpy implements ArtifactHandlerManager</summary>
+<br/>
+@Singleton<br/>
+This is the constructor:<br/><br/>
+public <b>DefaultArtifactHandlerManager</b>(TypeRegistry typeRegistry)<br/><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/handler/manager/DefaultArtifactHandlerManager.java">GitHub</a></i><br/>
+</details>
+
+<details>
+<summary><b>LegacyArtifactHandlerManager</b> : public class extends AbstractEventSpy</summary>
+<br/>
+@Singleton<br/>
+This is the constructor:<br/><br/>
+public LegacyArtifactHandlerManager(Map<String, ArtifactHandler> artifactHandlers) {this.artifactHandlers = requireNonNull(artifactHandlers);}
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/LegacyArtifactHandlerManager.java">GitHub</a></i><br/>
+</details>
+
+## package org.apache.maven.artifact.repository;
+
+<details>
+<summary><b>DefaultRepositoryRequest</b> : public class implements RepositoryRequest</summary>
+<br/>
+Four instance fields:<br/><br/>
+private boolean offline;<br/>
+private boolean forceUpdate;<br/>
+private ArtifactRepository localRepository;<br/>
+private List&ltArtifactRepository&gt remoteRepositories;<br/><br/>
+
+Constructor creates a shallow copy of the specified repository request.<br/> 
+
+public DefaultRepositoryRequest(RepositoryRequest repositoryRequest) {<br/><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;setLocalRepository(repositoryRequest.getLocalRepository());<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;setRemoteRepositories(repositoryRequest.getRemoteRepositories());<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;setOffline(repositoryRequest.isOffline());<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;setForceUpdate(repositoryRequest.isForceUpdate());<br/>
+}<br/>
+
+<i>Collects basic settings to access the repository system.</i><br/>
+
+## package org.apache.maven.artifact.repository;
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/repository/DefaultRepositoryRequest.java">GitHub</a></i><br/>
+</details>
+
+ 
+<details>
+<summary><b>MavenArtifactRepository</b> : public class implements ArtifactRepository</summary>
+<br/>
+These are the fields. Lots of getters and setters:<br/><br/>
+private static final String LS = System.lineSeparator();<br/>
+private String id;<br/>
+private String url;<br/>
+private String basedir;<br/>
+private Path basedirPath;<br/>
+private String protocol;<br/>
+private ArtifactRepositoryLayout layout;<br/>
+private ArtifactRepositoryPolicy snapshots;<br/>
+private ArtifactRepositoryPolicy releases;<br/>
+private Authentication authentication;<br/>
+private Proxy proxy;<br/>
+private List&ltArtifactRepository&gt mirroredRepositories = Collections.emptyList();<br/>
+private boolean blocked;<br/><br/>
+
+<i>Abstraction of an artifact repository. Artifact repositories can be remote, local, or even build reactor or IDE workspace.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/repository/MavenArtifactRepository.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>RepositoryCache</b> : public interface (Deprecated)</summary>
+<br/>
+@Deprecated<br/><br/>
+
+<i>Caches auxiliary data used during repository access like already processed metadata. The data in the cache is meant for exclusive consumption by the repository system and is opaque to the cache implementation.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/repository/RepositoryCache.java">GitHub</a></i><br/>
+</details>
+
+<details>
+<summary><b>RepositoryRequest</b> : public interface</summary>
+<br/>
+
+<i>Collects basic settings to access the repository system.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/repository/RepositoryRequest.java">GitHub</a></i><br/>
+</details>
+
+## package org.apache.maven.artifact.repository.layout;
+
+<details>
+<summary><b>DefaultRepositoryLayout</b> : public class implements ArtifactRepositoryLayout</summary>
+<br/>
+@Singleton
+<br/>
+This class has methods in it that compose path-like strings using StringBuilder, with groupId, artifactId, baseVersion etc.
+<br/><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/repository/layout/DefaultRepositoryLayout.java">GitHub</a></i><br/>
+</details>
+
+## package org.apache.maven.artifact.repository.metadata.io;
+
+<details>
+<summary><b>DefaultMetadataReader</b> : public class implements MetadataReader</summary>
+<br/>
+@Singleton
+<br/>
+Uses library org.apache.maven.artifact.repository.metadata.Metadata but MetaData class is not in it. Can be a modello thing. Has all sorts of read methods that read metadata in various types.<br/><br/>
+
+<i>Handles deserialization of metadata from some kind of textual format like XML.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/repository/metadata/io/DefaultMetadataReader.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>MetadataParseException</b> : public class extends IOException</summary>
+<br/>
+Error message has int lineNumber and int columnNumber as arguments. Has get methods for both.
+<br/><br/>
+
+<i>Signals a failure to parse the metadata due to invalid syntax (e.g. non well formed XML or unknown elements).</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/repository/metadata/io/MetadataParseException.java">GitHub</a></i><br/>
+</details>
+
+<details>
+<summary><b>MetadataReader</b> : public interface</summary>
+<br/>
+All about reading metadata and whether to be strict with parsing.
+<br/><br/>
+
+<i>Handles deserialization of metadata from some kind of textual format like XML.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/repository/metadata/io/MetadataReader.java">GitHub</a></i><br/>
+</details>
+
+## package org.apache.maven.artifact.resolver.filter;
+
+<details>
+<summary><b>AbstractScopeArtifactFilter</b> : abstract class implements ArtifactFilter</summary>
+<br/>
+Fields:<br/>
+private boolean compileScope;<br/>
+private boolean runtimeScope;<br/>
+private boolean testScope;<br/>
+private boolean providedScope;<br/>
+private boolean systemScope;<br/>
+<br/>
+
+<i>Filter to only retain objects in the given artifactScope or better.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/resolver/filter/AbstractScopeArtifactFilter.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>AndArtifactFilter</b> : public class implements ArtifactFilter</summary>
+<br/>
+One field:<br/>
+private Set&ltArtifactFilter&gt filters;
+<br/>
+
+<i>Apply multiple filters.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/resolver/filter/AndArtifactFilter.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>CumulativeScopeArtifactFilter</b> : public class extends AbstractScopeArtifactFilter</summary>
+<br/>
+One field:<br/>
+private Set&ltString&gt scopes;
+<br/>
+
+<i>Filter to only retain objects in the given scope or better. This implementation allows the accumulation of multiple scopes and their associated implied scopes, so that the user can single step. This should be a more efficient implementation of multiple standard {@link ScopeArtifactFilter} instances ORed together.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/resolver/filter/CumulativeScopeArtifactFilter.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>ExcludesArtifactFilter</b> : public class extends IncludesArtifactFilter</summary>
+<br/>
+
+<i>Filter to exclude from a list of artifact patterns.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/resolver/filter/ExcludesArtifactFilter.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>ExclusionArtifactFilter</b> : public class implements ArtifactFilter</summary>
+<br/>
+
+<i>Filter to exclude from a list of artifact patterns.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/resolver/filter/ExclusionArtifactFilter.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>ExclusionSetFilter</b> : public class implements ArtifactFilter</summary>
+<br/>
+One field:<br/>
+private Set&ltString&gt excludes;<br/>
+
+<i>Filter to exclude from a list of artifact patterns.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/resolver/filter/ExclusionSetFilter.java">GitHub</a></i><br/>
+</details>
+
+<details>
+<summary><b>IncludesArtifactFilter</b> : public class implements ArtifactFilter</summary>
+<br/>
+One field:<br/>
+private final Set&ltString&gt patterns;<br/>
+
+<i>Filter to include from a list of artifact patterns.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/resolver/filter/IncludesArtifactFilter.java">GitHub</a></i><br/>
+</details>
+
+<details>
+<summary><b>ScopeArtifactFilter</b> : public class extends AbstractScopeArtifactFilter</summary>
+<br/>
+One field:<br/>
+private final String scope;<br/>
+
+<i>Filter to only retain objects in the given artifactScope or better.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/resolver/filter/ScopeArtifactFilter.java">GitHub</a></i><br/>
+</details>
+
+## package org.apache.maven.bridge;
+
+<details>
+<summary><b>MavenRepositorySystem</b> : public class</summary>
+<br/>
+@Singleton<br/>
+Huge class, no Javadoc. I find it remarkable that it has (overloaded) methods that create all sorts of Artifact objects. Class DefaultArtifactFactory has all these methods as well.
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/bridge/MavenRepositorySystem.java">GitHub</a></i><br/>
 </details>
