@@ -35,7 +35,8 @@ The classes implementing this class reside in the test directory.
 <details>
 <summary><b>DefaultMaven</b> : public class implements Maven</summary>
 <br/>
-Big class. Key terms: profiles, Mavensession, MavenExecutionResult, dependencyGraph, callListeners, validateLocalRepository, getExtensionComponents, getProjectScopedExtensionComponents, validatePrerequisitesForNonMavenPluginProjects, getAllProfiles.<br/><br/>
+@Singleton<br/>
+Big class. Many fields. Key terms: profiles, Mavensession, MavenExecutionResult, dependencyGraph, callListeners, validateLocalRepository, getExtensionComponents, getProjectScopedExtensionComponents, validatePrerequisitesForNonMavenPluginProjects, getAllProfiles.<br/><br/>
 
 Interface Maven is an interface in the same folder. <br/><br/>
 Three imports do not work: Model, Prerequisites and Profile. These are created during generate-sources phase by the modello plugin, based on .mdo file.<br/>
@@ -242,7 +243,7 @@ Interface, one final static field and one method (second method is deprecated):<
 <summary><b>DefaultArtifactHandlerManager</b> : public class extends AbstractEventSpy implements ArtifactHandlerManager</summary>
 <br/>
 @Singleton<br/>
-This is the constructor:<br/><br/>
+This is the constructor declaration. Note the TypeRegistry argument:<br/><br/>
 public <b>DefaultArtifactHandlerManager</b>(TypeRegistry typeRegistry)<br/><br/>
 
 <i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/artifact/handler/manager/DefaultArtifactHandlerManager.java">GitHub</a></i><br/>
@@ -482,7 +483,208 @@ private final String scope;<br/>
 <summary><b>MavenRepositorySystem</b> : public class</summary>
 <br/>
 @Singleton<br/>
-Huge class, no Javadoc. I find it remarkable that it has (overloaded) methods that create all sorts of Artifact objects. Class DefaultArtifactFactory has all these methods as well.
+Huge class, no Javadoc. I find it remarkable that it has (overloaded) methods that create all sorts of Artifact objects. Class DefaultArtifactFactory has all these methods as well.<br/>
+Other remarkable thing: hardcoded value for repository:<br/>
+-> public static final String DEFAULT_REMOTE_REPO_URL = "https://repo.maven.apache.org/maven2";<br/><br/>
 
 <i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/bridge/MavenRepositorySystem.java">GitHub</a></i><br/>
 </details>
+
+
+## package org.apache.maven.classrealm;
+
+<details>
+<summary><b>ArtifactClassRealmConstituent</b> : class implements ClassRealmConstituent</summary>
+<br/>
+One field:<br/>
+private final Artifact artifact;<br/><br/>
+
+This class lets you inquire the specific artifact object it contains using get methods.<br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/classrealm/ArtifactClassRealmConstituent.java">GitHub</a></i><br/>
+</details>
+
+ 
+<details>
+<summary><b>ClassRealmConstituent</b> : public interface</summary>
+<br/>
+Interface describing ArtifactClassRealmConstituent.<br/><br/>
+<i>Describes a constituent of a class realm.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/classrealm/ClassRealmConstituent.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>ClassRealmManager</b> : public interface</summary>
+<br/>
+
+<i>Manages the class realms used by Maven. <strong>Warning:</strong> This is an internal utility interface that is only public for technical reasons, it is not part of the public API. In particular, this interface can be changed or deleted without prior notice.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/classrealm/ClassRealmManager.java">GitHub</a></i><br/>
+</details>
+
+<details>
+<summary><b>ClassRealmManagerDelegate</b> : public interface</summary>
+<br/>
+
+<i>ClassRealmManagerDelegate is used to perform addition configuration of class realms created by ClassRealmManager.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/classrealm/ClassRealmManagerDelegate.java">GitHub</a></i><br/>
+</details>
+
+<details>
+<summary><b>ClassRealmRequest</b> : public interface</summary>
+<br/>
+Contains an enum 'RealmType', values Core, Project, Plugin, Extension.<br/><br/>
+<i>Describes the requirements for a new class realm.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/classrealm/ClassRealmRequest.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>DefaultClassRealmManager</b> : public class implements ClassRealmManager</summary>
+<br/>
+@Singleton<br/>
+Has methods to create ClassRealms. It is a big class.
+<br/><br/>
+<i>Manages the class realms used by Maven. <strong>Warning:</strong> This is an internal utility class that is only public for technical reasons, it is not part of the public API. In particular, this class can be changed or deleted without prior notice.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/classrealm/DefaultClassRealmManager.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>DefaultClassRealmRequest</b> : class implements ClassRealmRequest</summary>
+<br/>
+POJO, getters and setters. This is the constructor:<br/>
+->     DefaultClassRealmRequest( RealmType type, ClassLoader parent, List<String> parentImports, Map<String, ClassLoader> foreignImports, List<ClassRealmConstituent> constituents)<br/><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/classrealm/DefaultClassRealmRequest.java">GitHub</a></i><br/>
+</details>
+
+## package org.apache.maven.configuration;
+
+<details>
+<summary><b>BasedirBeanConfigurationPathTranslator</b> : public class implements BeanConfigurationPathTranslator</summary>
+<br/>
+Just one import:<br/>
+-> import java.io.File;<br/>
+And one method:<br/>
+public File translatePath(File path)<br/>
+<br/>
+<i>A path translator that resolves relative paths against a specific base directory.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/configuration/BasedirBeanConfigurationPathTranslator.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>BeanConfigurationException</b> : public class extends Exception</summary>
+<br/>
+
+<i>Thrown when a bean couldn't be configured.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/configuration/BeanConfigurationException.java">GitHub</a></i><br/>
+</details>
+
+<details>
+<summary><b>BeanConfigurationPathTranslator</b> : public interface</summary>
+<br/>
+Implemented by BasedirBeanConfigurationPathTranslator.<br/><br/>
+
+<i>Postprocesses filesystem paths. For instance, a path translator might want to resolve relative paths given in the bean configuration against some base directory.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/configuration/BeanConfigurationPathTranslator.java">GitHub</a></i><br/>
+</details>
+
+<details>
+<summary><b>BeanConfigurationRequest</b> : public interface</summary>
+<br/>
+
+<i>A request to configure a bean from some configuration in the POM or similar.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/configuration/BeanConfigurationRequest.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>BeanConfigurationValuePreprocessor</b> : public interface</summary>
+<br/>
+
+<i>Preprocesses a value from a bean configuration before the bean configurator unmarshals it into a bean property. A common use case for such preprocessing is the evaluation of variables within the configuration value.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/configuration/BeanConfigurationValuePreprocessor.java">GitHub</a></i><br/>
+</details>
+
+<details>
+<summary><b>BeanConfigurator</b> : public interface</summary>
+<br/>
+
+<i>Unmarshals some textual configuration from the POM or similar into the properties of a bean. This component works similar to the way Maven configures plugins from the POM, i.e. some configuration like {@code <param>value</param>} is mapped to an equally named property of the bean and converted. The properties of the bean are supposed to either have a public setter or be backed by an equally named field (of any visibility).</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/configuration/BeanConfigurator.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>DefaultBeanConfigurationRequest</b> : public class implements BeanConfigurationRequest</summary>
+<br/>
+This is an interesting class, seems to deal with finding and configuring plugins.<br/><br/>
+Constructor:<br/>
+public DefaultBeanConfigurationRequest setConfiguration(<br/><br/>
+&nbsp;&nbsp;&nbsp;&nbsp;Model model, <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;String pluginGroupId, <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;String pluginArtifactId, <br/>
+&nbsp;&nbsp;&nbsp;&nbsp;String pluginExecutionId<br/>
+) <br/><br/>
+
+<i>Javadoc constructor: Sets the configuration to the configuration taken from the specified build plugin in the POM. First, the build plugins will be searched for the specified plugin, if that fails, the plugin management section will be searched.</i><br/>
+
+<i>Javadoc class: Basic bean configuration request.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/configuration/DefaultBeanConfigurationRequest.java">GitHub</a></i><br/>
+</details>
+
+## package org.apache.maven.configuration.internal;
+
+<details>
+<summary><b>DefaultBeanConfigurator</b> : public class implements BeanConfigurator</summary>
+<br/>
+@Singleton<br/>
+Has nested static classes in it, 'XmlConverter' and 'PathConverter'.<br/><br/>
+
+<i><strong>Warning:</strong> This is an internal class that is only public for technical reasons, it is not part of the public API. In particular, this class can be changed or deleted without prior notice.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/configuration/internal/DefaultBeanConfigurator.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>EnhancedConverterLookup</b> : class implements ConverterLookup</summary>
+<br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/configuration/internal/EnhancedConverterLookup.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>EnhancedComponentConfigurator</b> : public class extends BasicComponentConfigurator</summary>
+<br/>
+@Singleton<br/><br/>
+<i>A component configurator which can leverage the {@link EnhancedConfigurationConverter} and {@link EnhancedConverterLookup}.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/configuration/internal/EnhancedComponentConfigurator.java">GitHub</a></i><br/>
+</details>
+
+
+<details>
+<summary><b>EnhancedConfigurationConverter</b> : class extends ObjectWithFieldsConverter</summary>
+<br/>
+
+<i>An enhanced {@link ObjectWithFieldsConverter} leveraging the {@link TypeAwareExpressionEvaluator} interface.</i><br/>
+
+<i><a href="https://github.com/apache/maven/blob/master/impl/maven-core/src/main/java/org/apache/maven/configuration/internal/EnhancedConfigurationConverter.java">GitHub</a></i><br/>
+</details>
+

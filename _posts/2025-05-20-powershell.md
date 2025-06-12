@@ -261,9 +261,9 @@ PowerShell has ```$env```, which according to ChatGPT: _$env in PowerShell is no
 If you want to have a list of all environment variables, simply do:
 
 ```
-gci $env
+gci env:
 or
-Get-ChildItem $env
+Get-ChildItem env:
 ```
 
 If you want a specific one, or use a wildcard, do:
@@ -429,6 +429,15 @@ Get-NetIPAddress
 
 This is not the end of my PowerShell research, I actually like the whole idea of doing things from a terminal. I'm almost ready for touch typing as well, as I practice it on [keybr](https://www.keybr.com/) and only have to learn the Q, X and Y plus the non-letters.
 
+## Additions
+
+```
+-- Show directory tree starting in current folder
+tree
+
+-- Same, but with files as well
+tree /f
+```
 
 
 
