@@ -437,6 +437,13 @@ tree
 
 -- Same, but with files as well
 tree /f
+
+-- find lines in a file that contain the search string ($a is contents of text file)
+$a | select-string -pattern 'Morning'
+
+-- deze is goed. als je filename weghaalt zie de hele tabel, je kunt ook linenumber en line kiezen
+gci *.java -file -recurse | select-string -pattern "\bdirectoryreader\b" | ft filename
+
 ```
 
 
