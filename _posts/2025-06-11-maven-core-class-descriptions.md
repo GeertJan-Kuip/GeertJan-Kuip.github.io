@@ -4,6 +4,10 @@ I want to understand how Maven works so I'm gonna look at all classes. There are
 
 It is gonna be extremely laborious work but I might learn a lot. My most important motivation to do this is to get a better understanding of complex codebases which will help me to build and/or find the right tools for quicker and more effective ways of code exploration.
 
+Note: I might not finish this list, it is just a begin of laborious work to understand a complex codebase.\
+
+Note 2: to read this page correctly, read it in the [GitHub repository](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-06-11-maven-core-class-descriptions.md) directly instead of on the [static blog page](https://geertjan-kuip.github.io/2025/06/11/maven-core-class-descriptions.html). The latter does not display the collapsable sections well, or actually it only shows the first part of the whole thing.
+
 
 ## package org.apache.maven;
 
