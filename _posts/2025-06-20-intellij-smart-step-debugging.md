@@ -22,4 +22,4 @@ Smart step debugging is the default of the debugger and it lets you select which
 
 ## Turn it of
 
-In Settings->Buid, Execution, Deployment->Stepping there is an option (the first) 'Always do smart step into'. Turn it of. By disabling it, you can traverse the code exactly the way that it is being traversed during runtime.
+In _Settings->Buid, Execution, Deployment->Stepping_ there is an option (the first) 'Always do smart step into'. Turn it of. By disabling it, you can traverse the code exactly the way that it is being traversed during runtime.
