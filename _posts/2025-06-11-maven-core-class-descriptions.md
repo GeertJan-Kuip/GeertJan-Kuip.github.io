@@ -1,6 +1,6 @@
 # Maven Core class descriptions
 
-I want to understand how Maven works so I'm gonna look at all classes. There are 368, or actually more, as some are generated during the generate-source phase by the Modello plugin (Model, Profile and Prerequisites from the org.apache.maven.api.model package). Total of packages is 52 I think.
+I want to understand how Maven works so I'm gonna look at all classes. There are 368 in the maven-core module alone, or actually more, as some are generated during the generate-source phase by the Modello plugin (Model, Profile and Prerequisites from the org.apache.maven.api.model package). Total of packages is 52 I think.
 
 It is gonna be extremely laborious work but I might learn a lot. My most important motivation to do this is to get a better understanding of complex codebases which will help me to build and/or find the right tools for quicker and more effective ways of code exploration.
 
