@@ -441,11 +441,32 @@ tree /f
 -- find lines in a file that contain the search string ($a is contents of text file)
 $a | select-string -pattern 'Morning'
 
--- deze is goed. als je filename weghaalt zie de hele tabel, je kunt ook linenumber en line kiezen
+-- This one is good. You can choose linenumber and line instead of filename
 gci *.java -file -recurse | select-string -pattern "\bdirectoryreader\b" | ft filename
+
+
+-- This one is even better. It selects all lines containing 'package' but only displays unique ones. 
+-- Note the select-object. Select-Object has interesting options, see 
+-- https://learn.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/select-object?view=powershell-7.5
+gci *.java -file -recurse | select-string -pattern "\bpackage\b\s\b\w+\b" |  Select-Object -ExpandProperty Line  | sort-object | get-unique
 
 ```
 
+### Writing a multiline textfile:
+
+```
+$lines = @(
+    "First line"
+    "Second line"
+    "Third line"
+)
+
+# Option 1: Set-Content
+$lines | Set-Content -Path "output.txt"
+
+# Option 2: Out-File
+$lines | Out-File -FilePath "output.txt"
+```
 
 
 
