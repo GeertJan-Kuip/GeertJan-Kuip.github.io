@@ -30,7 +30,7 @@ ChatGPT also provided this table with some of the relevant Psi classes:
 
 ### AnAction
 
-In most of the samples the plugin is written as a Java class extending the abstract AnAction class. [Here](https://plugins.jetbrains.com/docs/intellij/creating-actions-tutorial.html) it is described. You must implement `actionPerformed()`, `getActionUpdateThread()` and eventually `update`.
+In most of the samples the plugin is written as a Java class extending the abstract AnAction class. [Here](https://plugins.jetbrains.com/docs/intellij/creating-actions-tutorial.html) it is described. You must implement `actionPerformed()`, `getActionUpdateThread()` and eventually `update()`.
 
 ### Registering an action
 
@@ -52,7 +52,7 @@ To make the action available via the interface it must be registered. This is do
 
 The cumbersome part of the plugin development process has to do with the configuration that needs to be done in two files, the `plugin.xml` file mentioned earlier and the `build.gradle.kts` file that sits in the root. Both files are automatically generated when you create a new IntelliJ project and choose "IDE Plugin" as project type.
 
-### Change kotlin to java
+#### Change kotlin to java
 
 By default, the folder contains a src/main/kotlin folder. Either change 'kotlin' to 'java' or add a src/main/java folder. IntelliJ is okay with both.
 
@@ -63,7 +63,7 @@ This is a plugin file that worked for me. I made annotations in it for non-defau
 ```
 <idea-plugin>
     <id>com.geertjankuip.carrot</id><!-- similar to group-->
-    <name>Carrot</name><!-- similar to artifactId-->
+    <name>Carrot</name><!-- kind of similar to artifactId-->
     <vendor email="support@yourcompany.com" url="https://www.yourcompany.com">YourCompany</vendor>
 
     <description><![CDATA[
