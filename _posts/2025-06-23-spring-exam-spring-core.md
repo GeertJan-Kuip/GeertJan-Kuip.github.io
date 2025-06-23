@@ -27,9 +27,9 @@ Generate a basic project on [start.spring.io](start.spring.io).
 
 ### IoC and DI
 
-Inversion of Control and Dependency Injection are complementary. Dependency Injection means that the dependencies of a class (those objects that it works with and that have the form of member fields) are either initialzed by constructor arguments, by arguments belonging to a factory method or by properties that are set on the object instance right after construction of it. 
+Inversion of Control and Dependency Injection are complementary. Dependency Injection means that the dependencies of a class (those objects that it works with and that have the form of member fields) are either initialzed by constructor arguments, by arguments belonging to a factory method or by properties that are set on the object instance after construction of it with a setter method. 
 
-In all of these cases, the dependency is created outside of the object instance itself. The opposite of DI would be if somewhere in a method or a constructor or a initialization block a 'new DependencyType()' or a 'DependencyType.get()' method was being used.
+In all of these cases, the dependency is an argument to a method (constructor or setter) and created outside of the object instance itself. Some other part of the code must provide the dependency. The opposite of DI would be if somewhere in a method or a constructor or a initialization block a 'new DependencyType()' or a 'DependencyType.get()' method was being used.
 
 Given that every dependency is initialized via injection, it becomes possible to apply the inversion of control principle. The construction of the dependencies takes place outside of the class instance itself and will be done on a central place: the 'IoC container' or 'Application context.'
 
@@ -48,20 +48,48 @@ ApplicationContext is an interface that extends BeanFactory and is used as the r
 |GenericWebApplicationContext|A flexible and programmable context often used in frameworks or integration tests. Allows registration of beans programmatically (no annotations or XML required).|
 |StaticWebApplicationContext|Mainly used for lightweight unit testing of Spring MVC components. It allows registration of mock beans without scanning or external config.|
 
+From the documentation: _The org.springframework.context.ApplicationContext interface represents the Spring IoC container and is responsible for instantiating, configuring, and assembling the beans. The container gets its instructions on the components to instantiate, configure, and assemble by reading configuration metadata._
 
 ## Objective 1.2 Java Configuration
 
-
-
-
-
 ### 1.2.1 Define Spring Beans using Java code
 
+If you define Java beans without an xml file, there are two options:
 
-1.2.2 Access Beans in the Application Context
-1.2.3 Handle multiple Configuration files
-1.2.4 Handle Dependencies between Beans
-1.2.5 Explain and define Bean Scopes
+- Annotation-based configuration. This requires the use of annotations like @Autowired and @Component on the application's component classes
+- Java-based configuration. A class annotated with @Configuration contains code and annotations that define the beans and the wiring. The @Beans methods act as static factory methods.
+
+Depending on what strategy you choose for defining beans and their configuration, you choose the specific implementation of ApplicationContext. For example, xml-based configuration is served by implementations that have Xml in their name.
+
+When they talk about defining or configuring Spring beans using Java code, they mean creating beans using the @Bean in the @Configuration class. The classes that will become beans do not require annotation then, therefore it is called Java-based configuration. Importantly, the wiring is done without annotations, purely Java based.
+
+Fun fact from the documentation: _"You can use @Bean-annotated methods with any Spring @Component. However, they are most often used with @Configuration beans."_ Note that using @Bean outside @Configuration has negative side effects. What I understand from [the documentation](https://docs.spring.io/spring-framework/reference/core/beans/java/basic-concepts.html) is that such beans will not get a proxy class and thus cannot be properly wired.
+
+@Configuration/@Bean can be used in combination with @Component ('Annotation-based configuration') if you use the AnnotationConfigApplicationContext implementation of ApplicationContext. This one is the go-to if you want to be able to combine both methods. To enable scanning the configuration class must have not only @Configuration but also @ComponentScan (unless you use @SpringBootApplication, which effectively combines these two annotations). @ComponentScan can have an argument that tells them in which package(s) to scan. Like `@ComponentScan(basePackages = "com.acme")`.
+
+
+
+
+Few remarks about 'defining Spring beans using Java code':
+
+- 
+
+### 1.2.2 Access Beans in the Application Context
+
+
+
+### 1.2.3 Handle multiple Configuration files
+### 1.2.4 Handle Dependencies between Beans
+
+### 1.2.5 Explain and define Bean Scopes
+
+There are two main scopes for beans plus four others that are only relevant in web-related applications. The two main scopes are:
+
+- **Singleton** - Only one instance of the bean is created and it lasts as long as the application runs.
+- **Prototype** - A new instance is created every time a request for that bean is being made.
+
+The four other scopes are `request`, `session`, `application` and `websocket`. They are only available if you use a web-aware ApllicationContext implementation, like `XmlWebApplicationContext`. An exception is raised if you try to use these scopes in a non-web context.
+
 Objective 1.3 Properties and Profiles
 1.3.1 Use External Properties to control Configuration
 1.3.2 Demonstrate the purpose of Profiles
