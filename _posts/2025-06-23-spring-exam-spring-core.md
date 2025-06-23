@@ -1,6 +1,6 @@
 # Spring exam - Spring Core
 
-Past month I did some other things (PowerShell scripting, Maven, JUnit, debugging) but now I want to proceed with Spring, getting the Spring Certified Professional certification this summer. I have the [exam guide] (https://docs.broadcom.com/doc/vmw-spring-professional-develop-exam-guide) and will use it as a roadmap to get famililar enough with Spring.
+Past month I did some other things (PowerShell scripting, Maven, JUnit, debugging) but now I want to proceed with Spring, getting the Spring Certified Professional certification this summer. I have the [exam guide](https://docs.broadcom.com/doc/vmw-spring-professional-develop-exam-guide) and will use it as a roadmap to get famililar enough with Spring.
 
 The upcoming blog posts will each provide notes on one of the six sections of the exam guide. This is a first in the series and it discusses Spring Core. I might omit subsections if I think they aren't useful.
 
