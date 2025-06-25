@@ -375,7 +375,9 @@ A BeanFactoryPostProcessor is a bean that has interface BeanFactoryPostProcessor
 
 While you can write your own BeanFactoryPostProcessor(s), Spring has its own as well. The two important ones are:
 
-#### PropertySourcesPlaceholderConfigurer
+#### BeanFactoryPostProcessor 
+
+**PropertySourcesPlaceholderConfigurer**
 
 It resolves placeholders like ${some.property} in:
 
@@ -385,7 +387,7 @@ It resolves placeholders like ${some.property} in:
 
 Before beans are created, it scans through PropertySources (like application.properties) and replaces `${...}` with real values.
 
-#### ConfigurationClassPostProcessor
+**ConfigurationClassPostProcessor**
 
 This processor:
 
@@ -396,10 +398,44 @@ This processor:
 
 Without this, Java config classes wouldn’t work at all.
 
+It is important to note that in Java-based and annotation-based configuration scenario's, almost all the worki is done in th epost-processing phase, not in the loading phase that precedes it.
+
+#### BeanPostProcessor
+
+When bean instances are created and dependencies are injected, the BeanPostProcessors can do their work. They operate on the real bean instances, not on their definitions as the BeanFactoryPostProcessors do. BeanPostProcessors cause initialization methods to be called, such as @PostConstruct or the xml based init-method. See 1.4.3. 
+
+Spring has its own BeanPostProcessor implementations that run by default, like CommonAnnotationBeanPostProcessor. This class enables annotations like @PostConstruct, @PreDestroy and @Resource.
+
+BeanPostProcessor is called an 'Extension point'. It is powerful:
+
+- Can modify bean instances in any way.
+- Powerful enabling feature (? text from video tutorial)
+- Will run against every bean.
+- Can modify a bean before and/or after initialization.
+
+The BeanPostProcessor interface has two default methods, `postProcessAfterInitialization()` and `postProcessAfterInitialization()`. Their names tell the difference. This is the code:
+
+```
+public interface BeanPostProcessor {
+
+	default @Nullable Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
+		return bean;
+	}
+
+	default @Nullable Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
+		return bean;
+	}
+```
+
+As you see the both return the bean object that is the first argument. Within the method you can change the bean however you like and you can return anything. There aren't many restrictions. Nevertheless, this option is not used often, this phase is mainly run by Spring's own BeanPostProcessors.
+
+About the latter: ChatGPT listed seven relevant Spring BeanPostProcessors but I'll leave that list for now. It is remarkable that here again most of the work is done in the post-processing phase, not in the phases preceding it (although that is what the schema suggest).
 
 ### 1.5.3 Explain how Spring proxies add behavior at runtime
 
 ### 1.5.4 Describe how Spring determines bean creation order
+
+Hint: this has to do with dependencies. Those must preceed the beans in which they are being injected.
 
 ### 1.5.5 Avoid issues when Injecting beans by type
 
