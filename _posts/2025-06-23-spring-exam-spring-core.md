@@ -377,7 +377,9 @@ While you can write your own BeanFactoryPostProcessor(s), Spring has its own as 
 
 #### BeanFactoryPostProcessor 
 
-**PropertySourcesPlaceholderConfigurer**
+Two Spring BeanFactoryPostProcessors are important, namely PropertySourcesPlaceholderConfigurer and ConfigurationClassPostProcessor.
+
+_**PropertySourcesPlaceholderConfigurer**_
 
 It resolves placeholders like ${some.property} in:
 
@@ -387,7 +389,7 @@ It resolves placeholders like ${some.property} in:
 
 Before beans are created, it scans through PropertySources (like application.properties) and replaces `${...}` with real values.
 
-**ConfigurationClassPostProcessor**
+_**ConfigurationClassPostProcessor**_
 
 This processor:
 
