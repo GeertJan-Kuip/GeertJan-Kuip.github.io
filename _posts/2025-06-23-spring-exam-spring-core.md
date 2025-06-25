@@ -435,6 +435,16 @@ About the latter: ChatGPT listed seven relevant Spring BeanPostProcessors but I'
 
 ### 1.5.3 Explain how Spring proxies add behavior at runtime
 
+In the BeanPostProcessing phase, the BeanPostProcessors can be written in a way that they do not return the original bean that was inserted as first argument, but a different, strongly modified bean, also called a proxy. Technically, it wraps the original bean in a wrapper with other code and returns this wrapped object. From then on, Spring will only know and return this proxy bean when you call getBean(). 
+
+Whether a bean will be replaced by a proxy depends on the annotations it carries. Annotations that induce proxy-creation are:
+
+- @Transactional
+- @Async
+- AOP (@Aspect)
+- @Secured, @PreAuthorize (Spring Security)
+- @Scope("request") or @Scope("session")
+
 ### 1.5.4 Describe how Spring determines bean creation order
 
 Hint: this has to do with dependencies. Those must preceed the beans in which they are being injected.
