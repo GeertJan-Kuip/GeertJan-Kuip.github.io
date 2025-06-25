@@ -369,6 +369,16 @@ The most important stereotype annotations are Stereotype annotations are @Compon
 
 ### 1.5.1 Explain the Spring Bean Lifecycle
 
+#### Destruction phase
+
+- All beans are cleaned up
+    - Any registered @PreDestroy methods are invoked
+    - Beans released for the Garbage Collector to destroy
+- Also happens when any bean goes out of scope
+    - Except Prototype scoped beans
+
+This only happens if the application is gracefully closed (context.close()).
+
 ### 1.5.2 Use a BeanFactoryPostProcessor and a BeanPostProcessor
 
 A BeanFactoryPostProcessor is a bean that has interface BeanFactoryPostProcessor implemented. This gives it a method postProcessBeanFactory. This method is called by Spring on the moment in the lifecycle that it has registered all beans but not created instances of them. A BeanFactoryPostProcessor allows you to modify bean definitions. More about its internal workings in another [blog post](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-06-25-hooks-listeners-and-the-observer-pattern.md).
@@ -445,9 +455,21 @@ Whether a bean will be replaced by a proxy depends on the annotations it carries
 - @Secured, @PreAuthorize (Spring Security)
 - @Scope("request") or @Scope("session")
 
+There are two ways for Spring to create a proxy. There is the (modern) JDK Proxy that requires an interface to be implemented in the bean. The proxy object will be based on this interface, just like the original bean. These proxies are called _dynamic proxies_. This API for the JDK proxy comes from the JDK.
+
+The other way is the CGLib Proxy, not part of the JDK, but included in Spring jars. Used when no interface implemented, cannot be applied to final classes or methods. The technique is to create a subclass that extends the original bean. Remarkable: SpringBoot relies solely on CGLib proxies, not on JDK proxies.
+
 ### 1.5.4 Describe how Spring determines bean creation order
 
+Beans must be created _after_ their dependencies. To achieve the right order, Spring evaluates dependencies for each bean and then follows a recursive process. It creates a bean if either the bean has no dependencies or if the dependencies are already created.
+
+The process of analyzing dependencies takes place after BeanFactoryPostProcessors have done their work and before the beans are instantiated.
+
+There is an annotation @DependsOn() that you can use on a class or on a @Bean annotated constructor to make explicit the dependencies. It is not required, Spring will find out anyway.
+
 Hint: this has to do with dependencies. Those must preceed the beans in which they are being injected.
+
+
 
 ### 1.5.5 Avoid issues when Injecting beans by type
 
