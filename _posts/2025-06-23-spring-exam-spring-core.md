@@ -88,7 +88,11 @@ public static void main(String[] args) {
 
 ### 1.2.2 Access Beans in the Application Context
 
+I had some trouble finding out what exactly is meant by this title. I asked ChatGPT and, among others, gave me a list of retrieval methods:
 
+- Retrieve by type: getBean(MyService.class)
+- Retrieve by name: getBean("myService")
+- Retrieve by name and type: getBean("myService", MyService.class)
 
 ### 1.2.3 Handle multiple Configuration files
 
@@ -138,12 +142,78 @@ The four other scopes are `request`, `session`, `application` and `websocket`. T
 Objective 1.3 Properties and Profiles
 1.3.1 Use External Properties to control Configuration
 1.3.2 Demonstrate the purpose of Profiles
+
 1.3.3 Use the Spring Expression Language (SpEL)
+
+The Spring Expression Language is quite extensive. The basic usage is something like this:
+
+```
+@Value("#{ systemProperties['user.region'] }")
+```
+
+
+
 Objective 1.4 Annotation-Based Configuration and Component Scanning
+
 1.4.1 Explain and use Annotation-based Configuration
+
+Annotation-based configuration means that beans are being found by scanning
+
 1.4.2 Discuss Best Practices for Configuration choices
+
 1.4.3 Use @PostConstruct and @PreDestroy
+
+In line with the three ways to define and configure beans, there are three ways to controll bean lifecycle behaviour. The most modern way is to add methods to the bean classes that are annotated with either `@PostConstruct` (initializing a bean) or `@PreDestroy` (destroy a bean). The `PostConstruct` method is called right after the bean has received all of its dependencies.
+
+A less recommended but valid way is to add the InitializingBean and DisposableBean interfaces on your bean class. They force you to implement the following methods:
+
+```
+void afterPropertiesSet() throws Exception;
+#and
+void destroy() throws Exception;
+````
+
+If you go pure xml, you can add 'init-method' to the xml tag of bean:
+
+```
+<bean id="exampleInitBean" class="examples.ExampleBean" init-method="init" destroy-method="cleanup"/>
+```
+
+Subsequently, the methods you named 'init' and 'cleanup' must be used in the bean class like this:
+
+```
+public class ExampleBean {
+
+	public void init() {
+		// do some initialization work
+	}
+
+	public void cleanup() {
+		// do some cleanup work before destroying bean
+	}
+}
+```
+
+If you want, you can tell Spring in the xml file to look for a specific method name in every bean class that will be used as postconstruct or predestroy method. You do that by adding it to the `<beans>` tag that is the parent of the `<bean>` elements:
+
+```
+<beans default-init-method="init"> <!-- every method named init in any bean will be called after the bean is created-->
+
+	<bean id="blogService" class="com.something.DefaultBlogService">
+		<property name="blogDao" ref="blogDao" />
+	</bean>
+
+</beans> 
+```
+
+#### Most relevant for exam
+
+For the exam, the first methods (using @PostConstruct and @PreDestroy) are the important ones. They are also the most up-to-date way of using Spring.
+
 1.4.4 Explain and use “Stereotype” Annotations
+
+The most important stereotype annotations are Stereotype annotations are @Component, @Controller, @RestController, @Service, @Repository and @Configuration. They all indicate that the annotated class is a bean.
+
 Objective 1.5 Spring Bean Lifecycle
 1.5.1 Explain the Spring Bean Lifecycle
 1.5.2 Use a BeanFactoryPostProcessor and a BeanPostProcessor
