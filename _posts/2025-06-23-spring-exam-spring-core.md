@@ -373,7 +373,7 @@ The most important stereotype annotations are Stereotype annotations are @Compon
 
 A BeanFactoryPostProcessor is a bean that has interface BeanFactoryPostProcessor implemented. This gives it a method postProcessBeanFactory. This method is called by Spring on the moment in the lifecycle that it has registered all beans but not created instances of them. A BeanFactoryPostProcessor allows you to modify bean definitions. More about its internal workings in another [blog post](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-06-25-hooks-listeners-and-the-observer-pattern.md).
 
-While you can write your own BeanFactoryPostProcessor(s), Spring has its own as well. The two important ones are:
+A BeanPostProcessor is run after the instances of the beans are created and dependencies are injected (actually much of this work is done by BeanPostProcessors). Its basic workings are very similar to that of BeanFactoryPostProcessor.
 
 #### BeanFactoryPostProcessor 
 
