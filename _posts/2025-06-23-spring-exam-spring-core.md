@@ -210,6 +210,8 @@ Having this tag means you can do without the ```<context:annotation-config/>```.
 
 The @Autowired annotation can be used on constructors, setters and fields. If a class has just one constructor you can omit @Autowired, since Spring version 4.3. If multiple constructors exist you need @Autowired to tell Spring which one to use.
 
+A very similar annotation is @Inject. This one is not an origial Spring annotation (@Resource isn't either) but can be used, although using @Autowired is recommended. The difference is that @Autowired has the very convenient option that if the class to autowire doesn't exist, it injects null and does not throw an exception. Important: this only works if you write ```@Autowired(required = false)```, the default is true. @Inject will fail if the dependency doesn't exist. It doesn't have this 'required' option and will always throw something like ```NoSuchBeanDefinitionException```.
+
 @Resource can do similar things as @Autowired but whereas @Autowired injects beans by type, @Resource injects beans by name. @Resource is used for fields and setters, not for constructors. @Autowired does all three of them. @Autowired knows what to inject based on the type (unless multiple beans with that type exist, then there are some rules for resolving this, there is for example the @Qualifier annotation that helps here). @Resource has a name as argument and resolves by name instead of type. If no argument provided, it tries to resolve by type.
 
 @Value differs from both as it is not for injecting beans but for injecting values. It can inject the following value types:
@@ -238,6 +240,10 @@ public class WelcomeService {
     }
 }
 ```
+
+Note: the `app.timeout.seconds:10` picks up an external property and gives is a default value of 10. That value would be used if the value is not set or if the value is no part of the properties at all. Spring interpretes it as: 
+
+_"Look for the property app.timeout.seconds. If it exists, use its value. If it does not exist, use the default value 10."_
 
 #### Java-based
 
