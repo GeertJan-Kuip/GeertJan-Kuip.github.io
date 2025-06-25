@@ -48,7 +48,7 @@ ApplicationContext is an interface that extends BeanFactory and is used as the r
 |GenericWebApplicationContext|A flexible and programmable context often used in frameworks or integration tests. Allows registration of beans programmatically (no annotations or XML required).|
 |StaticWebApplicationContext|Mainly used for lightweight unit testing of Spring MVC components. It allows registration of mock beans without scanning or external config.|
 
-From the documentation: _The org.springframework.context.ApplicationContext interface represents the Spring IoC container and is responsible for instantiating, configuring, and assembling the beans. The container gets its instructions on the components to instantiate, configure, and assemble by reading configuration metadata._
+From the documentation: _"The org.springframework.context.ApplicationContext interface represents the Spring IoC container and is responsible for instantiating, configuring, and assembling the beans. The container gets its instructions on the components to instantiate, configure, and assemble by reading configuration metadata."_
 
 ## Objective 1.2 Java Configuration
 
@@ -96,8 +96,56 @@ I had some trouble finding out what exactly is meant by this title. I asked Chat
 
 ### 1.2.3 Handle multiple Configuration files
 
-One @Configuration class can have an @Import annotation to be used for importing another @Configuration class. See [example](https://docs.spring.io/spring-framework/reference/core/beans/java/composing-configuration-classes.html). When constructing the ApplicationContext, it now is enough to have only the configuration class as argument that has imported the other configuration class.
+#### @Import
 
+One @Configuration class can have an @Import annotation to be used for importing another @Configuration class. See [example](https://docs.spring.io/spring-framework/reference/core/beans/java/composing-configuration-classes.html). When constructing the ApplicationContext, it now is enough to have only the configuration class as argument that has imported the other configuration class. If you do not want to use @Import to combine configuration classes, you need to name all configuration classes as argument in the constructor of the ApplicationContext, like this:
+
+```
+new AnnotationConfigApplicationContext(AppConfig.class, OtherConfig.class);
+```
+
+#### @ImportResource
+
+Using this annotation on a configuration class lets you import all configuration info from one or more xml files. Examples:
+
+```
+@ImportResource("classpath:/beans.xml")  // single xml file
+
+@ImportResource({"classpath:/a.xml", "classpath:/b.xml"})  // multiple xml files
+```
+
+The reverse is also possible, loading a configuration bean into an xml file to combine them:
+
+```
+<!-- beans.xml -->
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="...">
+
+    <context:annotation-config />
+    <context:component-scan base-package="com.example" />
+
+    <bean class="com.example.AppConfig"/> // AppConfig is a @Configuration class with beans
+
+</beans>
+```
+
+#### Combine component scanning with Java/XML
+
+You can do configuration in a @Configuration class but do additional component scanning as well (Java based combined with annotation based):
+
+```
+@Configuration
+@ComponentScan("com.example.services")
+public class AppConfig {}
+```
+
+Or you add a line to the xml configuration file to activate additional component scanning:
+
+```
+<context:component-scan base-package="com.example.services"/>
+```
 
 
 
