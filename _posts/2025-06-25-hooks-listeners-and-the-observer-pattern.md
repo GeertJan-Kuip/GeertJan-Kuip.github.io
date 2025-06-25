@@ -2,7 +2,7 @@
 
 When studying Maven I was somehow in the dark about what it meant that Maven had 'hooks' that allowed plugins to add code to the Maven lifecycle. 'Hook' is a metaphor, I had no clue about the underlying implementation.
 
-Equally in the dark I was about the concept of ActionListeners in Java Swing, add the start of my Java journey. Listeners had to be added an you needed to write some ActionPerformed method. I made it work but in a sort of mechanical way, with no feel for the underlying implementation.
+Equally in the dark I was about the concept of ActionListeners in Java Swing, at the start of my Java journey. Listeners had to be added and you needed to write some actionPerformed method. I made it work but in a sort of mechanical way, with no feel for the underlying implementation.
 
 Today I ran into so called 'BeanFactoryPostProcessors' in Spring and I asked ChatGPT about it. I related the answer to earlier Maven discussion and now I have understood something that didn't come intuitively to me.
 
@@ -49,7 +49,7 @@ Swing, and I remember JavaScript as well, have the concept of ActionListeners. I
 I asked ChatGPT if this thing with listeners could be called the observer pattern (yes) and if the hooks in Spring and Maven could be interpreted as an observer pattern as well. ChatGPT said no on the latter, arguing that there are some fundamental differences here between Spring/Maven and Swing, namely the following:
 
 |Aspect|Observer pattern|Spring post-processor mechanism|
-|----|----|
+|----|----|----|
 |Purpose|React to events dynamically|Customize lifecycle behavior at startup|
 |Notification trigger|An event occurs (e.g., button click)|The framework itself starts a phase (e.g., bean definition processing)|
 |Runtime behavior|Ongoing, reactive|One-time, controlled startup|
