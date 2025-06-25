@@ -67,19 +67,64 @@ Fun fact from the documentation: _"You can use @Bean-annotated methods with any 
 
 @Configuration/@Bean can be used in combination with @Component ('Annotation-based configuration') if you use the AnnotationConfigApplicationContext implementation of ApplicationContext. This one is the go-to if you want to be able to combine both methods. To enable scanning the configuration class must have not only @Configuration but also @ComponentScan (unless you use @SpringBootApplication, which effectively combines these two annotations). @ComponentScan can have an argument that tells them in which package(s) to scan. Like `@ComponentScan(basePackages = "com.acme")`.
 
+Instead of using @ComponentScan on the @Configuration class you can register the classes annotated with @Component or one of its equivalents programmatically, either by adding them as argument when constructing the ApplicationContext or by creating the ApplicationContext without them as argument and then use the register method. Both methods illustrated below:
 
+```
+public static void main(String[] args) {
+	ApplicationContext ctx = new AnnotationConfigApplicationContext(MyServiceImpl.class, Dependency1.class, Dependency2.class);
+	MyService myService = ctx.getBean(MyService.class);
+	myService.doStuff();
+}
 
-
-Few remarks about 'defining Spring beans using Java code':
-
-- 
+public static void main(String[] args) {
+	AnnotationConfigApplicationContext ctx = new AnnotationConfigApplicationContext();
+	ctx.register(AppConfig.class, OtherConfig.class);
+	ctx.register(AdditionalConfig.class);
+	ctx.refresh();
+	MyService myService = ctx.getBean(MyService.class);
+	myService.doStuff();
+}
+```
 
 ### 1.2.2 Access Beans in the Application Context
 
 
 
 ### 1.2.3 Handle multiple Configuration files
+
+One @Configuration class can have an @Import annotation to be used for importing another @Configuration class. See [example](https://docs.spring.io/spring-framework/reference/core/beans/java/composing-configuration-classes.html). When constructing the ApplicationContext, it now is enough to have only the configuration class as argument that has imported the other configuration class.
+
+
+
+
+
 ### 1.2.4 Handle Dependencies between Beans
+
+In the configuration class you can inject a bean as a dependency in another bean in the following way:
+
+```
+@Bean
+public BeanOne beanOne(BeanTwo beanTwo) {
+    return new BeanOne(beanTwo);
+}
+
+@Bean
+public BeanTwo beanTwo() {
+    return new BeanTwo();
+}
+```
+
+It is possible as well to do it like this, but this is not recommended (ChatGPT states that the previous method is the cleaner, safer, and more flexible approach):
+
+```
+@Bean
+public BeanOne beanOne() {
+    return new BeanOne(BeanTwo());
+}
+```
+
+This latter method suggests that some BeanTwo instance is created, but actually it was already created and is simply retrieved from the collection that holds all created bean instances that have scope singleton.
+
 
 ### 1.2.5 Explain and define Bean Scopes
 
