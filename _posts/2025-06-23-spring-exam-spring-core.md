@@ -286,6 +286,14 @@ The four other scopes are `request`, `session`, `application` and `websocket`. T
 
 ### 1.3.1 Use External Properties to control Configuration
 
+I have written extensively on it [here](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-05-14-external-properties.md). Basically there are three ways to inject external properties into your beans:
+
+- using the @Value annotation
+- through Spring’s Environment abstraction
+- through @ConfigurationProperties.
+
+
+
 ### 1.3.2 Demonstrate the purpose of Profiles
 
 ### 1.3.3 Use the Spring Expression Language (SpEL)
@@ -294,7 +302,7 @@ The Spring Expression Language is quite extensive. The basic usage is something 
 
 ```
 @Value("#{ systemProperties['user.region'] }")
-
+```
 
 ## Objective 1.4 Annotation-Based Configuration and Component Scanning
 
