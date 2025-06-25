@@ -371,6 +371,32 @@ The most important stereotype annotations are Stereotype annotations are @Compon
 
 ### 1.5.2 Use a BeanFactoryPostProcessor and a BeanPostProcessor
 
+A BeanFactoryPostProcessor is a bean that has interface BeanFactoryPostProcessor implemented. This gives it a method postProcessBeanFactory. This method is called by Spring on the moment in the lifecycle that it has registered all beans but not created instances of them. A BeanFactoryPostProcessor allows you to modify bean definitions. More about its internal workings in another [blog post](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-06-25-hooks-listeners-and-the-observer-pattern.md).
+
+While you can write your own BeanFactoryPostProcessor(s), Spring has its own as well. The two important ones are:
+
+#### PropertySourcesPlaceholderConfigurer
+
+It resolves placeholders like ${some.property} in:
+
+- @Value annotations
+- `<bean>` XML definitions
+- @Bean method parameters
+
+Before beans are created, it scans through PropertySources (like application.properties) and replaces `${...}` with real values.
+
+#### ConfigurationClassPostProcessor
+
+This processor:
+
+- Reads @Configuration classes
+- Finds @Bean methods
+- Handles @ComponentScan, @Import, @ImportResource, etc.
+- Registers new bean definitions from those
+
+Without this, Java config classes wouldn’t work at all.
+
+
 ### 1.5.3 Explain how Spring proxies add behavior at runtime
 
 ### 1.5.4 Describe how Spring determines bean creation order
