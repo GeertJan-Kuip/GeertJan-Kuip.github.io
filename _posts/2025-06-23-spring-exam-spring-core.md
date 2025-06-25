@@ -139,29 +139,29 @@ There are two main scopes for beans plus four others that are only relevant in w
 
 The four other scopes are `request`, `session`, `application` and `websocket`. They are only available if you use a web-aware ApllicationContext implementation, like `XmlWebApplicationContext`. An exception is raised if you try to use these scopes in a non-web context.
 
-Objective 1.3 Properties and Profiles
-1.3.1 Use External Properties to control Configuration
-1.3.2 Demonstrate the purpose of Profiles
+## Objective 1.3 Properties and Profiles
 
-1.3.3 Use the Spring Expression Language (SpEL)
+### 1.3.1 Use External Properties to control Configuration
+
+### 1.3.2 Demonstrate the purpose of Profiles
+
+### 1.3.3 Use the Spring Expression Language (SpEL)
 
 The Spring Expression Language is quite extensive. The basic usage is something like this:
 
 ```
 @Value("#{ systemProperties['user.region'] }")
-```
 
 
+## Objective 1.4 Annotation-Based Configuration and Component Scanning
 
-Objective 1.4 Annotation-Based Configuration and Component Scanning
-
-1.4.1 Explain and use Annotation-based Configuration
+### 1.4.1 Explain and use Annotation-based Configuration
 
 Annotation-based configuration means that beans are being found by scanning
 
-1.4.2 Discuss Best Practices for Configuration choices
+### 1.4.2 Discuss Best Practices for Configuration choices
 
-1.4.3 Use @PostConstruct and @PreDestroy
+### 1.4.3 Use @PostConstruct and @PreDestroy
 
 In line with the three ways to define and configure beans, there are three ways to controll bean lifecycle behaviour. The most modern way is to add methods to the bean classes that are annotated with either `@PostConstruct` (initializing a bean) or `@PreDestroy` (destroy a bean). The `PostConstruct` method is called right after the bean has received all of its dependencies.
 
@@ -210,18 +210,31 @@ If you want, you can tell Spring in the xml file to look for a specific method n
 
 For the exam, the first methods (using @PostConstruct and @PreDestroy) are the important ones. They are also the most up-to-date way of using Spring.
 
-1.4.4 Explain and use “Stereotype” Annotations
+### 1.4.4 Explain and use “Stereotype” Annotations
 
 The most important stereotype annotations are Stereotype annotations are @Component, @Controller, @RestController, @Service, @Repository and @Configuration. They all indicate that the annotated class is a bean.
 
-Objective 1.5 Spring Bean Lifecycle
-1.5.1 Explain the Spring Bean Lifecycle
-1.5.2 Use a BeanFactoryPostProcessor and a BeanPostProcessor
-1.5.3 Explain how Spring proxies add behavior at runtime
-1.5.4 Describe how Spring determines bean creation order
-1.5.5 Avoid issues when Injecting beans by type
-Objective 1.6 Aspect Oriented Programming
-1.6.1 Explain the concepts behind AOP and the problems that it solves
-1.6.2 Implement and deploy Advices using Spring AOP
-1.6.3 Use AOP Pointcut Expressions
-1.6.4 Explain different types of Advice and when to use them
+## Objective 1.5 Spring Bean Lifecycle
+
+### 1.5.1 Explain the Spring Bean Lifecycle
+
+### 1.5.2 Use a BeanFactoryPostProcessor and a BeanPostProcessor
+
+### 1.5.3 Explain how Spring proxies add behavior at runtime
+
+### 1.5.4 Describe how Spring determines bean creation order
+
+### 1.5.5 Avoid issues when Injecting beans by type
+
+## Objective 1.6 Aspect Oriented Programming
+
+### 1.6.1 Explain the concepts behind AOP and the problems that it solves
+
+### 1.6.2 Implement and deploy Advices using Spring AOP
+
+### 1.6.3 Use AOP Pointcut Expressions
+
+### 1.6.4 Explain different types of Advice and when to use them
+
+
+
