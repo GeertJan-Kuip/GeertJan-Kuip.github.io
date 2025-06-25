@@ -152,6 +152,95 @@ Or you add a line to the xml configuration file to activate additional component
 
 ### 1.2.4 Handle Dependencies between Beans
 
+#### Xml-based
+
+When using xml based configuration, you create the wiring in the xml file itself. If you have a bean ThingOne depending on beans ThingTwo and ThingThree, you create the ThingOne class as usual with a constructor with two arguments:
+
+```
+package x.y;
+
+public class ThingOne {
+
+	public ThingOne(ThingTwo thingTwo, ThingThree thingThree) {
+		// ...
+	}
+}
+```
+
+In the xml file you specify the beans and the wiring. Soring understands the order in which you provide the arguments to the constructor.
+
+```
+<beans>
+	<bean id="beanOne" class="x.y.ThingOne">
+		<constructor-arg ref="beanTwo"/>
+		<constructor-arg ref="beanThree"/>
+	</bean>
+
+	<bean id="beanTwo" class="x.y.ThingTwo"/>
+
+	<bean id="beanThree" class="x.y.ThingThree"/>
+</beans>
+```
+
+There are more variants, you can also use setter injection (Spring advises to do this only with optional dependencies). 
+
+#### Annotation-based
+
+You can add the following tag to your xml if you want to mix xml-based configuration with annotation-based configuration, more specifically with respect to dependency configuration:
+
+```
+<context:annotation-config/>
+```
+
+This tag activates Spring's annotation-driven dependency injection, which includes:
+
+- @Autowired
+- @Value
+- @PostConstruct / @PreDestroy
+- @Resource (JSR-250)
+- @Inject (JSR-330)
+
+Those annotations will be processed, whether or not there is component scanning. It gives you a combi where xml defines the beans and the annotations do the wiring. If componentscanning is enabled, and/or if beans are defined in the code itself, you do not need this tag. Note: you can torn on component scanning on in the xml file using this one:
+
+```
+<context:component-scan base-package="com.example"/>
+```
+
+Having this tag means you can do without the ```<context:annotation-config/>```.
+
+The @Autowired annotation can be used on constructors, setters and fields. If a class has just one constructor you can omit @Autowired, since Spring version 4.3. If multiple constructors exist you need @Autowired to tell Spring which one to use.
+
+@Resource can do similar things as @Autowired but whereas @Autowired injects beans by type, @Resource injects beans by name. @Resource is used for fields and setters, not for constructors. @Autowired does all three of them. @Autowired knows what to inject based on the type (unless multiple beans with that type exist, then there are some rules for resolving this, there is for example the @Qualifier annotation that helps here). @Resource has a name as argument and resolves by name instead of type. If no argument provided, it tries to resolve by type.
+
+@Value differs from both as it is not for injecting beans but for injecting values. It can inject the following value types:
+
+- Property values (application.properties)
+- Constants (@Value("Hello"))
+- Spring Expression Language (@Value("#{2 * 60}"))
+
+These three can be combined. I asked ChatGPT for an example and got this:
+
+```
+# application.properties
+app.user.name=geert
+app.timeout.seconds=15
+```
+
+```
+@Component
+public class WelcomeService {
+
+    @Value("#{ 'Welcome ' + '${app.user.name}' + '! Timeout is ' + (${app.timeout.seconds:10} * 2) + ' seconds.' }")
+    private String welcomeMessage;
+
+    public void printWelcome() {
+        System.out.println(welcomeMessage);
+    }
+}
+```
+
+#### Java-based
+
 In the configuration class you can inject a bean as a dependency in another bean in the following way:
 
 ```
