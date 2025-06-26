@@ -369,6 +369,23 @@ The most important stereotype annotations are Stereotype annotations are @Compon
 
 ### 1.5.1 Explain the Spring Bean Lifecycle
 
+#### Initialization steps
+
+These are the steps:
+
+- Load Bean definitions
+- Post Process Bean definitions
+
+Subsequently, for each bean:
+- Find/create dependencies for the bean (decide order based on this)
+- Instantiate Bean
+- Perform Setter/Field Injection
+- Bean Post Processors before initialization
+- Initialization
+- Bean Post Processors after initialization
+- Bean ready for use
+
+
 #### Destruction phase
 
 - All beans are cleaned up
@@ -465,13 +482,19 @@ Beans must be created _after_ their dependencies. To achieve the right order, Sp
 
 The process of analyzing dependencies takes place after BeanFactoryPostProcessors have done their work and before the beans are instantiated.
 
-There is an annotation @DependsOn() that you can use on a class or on a @Bean annotated constructor to make explicit the dependencies. It is not required, Spring will find out anyway.
+There is an annotation @DependsOn() that you can use on a class or on a @Bean annotated constructor to make explicit the dependencies. It is not required, Spring will find out anyway. I think @DependsOn(someOtherBean) forces Spring to create someOtherBean first, even if it isn't a dependency. 
 
-Hint: this has to do with dependencies. Those must preceed the beans in which they are being injected.
+Singleton beans are what is called 'eagerly' instantiated, unless marked as _Lazy_. The latter bean type will only be instantiated when the bean is required.
 
+#### Naming beans
 
+No chapter deals with this, so here: when creating beans using annotations, the bean name is derived from class name or from the annotation value attribute. When creating beans with java code, the name is the name of the method that creates the bean or the name of the name/value attribute of @Bean. With the latter method, whereby the bean is a return value of a method, you can give the bean an interface reference type. 
 
 ### 1.5.5 Avoid issues when Injecting beans by type
+
+There is a scenario discussed in [the video](https://spring.academy/courses/spring-framework-essentials/lessons/spring-essentials-spring-container-bean-creation-injection-issues) where you might encounter problems. When you do Java-based configuration, you can give beans an interface type instead of an explicit type. In the wrong scenario a bean class implements multiple interfaces, say A and B, you create the bean as type A but inject using type B. Spring won't recognize what happens (and someone reading your code might neither).
+
+Generally, using interface type is regarded good practice. Even if the return type of an @Bean method is an explicit class type, it is good practice to use the interface type as argument in the dependency injection process. It is just regular Java practice.
 
 ## Objective 1.6 Aspect Oriented Programming
 
