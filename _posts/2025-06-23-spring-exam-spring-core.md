@@ -282,6 +282,8 @@ There are two main scopes for beans plus four others that are only relevant in w
 
 The four other scopes are `request`, `session`, `application` and `websocket`. They are only available if you use a web-aware ApllicationContext implementation, like `XmlWebApplicationContext`. An exception is raised if you try to use these scopes in a non-web context.
 
+For beans, singleton is the default scope.
+
 ## Objective 1.3 Properties and Profiles
 
 ### 1.3.1 Use External Properties to control Configuration
@@ -534,7 +536,7 @@ For the exam, the first methods (using @PostConstruct and @PreDestroy) are the i
 
 Methods annotated with @PostConstruct or @PreDestroy cannot have return values and can take no arguments.
 
-### Combining with Java-based config
+#### Combining with Java-based config
 
 In Java-based configuration, you have the option to create beans outside of your own code (in libraries or somewhere in your legacy code). But then, how do you tell which methods should be called post-construct or predestroy? 
 
@@ -550,6 +552,8 @@ Of course, these methods must be available in the library/legacy class, otherwis
 ### 1.4.4 Explain and use “Stereotype” Annotations
 
 The most important stereotype annotations are Stereotype annotations are @Component, @Controller, @RestController, @Service, @Repository and @Configuration. They all indicate that the annotated class is a bean.
+
+You can use these and other annotations as meta annotations to create your own custom stereotype annotation.
 
 ## Objective 1.5 Spring Bean Lifecycle
 
@@ -686,7 +690,46 @@ Generally, using interface type is regarded good practice. Even if the return ty
 
 ### 1.6.1 Explain the concepts behind AOP and the problems that it solves
 
+AOP solves cross-cutting concerns in one place (to 'modularize' it). Examples of such concerns are:
+
+- Logging and Tracing
+- Transaction Management
+- Security
+- Caching
+- Error Handling
+- Performance Monitoring
+- Custom Business Rules
+
+There is AspectJ and Spring AOP. The former modifies bytecode, the second creates proxy classes. There are elements of AspectJ in Spring AOP. The course will be mainly about Spring AOP.
+
+Core AOP concepts:
+
+- Join Point - a point in the execution of a program such as a method call or an exception thrown.
+- Pointcut - an expression that selects one or more Join Points
+- Advice - code to be executed at each selected Join Point
+- Aspect - A module that encapsulates pointcuts and advice
+- Weaving - technique by which aspects are combined with main code
+- Proxy 
+- AOP Proxy - an enhanced class in place of the original with Aspect behaviour woven into it
+
 ### 1.6.2 Implement and deploy Advices using Spring AOP
+
+In your @Aspect class, the place where you define pointcuts and advice ("where and what") you can define pointcuts in a sort of generic way. The example in the video is this:
+
+```
+@Aspect
+@Component
+public class PropertyChangeTracker {
+	private Logger logger = Logger.getLogger(getClass());
+
+	@Before("execution(void set*(*))")
+	public void trackChange(){
+		logger.info("Property about to change...");
+	}
+}
+```
+
+Note the value of @Before. It is a sort of wildcard pattern that tells Spring to apply this Aspect to any method whose name starts with 'set', that has void as return type and that has exactly one argument. Pretty effective. This example illustrates very well what a pointcut is I would say, it is the definition of _where an aspect should be inserted._
 
 ### 1.6.3 Use AOP Pointcut Expressions
 
