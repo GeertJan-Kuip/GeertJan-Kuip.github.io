@@ -292,9 +292,86 @@ I have written extensively on it [here](https://github.com/GeertJan-Kuip/GeertJa
 - through Spring’s Environment abstraction
 - through @ConfigurationProperties.
 
+What you can do with @Value can also be done using the Environment bean but @Value is often more convenient.
 
+You can also add @PropertySource to the @Configuration class. Thiss adds an extra file/resource with properties, above those that are picked up by Environment (Java System properties and Environment variables). For the argument in @PropertySource, you can use three types of prefixes:
+
+- classpath:
+- file:
+- http: 
+
+Examples:
+
+```
+@PropertySource("classpath:/resources/config/app.properties")
+@PropertySource("file:config/local.properties")
+```
+
+The properties can be used using SpEL ("${myproperties.dbpassword}").
 
 ### 1.3.2 Demonstrate the purpose of Profiles
+
+Profiles are groups of Beans. Some Beans might belong to no group, and thus to any, others might belong to a specific profile/group. Profiles are not mutually exclusive, you can activate more than one profile at the same time.
+
+#### How to define a profile?
+
+1 - Use @Profile annotation, with profile name as argument, on @Configuration class. Everything in this class now belongs to this profile.
+2 - Use @Profile annotation, with profile name as argument, on @Bean method. The bean constructed by this method belongs to the specific profile.
+3 - Like (1), but make sure that you use @Profile("X") on one @Configuration class and @Profile("!X") on another (mutually exclusive).
+
+
+(1) Lets you do a lot at once, you might think of creating one @Configuration class for every profile. (2) is better if the profiles are rather similar. You can even create two @Bean("MyName") variants (they have the same name) but give them a profile that is the inverse of the other. Example:
+
+```
+@Bean(name="DataSource")
+@Profile("embedded")
+public DataSource dataSourceForDev(){
+	//
+}
+
+@Bean(name="DataSource")
+@Profile("!embedded")
+public DataSource dataSourceForProd(){
+	// You might create a different explicit type here, note that both methods return the same interface.
+}
+```
+
+Using the exclamation mark (!) is a good technique, because it guarantees that only one of two beans will be used.
+
+#### Activating a profile(s)
+
+1- Using the command line
+
+```
+-Dspring.profiles.active=embedded,production
+```
+
+2 - Programmatically:
+
+```
+System.setProperty("spring.profiles.active", "embedded,production"); // must be done before creating ApplicationContext
+SpringApplication.run(AppConfig.class);
+```
+
+3 - Integration Test _only_: @ActiveProfiles (not covered here)
+
+#### Using Profile to control @PropertySource
+
+The sample below shows that you can decide which property file is used based on profile:
+
+```
+// When "local" profile, "local.properties" file
+@Configuration
+@Profile("local")
+@PropertySource("local.properties")
+Class DevConfig {}
+
+// When "cloud" profile, "cloud.properties" file
+@Configuration
+@Profile("cloud")
+@PropertySource("cloud.properties")
+Class ProdConfig {}
+```
 
 ### 1.3.3 Use the Spring Expression Language (SpEL)
 
@@ -303,6 +380,38 @@ The Spring Expression Language is quite extensive. The basic usage is something 
 ```
 @Value("#{ systemProperties['user.region'] }")
 ```
+
+In a SpEL expression you can use the names of beans, those will be recognized. For example:
+
+```
+@Value("#{strategyBean.keyGenerator}") 
+```
+
+This evaluates to the keyGenerator field that lives in strategyBean.
+
+Note that properties in @Value annotations can be accessed in two ways, either as a property using ${} or as a SpEL expression using #{}. The following two are equivalents:
+
+```
+@Value("${daily.limit}")
+@Value("#{environment['daily.limit']}")
+```
+
+Note that in the second case, daily.limit must have quotation marks as system- and environment variables (and properties in general) are always strings. The first case, ${daily.limit}, returns a string for the same reason. If you want to make calculations with properties, you must cast the string to a number first:
+
+```
+@Value("#{new Integer(environment['daily.limit']) * 2}")  // OK
+@Value("${daily.limit * 2}")  // NOT OK, requires cast
+```
+
+#### Fallback values
+
+Both ${} and #{} have a way to provide a default/fallback value:
+
+```
+@Value("${daily.limit : 1000}")   // just :
+@Value("#{environment['daily.limit'] ?: 1000}")  // Elvis operator
+```
+
 
 ## Objective 1.4 Annotation-Based Configuration and Component Scanning
 
