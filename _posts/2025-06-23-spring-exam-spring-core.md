@@ -294,6 +294,8 @@ I have written extensively on it [here](https://github.com/GeertJan-Kuip/GeertJa
 
 What you can do with @Value can also be done using the Environment bean but @Value is often more convenient.
 
+#### Using @PropertySource
+
 You can also add @PropertySource to the @Configuration class. Thiss adds an extra file/resource with properties, above those that are picked up by Environment (Java System properties and Environment variables). For the argument in @PropertySource, you can use three types of prefixes:
 
 - classpath:
@@ -417,9 +419,67 @@ Both ${} and #{} have a way to provide a default/fallback value:
 
 ### 1.4.1 Explain and use Annotation-based Configuration
 
-Annotation-based configuration means that beans are being found by scanning
+Annotation-based configuration means that beans are being found by scanning. The stereotype annotations mark the classes that will be beans. 
+
+#### Using @Autowired
+
+Dependency injection is done with @Autowired. This annotation makes sure that the objects(s) you specify as argument(s) to a constructor or method will be the bean instances of those classes. Field injection is not recommended but can be done with @Autowired. The problem with field injection is that it makes testing more difficult (during unit tests, the Spring framework isn't available to do the injection).
+
+When there are multiple constructors in a Bean class, you put the @Autowired annotation at the constructor that must be selected from those. When there is only one constructor you can omit the @Autowired annotation.
+
+@Autowired throws an exception if the required dependency is not found. You can suppress this exception-throwing by providing the attribute 'required', like `@Autowired(required=false)`. An alternative to using the 'required' attribute is to wrap the bean in an optional:
+
+```
+@Autowired
+public void setAccountService(Optional<AccountService> accountService){
+	this.accountService = accountService;
+}
+```
+
+#### Using @Qualifier
+
+@Autowired finds dependencies by type. It is possible that there are two beans that implement the same interface and that the @Autowired constructor or method has that interface type as argument. This results in exception as Spring doesn't know which one to choose. To solve it, give both beans a different name using their stereotype annotation (@Component("someName")) and add a @Qualifier annotation directly in front is the ambiguous argument:
+
+```
+@Autowired
+public TransferServiceImpl( @Qualifier("someName") AccountRepository accountRepository){
+	// code
+}
+```
+
+So the @Qualifier helps to solve ambiguity about which bean to use for injection.
+
+#### Combining @Autowired and @Value
+
+if you want to use @Value on one of the arguments of method or constructor, you must add the @Autowired annotation on the method or constructor itself. This surprised me as I didn't regard the injection with a value instead of a bean as injection. Example of right syntax for constructor or method:
+
+```
+@Autowired // optional if this is the only constructor
+public TransferServiceImpl(@Value("${daily.limit}") int max){
+	// code
+}
+
+@Autowired
+public void setDailyLimit(@Value("${daily.limit}") int max){
+	// code
+}
+```
+
+Instead of using ${} I could also have used SpEL (#{}).
+
+#### Using @Lazy
+
+Adding @Lazy to a component results in lazy initialization of that specific bean. Useful if bean's dependencies are not available at startup. Note: in Java-based configuration you can use @Lazy as annotation to the bean constructing methods in @Configuration.
+
 
 ### 1.4.2 Discuss Best Practices for Configuration choices
+
+When using annotation-based configuration, component scanning is done, by default on all files on the classpath. This might take long. You can limit the scanning by providing one or more arguments to @ComponentScan. Good practice is to make the number of files to scan for components as small as possible. Do not scan in libraries you import, it takes very long time.
+
+Good example: `@ComponentScan({"com.geertjankuip.fish", "com.geertjankuip.boat"})`  
+Bad example: `@ComponentScan("com")`  // allows too much
+
+Often you will mix-up annotation-based and Java-based. Java-based can do one thing that annotation-based can't namely creating beans from class definitions in libraries. Generally, the @Bean constructing methods provide a powerful way to separate business form beans, and it allows you to use legacy classes without having to modify them.
 
 ### 1.4.3 Use @PostConstruct and @PreDestroy
 
@@ -469,6 +529,23 @@ If you want, you can tell Spring in the xml file to look for a specific method n
 #### Most relevant for exam
 
 For the exam, the first methods (using @PostConstruct and @PreDestroy) are the important ones. They are also the most up-to-date way of using Spring.
+
+#### @PostConstruct and @PreDestroy must return void & have no arguments
+
+Methods annotated with @PostConstruct or @PreDestroy cannot have return values and can take no arguments.
+
+### Combining with Java-based config
+
+In Java-based configuration, you have the option to create beans outside of your own code (in libraries or somewhere in your legacy code). But then, how do you tell which methods should be called post-construct or predestroy? 
+
+An alternative for @PostConstruct and @PreDestroy is this:
+
+```
+@Bean(initMethod="populateCache", destroyMethod="flushCache")
+```
+
+Of course, these methods must be available in the library/legacy class, otherwise they cannot be called. But the benefit here is that you can leave the class code as is and do everything in the @Configuration class.
+
 
 ### 1.4.4 Explain and use “Stereotype” Annotations
 
