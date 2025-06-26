@@ -744,7 +744,7 @@ public class AspectConfig {
 
 The @EnableAspectJAutoProxy configures Spring to use @Aspect. You must enable the whole aspect thing like this others no aspect things will be done.
 
-Subsequently, you must import the Aspect configuration class in the main configuration class (although I think you can circumvent this by supplying the aspect cofig class as argument when the ApplicationContext is created).
+Subsequently, you must import the Aspect configuration class in the main configuration class (although I think you can circumvent this by supplying the aspect config class as argument when the ApplicationContext is created).
 
 ```
 @Configuration
@@ -752,10 +752,149 @@ Subsequently, you must import the Aspect configuration class in the main configu
 public class MainConfig{
 	@Bean etc
 }
+```
+
+Under the hood, any class containing @Aspect annotated methods (or methods that have been singled out by an AOP pointcut expression in the AspectConfig @Configuration @EnableAspectJAutoProxy class) will be converted to a proxy, either JDK or CGLib, by some BeanPostProcessor during the initialization phase. See 1.5.3. The so-called 'weaving' is basically done by a BeanPostProcessor and results in a proxy being returned by the method that implements BeanPostProcessor.
+
+#### Retrieving information about Join Points
+
+In the bean that defines the advice method (I don't know if this is a correct term) you can do a trick, namely the following:
+
+```
+@Aspect
+@Component
+public class PropertyChangeTracker {
+	private Logger logger = Logger.getLogger(getClass());
+
+	@Before("execution(void set*(*))")
+	public void trackChange(JoinPoint point){
+		String methodName = point.getSignature().getName();
+		Object newValue = point.getArgs()[0];
+		logger.info(methodName + " about to change to " + newValue + " on " + point.getTarget());
+	}
+}
+```
+
+Specific information about the context where the @Aspect is applied is collected and can be used, in this case to make it part of a log.
 
 ### 1.6.3 Use AOP Pointcut Expressions
 
+Spring AOP uses AspectJ's pointcut expression language. Spring AOP supports a practical subset of this language.
+
+#### Common Pointcut Designator
+
+- execution([method pattern])
+The method must match the pattern
+
+- chaining is possible using &&, ||, !
+Like: execution([pattern1]) || execution([pattern2]) 
+
+The pattern must be read from right to left. The elements that must be represented are arguments, methodname and returntype. Class/packagename is optional, as is access modifier.
+
+There are two types of wildcards, namely '*' and '..'. The former stands for exactly one element, the later for zero or more elements. '*' can be used as a wildcard for a complete name or part of a name.
+
+If you add the optional package/class name, with or without the use of '*', you must work with FQN's and make the method name part of the FQN.
+
+#### Examples
+
+`execution(* rewards.restaurant.*Service.find*(..))`
+Designate any method starting with find from a class in rewards.restaurant package whose name ends with Service. The method can have 0 or more arguments and can return any type, including void.
+
+`execution(void send*(rewards.Dining))`
+Any method that has one argument of type rewards.Dining, a name starting with 'send' and a void return type.
+
+`execution(* send(*))`
+Any method named send that has one argument. Return type can be anything.
+
+`execution(* send(int, ..))`
+Any method named send which has int as its first argument type.
+
+`execution(void example.MessageService.send(*))`
+Any method named send that sits in a class that implements example.MessageService interface, has one argument and void return type.
+
+Note that return types and argument types need fully qualified names, while method name itself doesn't. The return type and argument type can reside in other packages, libraries, while the method by default can not.
+
+#### Selection based on annotation
+
+You can also select all methods that have a specific annotation:
+
+`execution(@javax.annotation.security.RolesAllowed void send*(..))`
+Any method with the RolesAllowed annotation from the specific package javax.annotation.security. The method name must start with send, have void return type and can have any number of arguments.
+
+Again, use the FQN, this time of the annotation.
+
+#### Advanced ones with package names
+
+`execution(* rewards.*.restaurant.*.*(..))`
+There is one directory between rewards and restaurant
+
+`execution(* rewards..restaurant.*.*(..))`
+There are zero or more directories between rewards and restaurant. I find this one odd but it works (didn't try).
+
+`execution(* *..restaurant.*.*(..))
+There must be at least one directory before restaurant. The method must sit in a class that sits in a package whose FQN ends with restaurant.
+
 ### 1.6.4 Explain different types of Advice and when to use them
+
+There are five advice types:
+
+- @Before
+If a @Before advice throws an exception, the target method will not be called. This is valid use of the @Before advice.
+
+- @AfterReturning
+Advice will only be executed if method executes successfully. Advice can use the return value of the method. This advice type does not only have a pointcut expression to match the method, but can also have a second argument that matches the return type in a more sophisticated way. Example:
+
+```
+@AfterReturning(value="execution(* service..*.*(..)), returning="reward")
+public void audit(JoinPoint jp, Reward reward){
+	auditService.logEvent(jp.getSignature() + "returns the following reward object: " + reward.toString());
+} 
+```
+
+Somehow the returntype must be Reward. The benefit of this construction is that you can select only those methods with a specific return type, and at the same time you can access that return value.
+
+- @AfterThrowing
+Advice only executed if method throws exception. You will, similarly to the previous advice type, have access to the exception. Example:
+
+```
+@AfterThrowing(value="execution(* *..Repository.*(..))", throwing="e")
+public void report(JoinPoint jp, DataAccessException e) {
+	mailService.emailFailure("Exception in repository", jp, e);
+}
+```
+
+The exception must be of type DataAccesException to activate the advise. If this exception is thrown an email is sent.
+
+- @After
+It doesn't matter with this one if the method was successful or not. Has just one pointcut expression, just like @Before.
+
+- @Around
+Most powerfull and most dangerous. It is versatlie, can be used instead of @Before or instead of @After. Better use it only if you want both. Important: this is the only advice type that is responsible for delegating to the target method. You must include a .proceed() method in your advice, this method separates 'before' from 'after'. This method exists in the class ProceedingJoinPoint, this class is the type of the single argument you use. Specially for @Around.
+
+Example where you see the use of .proceed(). Note that the whole 'after' part is skipped if value already exists.
+
+```
+@Around("execution(@example.Cacheable * rewards.service..*.*())")
+public Object cache(ProceedingJoinPoint point) throws Throwable {
+	Object value = cacheStore.get(CacheUtils.toKey(point));
+
+	if (value!=null) return value;
+
+	value = point.proceed();
+	cacheStore.put(CacheUtils.toKey(point), value);
+	return value;
+}
+```
+
+#### Limitations
+
+- Spring AOP can only advise non-private methods
+- Can only apply aspects to Spring Beans
+- Method calls within the same class will not be advised
+
+About the latter: if method A in a class calls method B, that sits in the same class, advice will never be executed for B. The call must come from outside.
+
+
 
 
 
