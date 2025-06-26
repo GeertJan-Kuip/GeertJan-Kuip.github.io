@@ -282,7 +282,7 @@ There are two main scopes for beans plus four others that are only relevant in w
 
 The four other scopes are `request`, `session`, `application` and `websocket`. They are only available if you use a web-aware ApllicationContext implementation, like `XmlWebApplicationContext`. An exception is raised if you try to use these scopes in a non-web context.
 
-For beans, singleton is the default scope.
+For beans, singleton is the default scope. You need @Scope("Prototype") to set it to Prototype.
 
 ## Objective 1.3 Properties and Profiles
 
@@ -319,9 +319,9 @@ Profiles are groups of Beans. Some Beans might belong to no group, and thus to a
 
 #### How to define a profile?
 
-1 - Use @Profile annotation, with profile name as argument, on @Configuration class. Everything in this class now belongs to this profile.
-2 - Use @Profile annotation, with profile name as argument, on @Bean method. The bean constructed by this method belongs to the specific profile.
-3 - Like (1), but make sure that you use @Profile("X") on one @Configuration class and @Profile("!X") on another (mutually exclusive).
+- 1: Use @Profile annotation, with profile name as argument, on @Configuration class. Everything in this class now belongs to this profile.
+- 2: Use @Profile annotation, with profile name as argument, on @Bean method. The bean constructed by this method belongs to the specific profile.
+- 3: Like (1), but make sure that you use @Profile("X") on one @Configuration class and @Profile("!X") on another (mutually exclusive).
 
 
 (1) Lets you do a lot at once, you might think of creating one @Configuration class for every profile. (2) is better if the profiles are rather similar. You can even create two @Bean("MyName") variants (they have the same name) but give them a profile that is the inverse of the other. Example:
@@ -729,7 +729,29 @@ public class PropertyChangeTracker {
 }
 ```
 
-Note the value of @Before. It is a sort of wildcard pattern that tells Spring to apply this Aspect to any method whose name starts with 'set', that has void as return type and that has exactly one argument. Pretty effective. This example illustrates very well what a pointcut is I would say, it is the definition of _where an aspect should be inserted._
+Note the value of @Before. It is a sort of wildcard pattern that tells Spring to apply this Aspect to any method whose name starts with 'set', that has void as return type and that has exactly one argument. Pretty effective. This example illustrates very well what a pointcut is I would say, it is the general definition of _where an aspect should be inserted._ You might also say that a pointcut implicitly defines a collection of Join Points.
+
+Working with AOP requires you to create a special configuration class like this:
+
+```
+@Configuration
+@EnableAspectJAutoProxy
+@ComponentScan(basePackages="com.example.bla")
+public class AspectConfig {
+	//
+}
+```
+
+The @EnableAspectJAutoProxy configures Spring to use @Aspect. You must enable the whole aspect thing like this others no aspect things will be done.
+
+Subsequently, you must import the Aspect configuration class in the main configuration class (although I think you can circumvent this by supplying the aspect cofig class as argument when the ApplicationContext is created).
+
+```
+@Configuration
+@Import(AspectConfig.class)
+public class MainConfig{
+	@Bean etc
+}
 
 ### 1.6.3 Use AOP Pointcut Expressions
 
