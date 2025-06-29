@@ -1,6 +1,6 @@
 # Spring exam transaction management
 
-I'm not doing things in the order of the video tutorial but transactions are newer for me so I do them first. I do not follow the order of the VMWare document describing the contents of the exam, these are just notes beased on the video tutorial.
+I'm not doing things in the order of the video tutorial but transactions are newer for me so I do them first. 
 
 ## Setting up
 
@@ -41,6 +41,7 @@ The DataSource bean that you pass as argument (something JDBC related) must of c
 
 The most obvious way to do this is by using the @Transactional annotation. Example:
 
+```
 public class RewardNetworkImpl implements RewardNetwork {
 
 	@Transactional
@@ -48,8 +49,9 @@ public class RewardNetworkImpl implements RewardNetwork {
 		// atomic unit of work
 	}
 }
+```
 
-It is also possible to add @Transactional to the class as a whole. now any method in the class will inherit the transactions, with the configuration (attributes) that you give the class level annotation. To customize you can also override this class level attributes at the method level.
+It is also possible to add @Transactional to the class as a whole. Now any method in the class will inherit the transactions, with the configuration (attributes) that you give the class level annotation. To customize you can also override this class level attributes at the method level.
 
 ### Add @EnableTransactionManagement
 
@@ -68,7 +70,7 @@ There are 7 levels of propagation of which only 2 are part of the test, namely:
 - @Transactional(propagation=Propagation.REQUIRED)
 - @Transactional(propagation=Propagation.REQUIRES_NEW)
 
-The first one is the default (everything runs in the current transaction, if there is no transaction when an @transactionl method is called a new one is created). The second one makes multipl independent transactions at the same time possible.
+The first one is the default (everything runs in the current transaction, if there is no transaction when an @Transactionl method is called a new one is created). The second one makes multipl independent transactions at the same time possible.
 
 ### Propagation rules are enforced by a proxy
 
@@ -96,7 +98,7 @@ Java introduced the proxy mechanism in version 1.3, before Spring, for all sorts
 
 ## Rollback
 
-By default, when during a transaction a checked exception is thrown, the transaction will commit anyway. On the other hand, when a RuntimeException is thrown, the transactions will be rolled back. Many Spring things throw RuntimeExceptions which is actually a good thing.
+By default, when during a transaction a checked exception is thrown, the transaction will commit anyway. On the other hand, when a RuntimeException is thrown, the transactions will be rolled back. Many Spring things related to transactions throw RuntimeExceptions which is actually a good thing.
 
 But you can configure the rollback part with an attribute added to any @Transactional annotated method. Two attributes can be used:
 
