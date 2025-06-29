@@ -625,6 +625,8 @@ When bean instances are created and dependencies are injected, the BeanPostProce
 
 Spring has its own BeanPostProcessor implementations that run by default, like CommonAnnotationBeanPostProcessor. This class enables annotations like @PostConstruct, @PreDestroy and @Resource.
 
+Another relevant BeanPostProcessor is AutowiredAnnotationBeanPostProcessor. This processor handles the @Autowired annotations. It also handles part of the @Value annotations, although here the PropertySourcesPlaceholderConfigurer is also required to resolve the placeholders. 
+
 BeanPostProcessor is called an 'Extension point'. It is powerful:
 
 - Can modify bean instances in any way.
@@ -738,11 +740,12 @@ Working with AOP requires you to create a special configuration class like this:
 @EnableAspectJAutoProxy
 @ComponentScan(basePackages="com.example.bla")
 public class AspectConfig {
-	//
+
+	// It is common practice to leave the body empty
 }
 ```
 
-The @EnableAspectJAutoProxy configures Spring to use @Aspect. You must enable the whole aspect thing like this others no aspect things will be done.
+The @EnableAspectJAutoProxy configures Spring to use @Aspect. It enables AnnotationAwareAspectJAutoProxyCreator, a BeanPostProcessor. You must enable the whole aspect thing like this others no aspect things will be done. There are xml alternatives for it, and in Spring Boot you can omit it as Spring Boot automatically activates it. This @EnableAspectJAutoProxy is the only annotation that does what it does, there are no slightly different alternatives.
 
 Subsequently, you must import the Aspect configuration class in the main configuration class (although I think you can circumvent this by supplying the aspect config class as argument when the ApplicationContext is created).
 
@@ -774,6 +777,8 @@ public class PropertyChangeTracker {
 	}
 }
 ```
+
+Btw I wondered why @Aspect as annotation itself doesn't imply @Component automatically. What I understand from the tutorial is that @Aspect is not a Spring but an AspectJ annotation, which makes it understandable that it hasn't implemented @Component.
 
 Specific information about the context where the @Aspect is applied is collected and can be used, in this case to make it part of a log.
 
@@ -831,7 +836,7 @@ There is one directory between rewards and restaurant
 `execution(* rewards..restaurant.*.*(..))`
 There are zero or more directories between rewards and restaurant. I find this one odd but it works (didn't try).
 
-`execution(* *..restaurant.*.*(..))
+`execution(* *..restaurant.*.*(..))`
 There must be at least one directory before restaurant. The method must sit in a class that sits in a package whose FQN ends with restaurant.
 
 ### 1.6.4 Explain different types of Advice and when to use them
@@ -839,10 +844,12 @@ There must be at least one directory before restaurant. The method must sit in a
 There are five advice types:
 
 - @Before
+
 If a @Before advice throws an exception, the target method will not be called. This is valid use of the @Before advice.
 
 - @AfterReturning
-Advice will only be executed if method executes successfully. Advice can use the return value of the method. This advice type does not only have a pointcut expression to match the method, but can also have a second argument that matches the return type in a more sophisticated way. Example:
+
+Advice will only be executed if method executes successfully. Advice can use the return value of the method. This advice type does not only have a pointcut expression to match the method, but can also have an _optional_ second argument that matches the return type in a more sophisticated way. Example:
 
 ```
 @AfterReturning(value="execution(* service..*.*(..)), returning="reward")
@@ -851,9 +858,10 @@ public void audit(JoinPoint jp, Reward reward){
 } 
 ```
 
-Somehow the returntype must be Reward. The benefit of this construction is that you can select only those methods with a specific return type, and at the same time you can access that return value.
+Somehow the returntype must be Reward. The benefit of this construction is that you can select only those methods with a specific return type, and at the same time you can access that return value. If you are not interested in this return value, you can omit the 'returning' attribute.
 
 - @AfterThrowing
+
 Advice only executed if method throws exception. You will, similarly to the previous advice type, have access to the exception. Example:
 
 ```
@@ -866,10 +874,14 @@ public void report(JoinPoint jp, DataAccessException e) {
 The exception must be of type DataAccesException to activate the advise. If this exception is thrown an email is sent.
 
 - @After
+
 It doesn't matter with this one if the method was successful or not. Has just one pointcut expression, just like @Before.
 
 - @Around
-Most powerfull and most dangerous. It is versatlie, can be used instead of @Before or instead of @After. Better use it only if you want both. Important: this is the only advice type that is responsible for delegating to the target method. You must include a .proceed() method in your advice, this method separates 'before' from 'after'. This method exists in the class ProceedingJoinPoint, this class is the type of the single argument you use. Specially for @Around.
+
+Most powerfull and most dangerous. It is versatile, can be used instead of @Before or instead of @After. Better use it only if you want both. Important: this is the only advice type that is responsible for delegating to the target method. You must include a .proceed() method in your advice, you cannot omit it but you can eventually use it multiple times. This method exists in the class ProceedingJoinPoint, this class is the type of the single argument you use. The proceed() method actually triggers the execution of the target method, so you can use it as a divider between before and after. Without proceed() the target method is not executed at all. This is all specific to @Around.
+
+Note that the return type is Object and not void like the others. 
 
 Example where you see the use of .proceed(). Note that the whole 'after' part is skipped if value already exists.
 
@@ -880,7 +892,7 @@ public Object cache(ProceedingJoinPoint point) throws Throwable {
 
 	if (value!=null) return value;
 
-	value = point.proceed();
+	value = point.proceed();  // proceed() runs the target method. 
 	cacheStore.put(CacheUtils.toKey(point), value);
 	return value;
 }
