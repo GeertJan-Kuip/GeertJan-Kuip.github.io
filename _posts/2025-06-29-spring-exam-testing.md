@@ -74,6 +74,64 @@ public class TransferServiceTests{
 }
 ```
 
+### Overriding a bean
+
+The tutorial gives an example in which a static inner class is used to customize settings for the specific enclosing testclass. The code is this:
+
+```
+@SpringJUnitConfig // Don't specify any config classes
+public class JdbcAccountRepoTest {
+
+	@Test
+	public void shouldUpdateDatabaseSuccessfully(){...}
+
+	@Configuration // looks for configuration embedded in this test class
+	@Import(SystemTestConfig.class)
+	static class TestConfiguration{
+		@Bean
+		public DataSource dataSource() {...} // overrides a bean with a test alternative
+	}
+}
+```
+
+### Recreating or not recreating ApplicationContext
+
+When testing, the ApplicationContext required for the test is created once and then taken from cache for every subsequent test. This saves a lot of time and is okay if states of beans are not being modified in a way that subsequent tests suffer from it.
+
+If you think that for some class it is better to have a newly created Apllication Context, not polluted by state changes made during previous tests, you can use this modifier on the test method of which you think that it pollutes the ApplicationContext:
+
+```
+	@Test
+	@DirtiesContext  // this is the annotation that will result in new context AFTER this test is done
+	public void someTestThatPollutesState(){
+		// code
+	}
+```
+
+The @DirtiesContext will force the closing and destruction of the ApplicationContext at the end of this test. A new APplicationContext will be generated for the next test.
+
+### Test Property Sources
+
+Just like you have the @PropertySource annotation in production code to import new properties or new files containing properties, in the test environment you have the @TestPropertySource that does the same. 
+
+If you provide a property directly as attribute, it will have precedence over a property that is in a file you provide. Both have precedence over other properties.
+
+The default that @TestPropertySource will look for is [testclassname].properties
+
+Example:
+
+```
+@SpringJUnitConfig(SystemTestConfig.class)
+@TestPropertySource(properties = { "username=foo", "password=bar"}, locations = "classpath:/transfer-test.properties")
+public class TransferServiceTests{
+	...
+}
+```
+
+## Using Spring Profiles in testing
+
+In production code you use the annotation @Profile on a class or method to say that specific beans belong to that profile. The specific profile can be activated in the command line (using -D) or programmatically with 
+
 
 
 
