@@ -130,7 +130,41 @@ public class TransferServiceTests{
 
 ## Using Spring Profiles in testing
 
-In production code you use the annotation @Profile on a class or method to say that specific beans belong to that profile. The specific profile can be activated in the command line (using -D) or programmatically with 
+In production code you use the annotation @Profile on a class or method to say that specific beans belong to that profile. The specific profile can be activated in the command line (using -D) or programmatically like `System.setProperty("spring.profiles.active", "embedded,production")`. Beans not belonging to any profile will be included in any profile.
+
+In testing this annotation is being used:
+
+```
+@ActiveProfiles
+```
+It has the same function as activating a profile in production environment with -D or programatically. `@ActiveProfiles({"jdbc","dev"}) ` for example will activate all beans belonging to these profiles, plus all beans belonging to no profile. So basically this is the way you can decide what ApplicationContext your test will use.
+
+## Testing and databases
+
+It is normal in a test environment to replace 'real' databases with embedded databases. What you want is to prepare these temporary databases with a schema and content so there is something to test.
+
+The `@Sql` annotation lets you select .sql files (these typically contain sql statements like create, insert etc) and those will be run before the testing starts. It is also possible to run them after the test, for example for cleanup. Example from tutorial:
+
+```
+@SpringJUnitConfig(...)
+@Sql({"/testfiles/schema.sql","/testfiles/load-data.sql"})
+public class MainTests{
+	
+	@Test  // schema.sql and load-data.sql run before this test
+	public void success(){...}
+
+	@Test
+	@Sql(scripts = "/testfiles/setupBadTransfer.sql") // Runs before this method
+	@Sql(scripts = "/testfiles/cleanup.sql", executionPhase=Sql.ExecutionPhase.AFTER_TEST_METHOD)  // runs after method
+	public void transferError(){...}
+}
+```
+
+@Sql has several attributes. You can configure:
+
+- ExecutionPhase (will it run before or after method)
+- What to do when script fails (FAIL_ON_ERROR, CONTINUE_ON_ERROR, IGNORE_FAILED_DROPS< DEFAULT)
+- SQL syntax control: comments, statement separator
 
 
 
