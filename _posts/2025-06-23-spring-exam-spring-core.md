@@ -57,7 +57,7 @@ From the documentation: _"The org.springframework.context.ApplicationContext int
 If you define Java beans without an xml file, there are two options:
 
 - Annotation-based configuration. This requires the use of annotations like @Autowired and @Component on the application's component classes
-- Java-based configuration. A class annotated with @Configuration contains code and annotations that define the beans and the wiring. The @Beans methods act as static factory methods.
+- Java-based configuration. A class annotated with @Configuration contains code and annotations that define the beans and the wiring. The @Bean methods act as static factory methods.
 
 Depending on what strategy you choose for defining beans and their configuration, you choose the specific implementation of ApplicationContext. For example, xml-based configuration is served by implementations that have Xml in their name.
 
