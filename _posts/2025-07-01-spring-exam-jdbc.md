@@ -185,7 +185,9 @@ public List<Person> getAllPersons() {
 
 #### ResultSetExtractor
 
-While RowMapper will map each row to a single domain object, ResultSetExtractor will map the whole ResultSet to a single domain object. ResultSetExtractor is a functional interface just like RowMapper:
+While RowMapper will map each row to a single domain object, ResultSetExtractor will map the whole ResultSet to a single domain object. To get the resultset into your object, you need to iterate over the resultset yourself. In this respect it looks much like working without Spring. The good thing is that you do not end up with a list filled with maps but instead can make a more efficient or appropriate object.
+
+ResultSetExtractor is a functional interface just like RowMapper:
 
 ```
 public interface ResultSetExtracto<T> {
@@ -193,7 +195,68 @@ public interface ResultSetExtracto<T> {
 }
 ```
 
+This is an example of its use:
 
+```
+public class JdbcOrederRepository {
 
+  public Order findByConfirmationNumber(String number) {
+
+    sql = "select ... [some quert returning resultset with multiple rows and columns] blabla=?";
+          return jdbcTemplate.query(sql,
+                    (ResultSetExtractor<Order>)(rs)->{   // cast needed
+                        Order order = null;
+                        while (rs.next()){
+                            if (order==null)
+                                 order = new Order(rs.getLong("ID"), rs.getString("NAME"), ...);
+                            order.addItem(mapItem(rs));
+                        }
+                        return order;
+                     },
+                     number);
+  }
+}
+```
+
+You can make the code cleaner by creating the lambda implementation in another method and then call that method.
+
+#### RowCallbackHandler
+
+This is the third option, no example was provided. It works like a RowMapper but you don't return a value. This is usefull for example when you want to stream the data from a query. You process the data but do not store it in a domain object or a list of domain objects. This is the code of the functional interface:
+
+```
+public interface RowCallbackHandler {
+
+	void processRow(ResultSet rs) throws SQLException;
+}
+```
+
+## Exception Handling
+
+Checked exceptions force developers to handle errors or to declare them if handling is not possible. In the latter case, intermediate methods must declare everything thrown to them by all methods below and pass it on to higher-level methods. This is an undesirable form of tight-coupling with a lot of extra code.
+
+Unchecked exceptions do not have this problem. The compiler doesn't enforce the handling of exceptions, a RunTimeException() can be thrown in a low level method, get unnoticed by all intermediate methods, and be caught at the very top. You will never see 'throws' in any method signature, and as long as there is a catch for the RunTimeException anywhere, the program won't crash.
+
+This was new for me. I was in the understanding that unchecked exceptions would always crash the program, or at least that to not crash the program, they should be handled with a lot of 'throws' in method signatures. Thus not. 
+
+Spring uses this mechanism to loosen up coupling and to avoid boiler plate. It simply always throws unchecked exceptions instead of checked exceptions and handles them at the top. No trace of it is seen in signatures or intermediate methods.
+
+### SQLException and DataAccessException
+
+JDBC throws the very general SQLException, which is a checked exception. In the exception messages you will find information about the type of database you use and the vendor. You can see if JDBC, Hibernate or JPA is being used etc.
+
+Spring doesn't want this, not the checked exception, not the generic nature of the exception, and not the specifics about database type and vendor. There fore it introduced DataAccessException, an unchecked exception extending RunTimeException that is the parent of a range of child exceptions that are more specific about the problem, but do not have information about database type in their messaging.
+
+### Child exceptions of DataAccessException
+
+These are five of the subtypes of DataAccessException. There are more but this was in the tutorial. It shows that very specific names are being used which help you to solve the problem:
+
+- DataAccessResourceFailureException
+- CleanupFailureDataAccessException
+- OptimisticLockingFailureException
+- DataIntegrityViolationException
+- BadSqlGrammarException
+
+This is it for the tutorial content.
 
 
