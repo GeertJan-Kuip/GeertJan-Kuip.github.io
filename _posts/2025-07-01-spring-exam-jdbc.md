@@ -2,9 +2,11 @@
 
 ## Basic usage of JdbcTemplate
 
+Using Spring with JDBC gives a lot of flexibility with regards to writing queries and mapping results to generic collections or to custom domain objects. Things are made easier by the limited number of query methods (.query, .queryForObject, .queryForMap, .queryForList and .update). If you want to iterate over resultsets yourself, you can with ResultSetExtractor. Error handling has been thought out well, it seems, with for me a new lesson about using unchecked exceptions. 
+
 ### Setting things up
 
-The central element in the Jdbc approach is the JdbcTemplate. Create it and pass it to the database repository class:
+The central element in the Jdbc approach is the JdbcTemplate. Create it once and pass it to the database repository class, after that you can use it over and over again:
 
 ```
 public class JdbcCustomerRepository implements CustomerRepository {
