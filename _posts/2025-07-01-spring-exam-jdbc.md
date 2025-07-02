@@ -147,7 +147,7 @@ public List<Map<String, Object>> getAllPersonInfo() {
 
 ### Mapping to a domain object
 
-Now a callback method is required. 
+Now a callback method is required. This callback method is a functional interface and is used as the second argument of the `.query(..)` or `.queryForObject(..)` method.
 
 #### RowMapper
 
