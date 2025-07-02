@@ -112,7 +112,7 @@ public int updateAge(Person person) {
 }
 ```
 
-## Working with ResultSets using Callbacks
+## Handling larger resultsets
 
 ### Mapping to generic map or collection
 
@@ -147,7 +147,7 @@ public List<Map<String, Object>> getAllPersonInfo() {
 
 ### Mapping to a domain object
 
-Now a callback method is required. This callback method is a functional interface and is used as the second argument of the `.query(..)` or `.queryForObject(..)` method.
+Now a callback method is required. This callback method is a functional interface and is used as the second argument of the `.query(..)` or `.queryForObject(..)` method. The three callback methods are RowMapper, ResultSetExtractor and RowCallbackHandler.
 
 #### RowMapper
 
@@ -247,7 +247,7 @@ Spring uses this mechanism to loosen up coupling and to avoid boiler plate. It s
 
 JDBC throws the very general SQLException, which is a checked exception. In the exception messages you will find information about the type of database you use and the vendor. You can see if JDBC, Hibernate or JPA is being used etc.
 
-Spring doesn't want this, not the checked exception, not the generic nature of the exception, and not the specifics about database type and vendor. There fore it introduced DataAccessException, an unchecked exception extending RunTimeException that is the parent of a range of child exceptions that are more specific about the problem, but do not have information about database type in their messaging.
+Spring doesn't want this, not the checked exception, not the generic nature of the exception, and not the specifics about database type and vendor. Therefore it introduced DataAccessException, an unchecked exception extending RunTimeException that is the parent of a range of child exceptions that are more specific about the problem, but do not have information about database type in their messaging.
 
 ### Child exceptions of DataAccessException
 
