@@ -35,7 +35,7 @@ Instead of adding all Spring artifacts separately you can get them on the classp
 </dependencies>
 ```
 
-Other 'starters:
+Other 'starters':
 
 ```
 spring-boot-starter-test
@@ -201,7 +201,8 @@ callRunners(ApplicationContext context, ApplicationArguments args) {
     for (CommandLineRunner runner : getBeansOfType(CommandLineRunner.class)) {
         runner.run(args);
     }
-}```
+}
+```
 
 The reason that you can create a bean of type CommandLineRunner by returning a lambda expression is that creating a lambda expression actually means creating an instance based on an interface, using the peculiarities of functional interfaces.
 
