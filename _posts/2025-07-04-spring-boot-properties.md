@@ -1,6 +1,6 @@
 # Spring Boot properties
 
-This chapter is based on the [first video tutorial of module 2 of the SpringBoot course](https://spring.academy/courses/spring-boot/lessons/spring-boot-closer-look-look). The topic is the use of external properties in the application.properties (or application.yml) file. The precedence order of property source is and the use of @ConfigurationProperties are discussed.
+This chapter is based on the [first video tutorial of module 2 of the SpringBoot course](https://spring.academy/courses/spring-boot/lessons/spring-boot-closer-look-look). The topic is the use of external properties in the application.properties (or application.yml) file. The precedence order of property sources and the use of @ConfigurationProperties are discussed.
 
 ## application.properties
 
@@ -65,18 +65,18 @@ Somehow the `---` separation in combination with the spring.profiles prefix valu
 
 This is the precedence order of property sources (highest on top):
 
-1 - Devtools settings
-2 - @TestPropertySource and @SpringBootTest properties
-3 - Command line arguments
-4 - SPRING_APPLICATION_JSON (inline JSON properties)
-5 - ServletConfig / ServletContext parameters
-6 - JNDI attributes from java:comp/env
-7 - Java System properties
-8 - OS environment variables
-9 - Profile specific application properties
-10 - Application properties / YAML
-11 - @PropertySource files
-12 - SpringApplication.setDefaultProperties
+1. Devtools settings
+2. @TestPropertySource and @SpringBootTest properties
+3. Command line arguments
+4. SPRING_APPLICATION_JSON (inline JSON properties)
+5. ServletConfig / ServletContext parameters
+6. JNDI attributes from java:comp/env
+7. Java System properties
+8. OS environment variables
+9. Profile specific application properties
+10. Application properties / YAML
+11. @PropertySource files
+12. SpringApplication.setDefaultProperties
 
 I learned about 4, SPRING_APPLICATION_JSON. This is an environment variable of Json type that you set for the current session via the command line. Spring will search for it and if found will treat it as a property file. This way you can supply multiple properties when starting the application. It is not super practical I would say but it gives you options. Using -D does about the same.
 
