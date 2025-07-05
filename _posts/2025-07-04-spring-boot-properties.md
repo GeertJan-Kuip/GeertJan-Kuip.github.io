@@ -1,7 +1,5 @@
 # Spring Boot properties
 
-LALA
-
 This chapter is based on the [first video tutorial of module 2 of the SpringBoot course](https://spring.academy/courses/spring-boot/lessons/spring-boot-closer-look-look). The topic is the use of external properties in the application.properties (or application.yml) file. The precedence order of property sources and the use of @ConfigurationProperties are discussed.
 
 ## application.properties
