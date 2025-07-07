@@ -16,6 +16,8 @@ JPA is a Java thing, not a Spring invention. Spring utilizes it and adds extra l
 
 DataSource is a standard Java interface from the java.sql module or the javax.sql package. It manages the connection, or rather a pool of connections, to a database and is implemented by a driver vendor. As opening and closing a database is expensive, optimization is being done.
 
+#### Configuration
+
 Spring by default uses HikariCP to manage the connection pool. You can configure things in application.properties like this:
 
 ```
@@ -27,13 +29,19 @@ spring.datasource.username=myuser
 spring.datasource.password=mypassword
 ```
 
+#### Injection
+
 The DataSource type object, which is a bean, is passed to EntityManagerFactory and JpaTransactionManager, two classes that will be discussed as well. Every time a transaction begins in your program, a connection is borrowed from the pool. The connection is released when the transaction commits or rolls back. 
 
 ### JpaTransactionManager
 
 This is a native Spring class, used to bridge Springs transaction system (@Transactional) with JPA. Its FQN is `org.springframework.orm.jpa.JpaTransactionManager`. It is a bean in Spring.
 
+#### Always a transaction
+
 It is important to note that everything related to database operations is done within transactions, no matter whether an @Transaction annotation is being used or not. For every transaction an EntityManager object is created. A transaction can have one or many operations and ends with a commit. 
+
+#### Role and procedure
 
 JpaTransactionManager is the class that organizes the lifecycle of the EntityManager object (more on that later). It does the following:
 
@@ -42,6 +50,8 @@ JpaTransactionManager is the class that organizes the lifecycle of the EntityMan
 3. On success: Calls entityManager.flush()
 4. Then calls commit() on the underlying JDBC connection
 5. On failure (exception thrown): Calls rollback()
+
+#### Depends on EntityManagerFactory
 
 To be able to create an EntityManager it must know the EntityManagerFactory. Spring Boot wires this automatically but if you create JpaTransactionManager manually you must provide it as an argument, as below:
 
@@ -145,7 +155,7 @@ public interface FactoryBean {
 }
 ```
 
-FactoryBean is used often by Spring, not only for EntityManagerFactory. You recognize the types implementing it by their postfix FactoryBean.
+FactoryBean is used often by Spring, not only for EntityManagerFactory. You recognize the types implementing it as their names end on 'FactoryBean'.
 
 ### Domain objects
 
