@@ -157,16 +157,183 @@ http://.../suppliers?location=12345
 				HttpSession session ) {..}
 ```
 
-##
+## Message Converters
 
+Assuming we use @RestController and we want to send the client JSON or other data, we have the problem that while we work with Java objects, the client wants a JSON or XML object. This requires conversion.
 
+Here is where the Message Converter component in the Spring Web model, or the HttpMessageConverter object, comes in. It converts Java objects into JSON or XML objects that are the body of the response we send. Jackson is a typical default library being used. GSON is an alternative but not the default. There are actually multple message converters available so Spring can deal with any requested MIME type. It will simply look for the best converter for the job.
 
+### "Accept" Request Header
 
+The url request from client contains an 'Accept' header. If this is either 'application/xml' or 'application/json' we can send these types as the body of the response because of the HttpMessageConverters that Spring utilizes. We only need to tell what object to convert. If it is something else, Spring will look for another converter.
 
+The good thing is that Spring takes care of the conversion based on the accept header. We don't have to care about it.
 
+### Customizing response with ResponseEntity
 
+ResponseEntity is a class with a Builder class inside that you can use to create a custom Response object for in the GET method. This might be handy if you want full control over the response. The difference with not using it is that you do not only provide the body ("payload") but also the headers. Example:
 
+```
+ResponseEntity<String> response = ResonseEntity.ok()
+					.contentType(MediaType.TEXT_PLAIN)
+					.body("Hello Spring");
+```
 
+It can be combined with code that specifically creates the body content.
+
+## Packaging
+
+By default Spring Boot starts up an embedded web container (Tomcat). This means you can run the web application from the command line. This is a very good thing, it minimizes dependencies.
+
+### Using Jetty instead of Tomcat
+
+If, for some reason, you do not want to use Tomcat but, for example, Jetty, you must change the pom file. Spring will notice that Tomcat is not on the classpath anymore while Jetty is and act accordingly. Jetty is detected and used. This is the pom:
+
+```
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-web</artifactId>
+    <exclusions>
+        <exclusion>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>  
+        </exclusion>
+    </exclusions>
+</dependency>
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-jetty</artifactId>
+</dependency>
+```
+
+### Running within a web container (traditional)
+
+While this is seen as an outdated approach, you might need it somewhere. If you create a Spring Boot application that runs in an existing web container, you need to make adjustments to your Application entry class. It must be extended with SpringBootServletInitializer, which is a subclass of WebApplicationInitializer, which is called by the web container. 
+
+```
+@SpringBootApplication
+public class Application extends SpringBootServletInitializer {
+
+	// specify the configuration classes to use
+	protected SpringApplicationBuilder configure(
+			SpringApplicationBuilder application) {
+	
+		return application.sources(application.class);
+	}
+}
+```
+
+The artifact type of your package must be WAR, which you must tell your pom file as well.
+
+### The hybrid variant
+
+It is possible to write your entry class in a way that the application can both be used as a WAR and a JAR. You take the code from the previous example and add a main file. Spring will understand what to pick, depending on it being a WAR or a JAR:
+
+```
+@SpringBootApplication
+public class Application extends SpringBootServletInitializer {
+
+	protected SpringApplicationBuilder configure(
+			SpringApplicationBuilder application) {
+	
+		return application.sources(application.class);
+	}
+
+	public static void main(String[] args){
+		SpringApplication.run(Application.class, args);
+	}
+}
+```
+
+### WAR and Tomcat conflicts
+
+Both JAR and WAR can be run stand-alone provided that they have embedded Tomcat (or Jetty). A problem arises when you make a WAR file with embedded Tomcat and try to run it inside a traditional web container. The included Tomcat might conflict with the webserver already in the container, if this is also Tomcat.
+
+What you should do is to mark the Tomcat dependencies as _provided_ when building WARs for traditional containers. It means you will rely on the Tomcat version provided by the container and not bring your own Tomcat.
+
+### Fat WAR
+
+If you build JAR files for a Spring Boot project, two versions will be created, a fat one and a skinny one. The same is true when you build WAR files for a Spring Boot project.
+
+### Spring Boot developer tools
+
+When you change the code of your Spring application and want to run it, starting things up takes a lot of time. To make this faster, Spring has created a devtools package that somehow creates two separate classloaders, on for your own code and one for the rest (Spring, libraries). Now when you want to update your application somehow only your own classes will be reloaded, so not everything has to go through the loading process.
+
+This feature is automaticaly disabled when Spring thinks that the app is running in "production". According to the video, this is when the app is run by the command line `java -jar`. Needs a bit more clarification.
+
+To add devtools do this in pom:
+
+```
+<dependency>
+    <dependency>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-devtools</artifactId>
+        <scope>runtime</scope>
+        <optional>true</optional>
+    </dependency>
+</dependencies>
+```
+
+The `<optional>` tag prevents prevents devtools from being transitively applied to other modules that use your project.
+
+## Small sample project
+
+A small project is created. A pom is written, a class 'RewardController' is created, some entries to application.properties are being written, and the entry class 'Application' is being created.
+
+### Maven pom.xml
+
+The dependencies required are:
+
+```
+spring-boot-starter-parent   // for consistent versioning
+spring-boot-starter-web  
+spring-boot-maven-plugin    // fat jars
+
+### RestController
+
+This is the class code given in the tutorial:
+
+```
+@RestController
+public class RewardController {
+	private RewardLookupService lookupService;
+
+	// constructor dependency injection
+	public RewardController(RewardLookupService svc){  
+		this.lookupService = svc;
+	}
+
+	@GetMapping("/rewards/{id}")
+	public Reward show( @PathVariable("id") long id) {
+		// returns reward object, converted by Message Converter automatically
+		return lookupService.lookupReward(id);  
+	}
+}
+```
+
+### applicatin.properties
+
+Even without properties it would work. But to get familiar with application.properties, here some innocent ones:
+
+```
+#application.properties
+server.port = 8088      // default is 8080
+server.servlet.session.timeout=5m   // 5 minutes
+```
+
+### Application class
+
+Extremely basic. But it works, there is a running program, although the injected class in @RestController is still missing. The tutorial assumes it is there, probably from earlier excercises.
+
+```
+@SpringBootApplication
+public class Application {
+
+	public static void main(String[] args){
+		SpringApplication.run(Application.class, args);
+	}
+}
+```
 
 
 
