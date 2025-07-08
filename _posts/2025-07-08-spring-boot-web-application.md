@@ -288,6 +288,7 @@ The dependencies required are:
 spring-boot-starter-parent   // for consistent versioning
 spring-boot-starter-web  
 spring-boot-maven-plugin    // fat jars
+```
 
 ### RestController
 
@@ -311,7 +312,7 @@ public class RewardController {
 }
 ```
 
-### applicatin.properties
+### application.properties
 
 Even without properties it would work. But to get familiar with application.properties, here some innocent ones:
 
