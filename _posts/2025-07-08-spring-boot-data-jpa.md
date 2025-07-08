@@ -1,6 +1,6 @@
 # Spring Boot Data JPA
 
-The previous blog post went in-depth on Java JPA, discussing the underlying classes and interfaces that make JPA work. This post is just about the contents of the \[video tutorials](https://spring.academy/courses/spring-boot/lessons/spring-boot-spring-data-jpa-jpa) and therefore gives more idea about what to expect on the test.
+The previous blog post went in-depth on Java JPA, discussing the underlying classes and interfaces that make JPA work. This post is just about the contents of the [video tutorials](https://spring.academy/courses/spring-boot/lessons/spring-boot-spring-data-jpa-jpa) and therefore gives more idea about what to expect on the test.
 
 ## Video 1 - Spring Data JPA
 
@@ -76,7 +76,7 @@ public class Customer {
   private Date orderDate;
   private String email;
 
-  getters and setters
+  // getters and setters
 }
 ```
 
@@ -95,17 +95,17 @@ Here some valid code. Note that you never have to provide the method implementat
 ```
 public interface CustomerRepository extends CrudRepository<Customer, Long> {  // Long is type of Id
 
- public Customer findFirstByEmail(String someEmail); 
- public List<Customer> findByOrderDateLessThan(Date someDate);
- public List<Customer> findByOrderDateBetween(Date d1, Date d2);
+   public Customer findFirstByEmail(String someEmail); 
+   public List<Customer> findByOrderDateLessThan(Date someDate);
+   public List<Customer> findByOrderDateBetween(Date d1, Date d2);
 
- Customer findFirstByEmailIgnoreCase(String email);  // case insensitive search
+   Customer findFirstByEmailIgnoreCase(String email);  // case insensitive search
 
- @Query("SELECT c FROM Customer c WHERE c.email NOT LIKE '%@%'")
- public List<Customer> findInvalidEmails();
+   @Query("SELECT c FROM Customer c WHERE c.email NOT LIKE '%@%'")
+   public List<Customer> findInvalidEmails();
 
- @Query("select u from Customer u where u.emailAddress=?1")
- Customer findByEmail(String email);  // ?1 is replaced by method parameter.
+   @Query("select u from Customer u where u.emailAddress=?1")
+   Customer findByEmail(String email);  // ?1 is replaced by method parameter.
 }
 ```
 
