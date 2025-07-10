@@ -9,6 +9,8 @@ To understand Spring Jdbc it is useful to notice the differences with the altern
 
 The course material discusses Jdbc in the context of Spring Framework and Spring Data JPA in the context of Spring Boot. This makes it a bit harder to compare the two. It is well possible to use Jdbc in a Spring Boot application or Spring Data JPA in a Spring Framework application. 
 
+One similarity between Jdbc and JPA is that in both cases, the repository methods return domain objects, without you having to do all sorts of mapping. In Jdbc you can eventually work with the ResultSet yourself (using ResultSetExtractor) but this is the exceptional case.
+
 ## Basic usage of JdbcTemplate
 
 Using Spring with JDBC gives a lot of flexibility with regards to writing queries and mapping results to generic collections or to custom domain objects. Things are made easier by the limited number of query methods (.query, .queryForObject, .queryForMap, .queryForList and .update). If you want to iterate over resultsets yourself, you can with ResultSetExtractor. Error handling has been thought out well, it seems, with for me a new lesson about using unchecked exceptions. 
