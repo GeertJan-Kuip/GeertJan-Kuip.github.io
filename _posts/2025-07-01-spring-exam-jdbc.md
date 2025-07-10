@@ -1,9 +1,9 @@
 # Spring exam - JDBC
 
-To understand Spring Jdbc it is useful to notice the differences with the alternative, Spring Data JPA. The are the following:
+To understand Spring Jdbc it is useful to notice the differences with the alternative, Spring Data JPA. This is a list:
 
 - In Spring Jdbc the repositories are classes with implemented methods. In Spring Data JPA the repositories are interfaces, the methods do not require implementation.
-- Spring Jdbc requires a JdbcTemplate bean that need to be created. JdbcTemplate provides all the databses operations. Spring Data JPA doesn't need it, database operations are done behind the scenes, based on repository method names.
+- Spring Jdbc requires a JdbcTemplate bean. JdbcTemplate provides all the databses operations. Spring Data JPA doesn't need such a bean, database operations are done behind the scenes, based on repository method names.
 - A Spring Jdbc repository will often have the JdbcTemplate bean constructor-injected.
 - In Spring Data JPA, domain objects are annotated with @Entity, @Table, @Id and other JPA annotations that guide 'ORM' (Object-Relational Mapping). In Spring Jdbc, domain classes are not annotated. The mapping is done in the repository methods using JdbcTemplate methods, sometimes with a callback method as argument.
 - To write custom queries in Jdbc, you make it part of the Java method in the repository. To write a custom query in Spring Data JPA, you need the @Query annotation on a repository method declaration. 
@@ -13,6 +13,10 @@ The course material discusses Jdbc in the context of Spring Framework and Spring
 ## Basic usage of JdbcTemplate
 
 Using Spring with JDBC gives a lot of flexibility with regards to writing queries and mapping results to generic collections or to custom domain objects. Things are made easier by the limited number of query methods (.query, .queryForObject, .queryForMap, .queryForList and .update). If you want to iterate over resultsets yourself, you can with ResultSetExtractor. Error handling has been thought out well, it seems, with for me a new lesson about using unchecked exceptions. 
+
+Note: JdbcTemplate has an [awful lot of methods](https://docs.spring.io/spring-framework/docs/6.2.x/javadoc-api/org/springframework/jdbc/core/JdbcTemplate.html), including overloaded ones. In a test exam I saw a question about the `.execute()` method, this one is not discussed in the video tutorial but is very similar as '.update()` and mainly used for DDL statements.
+
+_A DDL statement is a Data Definition Language statement — a type of SQL command used to define, modify, or remove database structures, such as tables, columns, indexes, constraints, etc._
 
 ### Setting things up
 
