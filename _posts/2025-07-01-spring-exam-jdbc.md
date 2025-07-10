@@ -1,5 +1,15 @@
 # Spring exam - JDBC
 
+To understand Spring Jdbc it is useful to notice the differences with the alternative, Spring Data JPA. The are the following:
+
+- In Spring Jdbc the repositories are classes with implemented methods. In Spring Data JPA the repositories are interfaces, the methods do not require implementation.
+- Spring Jdbc requires a JdbcTemplate bean that need to be created. JdbcTemplate provides all the databses operations. Spring Data JPA doesn't need it, database operations are done behind the scenes, based on repository method names.
+- A Spring Jdbc repository will often have the JdbcTemplate bean constructor-injected.
+- In Spring Data JPA, domain objects are annotated with @Entity, @Table, @Id and other JPA annotations that guide 'ORM' (Object-Relational Mapping). In Spring Jdbc, domain classes are not annotated. The mapping is done in the repository methods using JdbcTemplate methods, sometimes with a callback method as argument.
+- To write custom queries in Jdbc, you make it part of the Java method in the repository. To write a custom query in Spring Data JPA, you need the @Query annotation on a repository method declaration. 
+
+The course material discusses Jdbc in the context of Spring Framework and Spring Data JPA in the context of Spring Boot. This makes it a bit harder to compare the two. It is well possible to use Jdbc in a Spring Boot application or Spring Data JPA in a Spring Framework application. 
+
 ## Basic usage of JdbcTemplate
 
 Using Spring with JDBC gives a lot of flexibility with regards to writing queries and mapping results to generic collections or to custom domain objects. Things are made easier by the limited number of query methods (.query, .queryForObject, .queryForMap, .queryForList and .update). If you want to iterate over resultsets yourself, you can with ResultSetExtractor. Error handling has been thought out well, it seems, with for me a new lesson about using unchecked exceptions. 
@@ -8,23 +18,8 @@ Using Spring with JDBC gives a lot of flexibility with regards to writing querie
 
 The central element in the Jdbc approach is the JdbcTemplate. Create it once and pass it to the database repository class, after that you can use it over and over again:
 
-```
-public class JdbcCustomerRepository implements CustomerRepository {
 
-	private JdbcTemplate jdbcTemplate; // store this in the class so you can use it as you like.
-
-	public JdbcCustomerRepository(JdbcTemplate jdbcTemplate){
-		this.jdbcTemplate = jdbcTemplate;
-	}
-
-	public int getCostumerCount(){
-		String sql = "select count(*) from customer";
-		return jdbcTemplate.queryForObject(sql, Integer.class);
-	}
-}
-```
-
-A matching configuration class can look like this:
+A configuration class, in which a JdbcTemplate bean and a repository bean are created, can look like this:
 
 ```
 @Configuration
@@ -46,10 +41,29 @@ public class AppConfig {
         return new JdbcTemplate(dataSource);
     }
 
+    // Injecting JdbcTemplate so you can use its methods for your database operations.
     @Bean
     public CustomerRepository customerRepository(JdbcTemplate jdbcTemplate) {
         return new JdbcCustomerRepository(jdbcTemplate);
     }
+}
+```
+
+This is the repository class, this example comes from video tutorial. It implements an interface made by the developer, it can be done without but this might contribute to better structured code. The .getCostumerCount() method is a relatively simple one, later we will encounter more complex methods that return one or more domain objects.
+
+```
+public class JdbcCustomerRepository implements CustomerRepository {
+
+	private JdbcTemplate jdbcTemplate; // store this in the class so you can use it as you like.
+
+	public JdbcCustomerRepository(JdbcTemplate jdbcTemplate){
+		this.jdbcTemplate = jdbcTemplate;
+	}
+
+	public int getCostumerCount(){
+		String sql = "select count(*) from customer";
+		return jdbcTemplate.queryForObject(sql, Integer.class);
+	}
 }
 ```
 
