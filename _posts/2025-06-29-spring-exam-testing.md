@@ -23,6 +23,15 @@ New annotations in JUnit 5:
 
 When using @ExtendWith, you typically add SpringExtension.class as argument to integrate with Spring. The second step to integrate with Spring, or your specific application, is to use Spring annotation @ContextConfiguration with the configuration class(es) of your application as argument(s). You can combine both annotations in @SpringJUnitConfig. 
 
+For completeness, these are the Spring annotations to know (discussed below):
+
+- **@TestPropertySource**
+- **@DirtiesContext**
+- **@ActiveProfiles**
+- **@Sql**
+
+## JUnit components
+
 JUnit 5 has three components, JUnit 4 only one. The three packages are:
 
 - JUnit Platform: foundation for launching testing frameworks on JVM
@@ -51,7 +60,6 @@ public class TransferServiceTests {
 	public void shouldTransferMoneySuccessfully() {
 		TransferConfirmation conf = transferService.transfer(...);
 	}
-
 }
 ```
 
@@ -62,7 +70,7 @@ public class TransferServiceTests {
 - @ExtendWith(SpringExtension.class) from JUnit 5
 - @ContextConfiguration from Spring
 
-So we could have used that in the previous code sample.
+So we could have used that in the previous code sample. As argument you can provide configuration classes, just as you would for @ContextConfiguration.
 
 ### Special use of @Autowired
 
@@ -115,7 +123,7 @@ If you think that for some class it is better to have a newly created Apllicatio
 	}
 ```
 
-The @DirtiesContext will force the closing and destruction of the ApplicationContext at the end of this test. A new APplicationContext will be generated for the next test.
+The @DirtiesContext will force the closing and destruction of the ApplicationContext at the end of this test. A new ApplicationContext will be generated for the next test.
 
 ### Test Property Sources
 
