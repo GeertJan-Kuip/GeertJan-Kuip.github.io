@@ -1,6 +1,15 @@
 # Spring exam transaction management
 
-I'm not doing things in the order of the video tutorial but transactions are newer for me so I do them first. 
+Spring transaction management is used for database operations. You want them to be atomic, following the ACID acronym (Atomic, Consistent, Isolated and Durable). Spring transaction management can give you that.
+
+The subtopics in theis blog post are:
+
+- How to set up Transaction Management (3 steps)
+- Propagation (how to deal with nested transactions)
+- Rollback (what if a transaction fails, what is failure)
+- Testing with transactional (rollback or @Commit)
+
+Transaction management will be a recurring topic in everything that has to do with data and persistence.
 
 ## Setting up
 
