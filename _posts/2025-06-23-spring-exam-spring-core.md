@@ -796,9 +796,9 @@ Like: execution([pattern1]) || execution([pattern2])
 
 The pattern must be read from right to left. The elements that must be represented are arguments, methodname and returntype. Class/packagename is optional, as is access modifier.
 
-There are two types of wildcards, namely '*' and '..'. The former stands for exactly one element, the later for zero or more elements. '*' can be used as a wildcard for a complete name or part of a name.
+There are two types of wildcards, namely `*` and `..`. The former stands for exactly one element, the later for zero or more elements. `*` can be used as a wildcard for a complete name or part of a name.
 
-If you add the optional package/class name, with or without the use of '*', you must work with FQN's and make the method name part of the FQN.
+If you add the optional package/class name, with or without the use of `*`, you must work with FQN's and make the method name part of the FQN.
 
 #### Examples
 
@@ -815,7 +815,7 @@ Any method named send that has one argument. Return type can be anything.
 Any method named send which has int as its first argument type.
 
 `execution(void example.MessageService.send(*))`
-Any method named send that sits in a class that implements example.MessageService interface, has one argument and void return type.
+Any method named send that sits in a class that _implements example.MessageService interface_, has one argument and void return type. Not that this is powerful, you can add an aspect to typical methods of (functional) interfaces that are implemented on different places in your application.
 
 Note that return types and argument types need fully qualified names, while method name itself doesn't. The return type and argument type can reside in other packages, libraries, while the method by default can not.
 
@@ -831,10 +831,10 @@ Again, use the FQN, this time of the annotation.
 #### Advanced ones with package names
 
 `execution(* rewards.*.restaurant.*.*(..))`
-There is one directory between rewards and restaurant
+There is one directory between rewards and restaurant. The method must be in a class that sits in package `rewards.*.restaurant`, because you need one asterisk for the class and one for the method.
 
 `execution(* rewards..restaurant.*.*(..))`
-There are zero or more directories between rewards and restaurant. I find this one odd but it works (didn't try).
+There are zero or more directories between rewards and restaurant. I find this one odd but it works (didn't try). 
 
 `execution(* *..restaurant.*.*(..))`
 There must be at least one directory before restaurant. The method must sit in a class that sits in a package whose FQN ends with restaurant.

@@ -1,5 +1,9 @@
 # Spring exam - testing
 
+Testing is done with JUnit and the whole course centers around JUnit version 5. Many of the test-specific annotations being used come from JUnit 5 and not from Spring. If it would be solely about unit testing and not integration testing, you could test a Spring application without using Spring, just using stubs and mocks for the dependencies.
+
+So generally, it is good to be aware what part of the testing comes from Spring and what from JUnit. Spring's role is to provide the test classes with the content and configuration ressembling the application. You want the ApplicationContext to be used, you want to use application.properties or other configuration files, you want to activate profiles.
+
 ## JUnit 5 annotations
 
 JUnit 5 has major changes, annotation names from JUnit 4 have been replaced by new names:
@@ -12,11 +16,14 @@ JUnit 5 has major changes, annotation names from JUnit 4 have been replaced by n
 
 New annotations in JUnit 5:
 
+- **@ExtendWith**  (was @RunWith in JUnit 4)
 - **@DisplayName**
 - **@Nested**
 - **@ParameterizedTest**
 
-JUnit 5 are three components, JUnit 4 was one. The three packages are:
+When using @ExtendWith, you typically add SpringExtension.class as argument to integrate with Spring. The second step to integrate with Spring, or your specific application, is to use Spring annotation @ContextConfiguration with the configuration class(es) of your application as argument(s). You can combine both annotations in @SpringJUnitConfig. 
+
+JUnit 5 has three components, JUnit 4 only one. The three packages are:
 
 - JUnit Platform: foundation for launching testing frameworks on JVM
 - JUnit Jupiter: extension model for writing tests and extensions in JUnit 5
@@ -28,7 +35,7 @@ Make sure to import the JUnit 5 Jupiter API classes, not old stuff from JUnit 4.
 
 For unit tests you do not need Spring. Eventual dependencies need to be faked but you can do that with stubs and mocks.
 
-JUnit 5 has extensible architecture via the @ExtendWith annotaion. It replaces JUnit 4's @RunWith. The advantage lies in the fact that with JUnit 5 you can use multiple extensions at the same time. Spring's extension point is the SpringExtension class, which is a Spring-aware test-runner.
+JUnit 5 has extensible architecture via the @ExtendWith annotation. It replaces JUnit 4's @RunWith. The advantage lies in the fact that with JUnit 5 you can use multiple extensions at the same time. Spring's extension point is the SpringExtension class, which is a Spring-aware test-runner.
 
 To set it up, start with:
 
