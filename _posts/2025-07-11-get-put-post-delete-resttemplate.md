@@ -1,4 +1,4 @@
-# GET, PUT, POST, DELETE and RestClient
+# GET, PUT, POST, DELETE and RestTemplate
 
 Module 5 of the Spring Boot chapter is named 'RESTFul Application with Spring Boot' and mainly deals with the @RestController class. It can be divided in two different parts, corresponding to a different role of your application:
 
@@ -21,7 +21,7 @@ We deal with response status (only for successful operations) and with the Locat
 
 ### _Your application is a client_
 
-Here the `RestTemplate` object is the star of the show. It has been sort of surpassed by WebClient but is not deprecated, it will only not evolve any further. RestTemplate supports all HTTP methods. The great thing is the conversion of types, everything that it sends or receives is automatically converted from web-like format to Java format.
+Here the `RestTemplate` object is the star of the show. It has been sort of surpassed by WebClient but is not deprecated, it will only not evolve any further. RestTemplate supports all HTTP methods. The great thing is the conversion of types, everything that it sends or receives is automatically converted from web-like format to Java format or vice versa.
 
 ## What is REST
 
@@ -132,6 +132,88 @@ public void deleteItem(@PathVariable long orderId, @PathVariable String itemId) 
 
 ## You are the client
 
+Here the RestTemplate object comes in. We learn about how to create it, what methods it provides, the role that ResponseEntity plays if we want to retrieve headers from a response or the role that RequestEntity plays when we want to customize our request.
+
+### Creating a RestTemplate object
+
+There are two ways to do this. You can use plain 'new' or you can use RestTemplateBuilder. This is a bean that is auto-created and configured when you run Spring Boot. It has the advantage that during building, it takes note of application.properties, and it will make Spring Boot autoconfigure some HttpClient object (I don't know what its use is).
+
+Doing it simple:
+
+```
+RestTemplate restTemplate = new RestTemplate();
+```
+
+Doing it with RestTemplateBuilder:
+
+```
+private RestTemplate restTemplate;
+
+@AutoWired
+public MyClientClass(RestTemplateBuilder builder){
+	this.restTemplate = builder.build();
+}
+```
+
+### Doing Get, Put, Post and Delete
+
+These are four usage examples corresponding to the four basic HTTP methods. It is a very convenient way to send requests. We use the methods `getForObject(..)`, `postForLocation(..)`, `put(..)`, `delete(..)`. Note that postForLocation returns an URI (it should), and that this URI is reused in the put() method. Of course the great thing is the conversion that is being done. The return bodies are immediately mapped to Java objects.
+
+```
+RestTemplate template = new RestTemplate();
+String uri = "http://example.com/store/orders/{id}/items";
+
+// GET all order items for an existing order with ID 1:
+OrderItem[] items = template.getForObject(uri, OrderItem[].class, "1");
+
+// POST to create a new item
+OrderItem item = new OrderItem(..);  // create some domain object
+URI itemLocation = template.postForLocation(uri, item, "1");
+
+// PUT to update the item
+item.setAmount(2);
+template.put(itemLocation, item);
+
+// DELETE to remove that item again
+template.delete(itemLocation);
+```
+
+### Access response headers with ResponseEntity
+
+ResponseEntity, already shown in the previous blog post, lets you retrieve both the headers and the body of the response. ResponseEntity is the return value of certain RestTemplate methods (see [javadoc](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/web/client/RestTemplate.html) for an overview) and lets you access the full response, not only the body.
+
+This is an example utilizing RestTemplate's `getForEntity(..)` method, with ResponseEntity's `getStatusCode()`, `getHeaders()` and `getBody()` methods used to retrieve the status code, a header and the body.
+
+```
+String uri = "http://example.com/store/orders/{id}";
+
+ResponseEntity<Order> response = restTemplate.getForEntity(uri, Order.class, "1");
+
+assert(response.getStatusCode().equals(HttpStatus.OK)); 
+
+long modified = response.getHeaders().getLastModified();
+
+Order order = response.getBody();
+```
+
+### Customizing request with RequestEntity
+
+RequestEntity is the counterpart of ResponseEntity. It allows us to customize the headers and all other parts of a request. Creating a RequestEntity is done with some static methods, which gives good control over the created object. The example below creates and sends a POST request with a specific sort of authentication. It uses RestTemplate's `exchange()` method, which specifically has RequestEntity as first argument type.
+
+```
+// Create RequestEntity - POST with HTTP BASIC authentication
+RequestEntity<OrderItem> request = RequestEntity
+	.post(new URI(itemUrl))
+	.getHeaders().add(HttpHeaders.AUTHORIZATION,
+		"Basic" + getBase64EncodedLoginData())
+	.contentType(MediaType.APPLICATION_JSON)
+	.body(newItem);
+
+// Send the request and receive the response
+ResponseEntity<Void> response = restTemplate.exchange(request, Void.class);
+
+assert(response.getStatusCode().equals(HttpStatus.CREATED));
+```
 
 
 
