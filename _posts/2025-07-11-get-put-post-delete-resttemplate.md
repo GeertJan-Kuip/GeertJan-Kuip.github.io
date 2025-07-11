@@ -2,7 +2,7 @@
 
 Module 5 of the Spring Boot chapter is named 'RESTFul Application with Spring Boot' and mainly deals with the @RestController class. It can be divided in two different parts, corresponding to a different role of your application:
 
-## Two themes - overview
+## Two Themes - Overview
 
 ### _Your application is a server_
 
@@ -166,7 +166,7 @@ public void deleteItem(@PathVariable long orderId, @PathVariable String itemId) 
 }
 ```
 
-## You are the client - RestTemplate
+## You Are the Client - RestTemplate
 
 Here the `RestTemplate` object comes in. We learn about how to create it, what methods it provides, the role that ResponseEntity plays if we want to retrieve headers from a response or the role that RequestEntity plays when we want to customize our request.
 
