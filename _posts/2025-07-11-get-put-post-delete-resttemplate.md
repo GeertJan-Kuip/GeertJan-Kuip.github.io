@@ -23,6 +23,8 @@ We deal with response status (only for successful operations) and with the Locat
 
 Here the `RestTemplate` object is the star of the show. It has been sort of surpassed by WebClient but is not deprecated, it will only not evolve any further. RestTemplate supports all HTTP methods. The great thing is the conversion of types, everything that it sends or receives is automatically converted from web-like format to Java format or vice versa.
 
+The two object types we will use to work with RestTemplate are `ResponseEntity` and `RequestEntity`. The allow us to access or edit any part of a response we get or a request we send. Otherwise we could only access or edit the body. ResponseEntity is the return value of some RestTemplate methods, while RequestEntity can be used as arguments for some methods. 
+
 ## What is REST
 
 Before going to the methods and annotations, a little overview. REST is:
@@ -35,34 +37,68 @@ Before going to the methods and annotations, a little overview. REST is:
 
 - Expose resource through URIs
     - Model nouns, not verbs
-- Resources support limited set of operations
+- Resources support a limited set of operations
     - GET, PUT, POST, DELETE in case of HTTP
     - All have well-defined semantics
-- To know the intention of an URI it needs to be combined with http method (GET, PUT, POST, DELETE). The URI itself is just a 'resource'.
-- Clients can request particular representation
+- To know the intention of an URI, it needs to be combined with the HTTP method (GET, PUT, POST, DELETE). The URI itself is just a 'resource'.
+- Clients can request a particular representation
     - Resources can support multiple representations (JSON, XML, ..)
 - Representations can link to other resources
     - allows for extensions and discovery, like with web sites.
 - Hypermedia As The Engine Of APplication State (HATEOAS)
     - RESTful response contain the links you need - just like html pages do
-- Stateless architecture
+- It has Stateless architecture
     - No HttpSession usage
     - GETs can be cached on URL
     - Recommends clients to keep track of the state
-    - Part of what makes it scalable
-    - Looser coupling between client and server
+    - Statelessnes  is part of what makes it scalable
+    - Results in looser coupling between client and server
 - HTTP headers and status codes communicate result to clients
     - All well-defined in HTTP Specification
+
+## HTTP Status Codes
+
+There might be questions about status codes. Here a general overview:
+
+|Code|Description|
+|----|----|
+|1xx|Informational response - The request was received, continuing process|
+|2xx|Successful - The request was successfully received, understood, and accepted|
+|3xx|Redirection - Further action needs to be taken in order to complete the request|
+|4xx|Client error - The request contains bad syntax or cannot be fulfilled|
+|5xx|Server error - The server failed to fulfil an apparently valid request|
+
+Some specific codes:
+
+|Code|Description|
+|----|----|
+|200 OK|Standard response for successful HTTP requests.|
+|201 Created|The request has been fulfilled, resulting in the creation of a new resource.|
+|204 No Content|The server successfully processed the request, and is not returning any content.|
+|400 Bad Request|The server cannot or will not process the request due to an apparent client error.|
+|401 Unauthorized|Similar to 403 Forbidden, but specifically for use when authentication is required.|
+|403 Forbidden|The request contained valid data and was understood by the server, but the server is refusing action.|
+|404 Not Found|The requested resource could not be found but may be available in the future.|
+|405 Method Not Allowed|A request method is not supported for the requested resource.|
+|406 Not Acceptable|The requested resource is capable of generating only content not acceptable according to the Accept headers sent in the request.|
+|415 Unsupported Media Type|The request entity has a media type which the server or resource does not support.|
+|500 Internal Server Error|A generic error message, given when an unexpected condition was encountered|
+|501 Not Implemented|The server either does not recognize the request method, or it lacks the ability to fulfil the request.|
+|503 Service Unavailable|The server cannot handle the request (because it is overloaded or down for maintenance).|
+
+
+
+
 
 ## GET, PUT, POST, DELETE (server)
 
 ### @GetMapping
 
-`@GetMapping("/store/orders")` is a shortcut for `@RequestMapping(path="/store/orders", method=RequestMethod.GET)`. You can use @RequestMapping for all http methods, and you have more options to customize the response. I learned from ChatGPT that in earlier Spring versions everything was done with @RequestMapping and that @GetMapping, @PutMapping etc were introduced more recently.
+`@GetMapping("/store/orders")` is a shortcut for `@RequestMapping(path="/store/orders", method=RequestMethod.GET)`. You can use @RequestMapping for all http methods, and you have more options to customize the response. But it is more verbose as well. I learned from ChatGPT that in earlier Spring versions everything was done with @RequestMapping and that @GetMapping, @PutMapping etc were introduced more recently.
 
 @RequestMethod also lets you select the methods PATCH, HEAD, OPTIONS and TRACE. For these methods no @[]Mapping annotation exist.
 
-The Message Convertors, autoconfigured by Spring, do all the conversion, not only for what you send but also for what you receive as response. Spring MVC resolves the desired content type based on Accept reuest header.
+The Message Convertors, autoconfigured by Spring, do all the conversion, not only for what you send but also for what you receive as response. Spring MVC resolves the desired content type based on the 'Accept' request header.
 
 ### @PutMapping
 
@@ -130,9 +166,9 @@ public void deleteItem(@PathVariable long orderId, @PathVariable String itemId) 
 }
 ```
 
-## You are the client
+## You are the client - RestTemplate
 
-Here the RestTemplate object comes in. We learn about how to create it, what methods it provides, the role that ResponseEntity plays if we want to retrieve headers from a response or the role that RequestEntity plays when we want to customize our request.
+Here the `RestTemplate` object comes in. We learn about how to create it, what methods it provides, the role that ResponseEntity plays if we want to retrieve headers from a response or the role that RequestEntity plays when we want to customize our request.
 
 ### Creating a RestTemplate object
 
@@ -196,7 +232,7 @@ long modified = response.getHeaders().getLastModified();
 Order order = response.getBody();
 ```
 
-### Customizing request with RequestEntity
+### Customizing requests with RequestEntity
 
 RequestEntity is the counterpart of ResponseEntity. It allows us to customize the headers and all other parts of a request. Creating a RequestEntity is done with some static methods, which gives good control over the created object. The example below creates and sends a POST request with a specific sort of authentication. It uses RestTemplate's `exchange()` method, which specifically has RequestEntity as first argument type.
 
