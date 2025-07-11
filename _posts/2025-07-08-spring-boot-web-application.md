@@ -159,9 +159,13 @@ http://.../suppliers?location=12345
 
 ## Message Converters
 
-Assuming we use @RestController and we want to send the client JSON or other data, we have the problem that while we work with Java objects, the client wants a JSON or XML object. This requires conversion.
+Assuming we want to send the client JSON or other data, we have the problem that while we work with Java objects, the client wants a JSON or XML object, as indicated in an 'Accept' header. This requires conversion.
 
-Here is where the Message Converter component in the Spring Web model, or the HttpMessageConverter object, comes in. It converts Java objects into JSON or XML objects that are the body of the response we send. Jackson is a typical default library being used. GSON is an alternative but not the default. There are actually multple message converters available so Spring can deal with any requested MIME type. It will simply look for the best converter for the job.
+Here is where the Message Converter component in the Spring Web model, or the HttpMessageConverter object, comes in. The Message Converter is activated because of the @ResponseBody annotation and it converts Java objects into JSON or XML objects that are the body of the response we send. Jackson is a typical default library being used. GSON is an alternative but not the default. 
+
+@ResponseBody does not only activate HttpMessageConverter, it also sort of deactivates ViewResolver and View.
+
+There are actually multple message converters available so Spring can deal with any requested MIME type. It will simply look for the best converter for the job.
 
 ### "Accept" Request Header
 
