@@ -180,7 +180,7 @@ public class MainTests{
 @Sql has several attributes. You can configure:
 
 - ExecutionPhase (will it run before or after method)
-- What to do when script fails (FAIL_ON_ERROR, CONTINUE_ON_ERROR, IGNORE_FAILED_DROPS< DEFAULT)
+- What to do when script fails (FAIL_ON_ERROR, CONTINUE_ON_ERROR, IGNORE_FAILED_DROPS, DEFAULT)
 - SQL syntax control: comments, statement separator
 
 
