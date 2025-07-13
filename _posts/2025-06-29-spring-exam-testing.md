@@ -25,6 +25,7 @@ When using @ExtendWith, you typically add SpringExtension.class as argument to i
 
 For completeness, these are the Spring annotations to know (discussed below):
 
+- **@COntextConfiguration**
 - **@TestPropertySource**
 - **@DirtiesContext**
 - **@ActiveProfiles**
