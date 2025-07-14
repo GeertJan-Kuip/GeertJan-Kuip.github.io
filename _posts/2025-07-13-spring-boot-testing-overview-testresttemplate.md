@@ -6,7 +6,7 @@
 
 There are three types of testing:
 
-- Full testing: whole application context, running server
+- Full testing: whole application context, server will run
 - MockMvc testing: whole application context, no server running
 - Slice testing: partial application context, @MockBean, no server running.
 
@@ -96,7 +96,7 @@ public void addAndDeleteBeneficiary(){
 }
 ```
 
-## Using MockMVC - serverless testing
+## Using the MockMvc Bean - serverless testing
 
 The previous sample code had the Tomcat server running because of `@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)`. There is an alternative way to test endpoints whereby the internal server (or web container you might call it) is not being used. It is called MockMVC. It comes from spring-test.jar and processes its requests through the DispatcherServlet. No ports are involved.
 
@@ -108,7 +108,7 @@ Annotate the test class with the following two annotations:
 
 ```
 @SpringBootTest(webEnvironment=WebEnvironment.MOCK)
-@AutoConfigureMockMvc
+@AutoConfigureMockMvc  // autoconfigures MockMvc bean
 ```
 
 ### Use static imports
@@ -182,7 +182,7 @@ The methods of MockMvcResultMatchers, imported statically, are found in the argu
 |xpath|Search returned XML using Xpath expression|
 |jsonPath|Searh returned JSON using JsonPath|
 
-## Slice testing
+## Slice testing - partial context + MockBean(s)
 
 Slice testing means testing only a part of the application, mocking the other parts. No server is run and only part of the Spring application context is initialized. We thus cannot use @SpringBootTest, as this will initialize the whole context.
 
