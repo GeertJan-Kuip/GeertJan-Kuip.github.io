@@ -89,9 +89,11 @@ public void addAndDeleteBeneficiary(){
 }
 ```
 
-## Using MockMVC testing
+## Using MockMVC - serverless testing
 
 The previous sample code had the Tomcat server running because of `@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)`. There is an alternative way to test endpoints whereby the internal server (or web container you might call it) is not being used. It is called MockMVC. It comes from spring-test.jar and processes its requests through the DispatcherServlet. No ports are involved.
+
+The difficulty with this one is creating the request, which requires some juggling with builder classes.
 
 ### Main annotations
 
@@ -113,7 +115,9 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 ### MockMvc object
 
-You inject the MockMvc bean, which is autoconfigured because of the @AutoConfigureMockMvc annotation, in your test class and now you can use it using the `.perform(RequestBuilder requestBuilder)` method. The argument, RequestBuilder, is created using the static imports. The .perform(...) method returns a ResultActions object, on which you can apply methods like .andExpect(..). All in all you can make all sorts of chains to get the desired request and the desired test on the result. This is a typical one:
+You inject the MockMvc bean, which is autoconfigured because of the @AutoConfigureMockMvc annotation, in your test class. Just use @Autowired on a field. Now you can use it using the `.perform(RequestBuilder requestBuilder)` method. 
+
+The argument, RequestBuilder, is created using the static imports. The .perform(...) method returns a ResultActions object, on which you can apply methods like .andExpect(..), which does the test. All in all you can make all sorts of chains to get the desired request and the desired test on the result. This is a typical one:
 
 ```
   @Test
@@ -133,10 +137,40 @@ mockMvc.perform(get("/accounts/{acctId}", "12345"))
 mockMvc.perform(get("/accounts?myParam={acctId}", "12345"))
 ```
 
+### MockHttpServletRequestBuilder - headers and payload
 
+As the .get() method returns a MockHttpServletRequestBuilder that has its own static methods, you can create a chain within the argument of .perform(). This allows for detailed request building. The `.andExpect(..)` method can be chained as well, its argument type is [MockMvcResultMatchers](https://docs.spring.io/spring-framework/docs/current/javadoc-api/org/springframework/test/web/servlet/result/MockMvcResultMatchers.html) and you are advised to do static import for its methods as well.
 
+```
+mockMvc.perform(get(  "/accounts/{acctId}", "12345").accept("application/json")  ).andExpect(...);
 
+mockMvc.perform(get(  "/accounts/{acctId}", "12345").content("{ ... }")
+				.contentType("application/json")  )   
+				.andExpect(...)
+				.andExpect(content().contentType("application/jjson"));
+```
 
+Some static methods provided by MockHttpServletRequestBuilder are:
+
+|Method|Description|
+|----|----|
+|param|Add a request parameter - such as param("myParam", 123)|
+|requestAttr|Add an object as a request attribute. Also, sessionAttr does the same for session scoped objects.|
+|header|Add a header variable to the request. See also headers, which adds multiple headers.|
+|content|Request body|
+|contentType|Set content type (Mime type) for the expected response|
+|accept|Set the requested type (Mime type) for the expected response|
+|locale|Set the local for making requests.|
+
+Some static methods provided by MockMvcResultMatchers are:
+
+|Method|Description|
+|----|----|
+|content|Assertions relating to the HTTP response body|
+|header|Assertions on the HTTP headers|
+|status|Assertions on the HTTP status|
+|xpath|Search returned XML using Xpath expression|
+|jsonPath|Searh returned JSON using JsonPath|
 
 
  
