@@ -97,8 +97,10 @@ The previous sample code had the Tomcat server running because of `@SpringBootTe
 
 Annotate the test class with the following two annotations:
 
-- @SpringBootTest(webEnvironment=WebEnvironment.MOCK)
-- @AutoConfigureMockMvc
+```
+@SpringBootTest(webEnvironment=WebEnvironment.MOCK)
+@AutoConfigureMockMvc
+```
 
 ### Use static imports
 
@@ -108,6 +110,32 @@ Both the video tutorial and the Spring documentation recoomends the use of stati
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 ```
+
+### MockMvc object
+
+You inject the MockMvc bean, which is autoconfigured because of the @AutoConfigureMockMvc annotation, in your test class and now you can use it using the `.perform(RequestBuilder requestBuilder)` method. The argument, RequestBuilder, is created using the static imports. The .perform(...) method returns a ResultActions object, on which you can apply methods like .andExpect(..). All in all you can make all sorts of chains to get the desired request and the desired test on the result. This is a typical one:
+
+```
+  @Test
+  public void testBasicGet(){
+
+	mockMvc.perform(get("/accounts")).andExpect(status.isOk());
+  }
+```
+
+Note that the .get() method is actually `...MockMvcRequestBuilders.get`, while the .status() method is `...MockMvcResultMatchers.status`.
+
+You can work with placeholders as well and a GET request can use both 'URI template style' and 'request parameter style':
+
+```
+mockMvc.perform(get("/accounts/{acctId}", "12345"))
+  or
+mockMvc.perform(get("/accounts?myParam={acctId}", "12345"))
+```
+
+
+
+
 
 
 
