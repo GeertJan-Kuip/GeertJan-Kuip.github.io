@@ -7,21 +7,15 @@
 
 The first video starts with an overview of the new Spring annotations that are used in Spring Boot testing. This is the list:
 
-**@SpringBootTest**
-
-**@WebMvcTest @WebFluxTest**
-
-**@DataJpaTest @DataJdbcTest @JdbcTest**
-
-**@DataMongoTest @DataRedisTest**
-
-**@MockBean**
+- **@SpringBootTest**
+- **@WebMvcTest @WebFluxTest**
+- **@DataJpaTest @DataJdbcTest @JdbcTest**
+- **@DataMongoTest @DataRedisTest**
+- **@MockBean**
 
 @SpringBootTest loads the same Application Context as the application does, which is convenient. It searches for @SpringBootConfiguration, which is an annotation of @SpringBootApplication. 
 
-The other annotations are for so-called _sliced_ testing.
-
-_**Use @SpringBootTest for integration testing and use @ContextConfiguration for slice testing.**_
+_Use @SpringBootTest for integration testing and use @ContextConfiguration for slice testing._
 
 Another general thing: you load the dependency _spring-boot-starter-test_ with scope _test_ in the pom file. It will be included automatically if you load a Spring project from start.spring.io. It brings in a whole list of (3rd party) dependencies, namely:
 
