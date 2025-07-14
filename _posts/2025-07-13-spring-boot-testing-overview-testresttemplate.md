@@ -8,16 +8,20 @@
 The first video starts with an overview of the new Spring annotations that are used in Spring Boot testing. This is the list:
 
 **@SpringBootTest**
+
 **@WebMvcTest @WebFluxTest**
+
 **@DataJpaTest @DataJdbcTest @JdbcTest**
+
 **@DataMongoTest @DataRedisTest**
+
 **@MockBean**
 
 @SpringBootTest loads the same Application Context as the application does, which is convenient. It searches for @SpringBootConfiguration, which is an annotation of @SpringBootApplication. 
 
 The other annotations are for so-called _sliced_ testing.
 
-**Use @SpringBootTest for integration testing and use @ContextConfiguration for slice testing.**
+_**Use @SpringBootTest for integration testing and use @ContextConfiguration for slice testing.**_
 
 Another general thing: you load the dependency _spring-boot-starter-test_ with scope _test_ in the pom file. It will be included automatically if you load a Spring project from start.spring.io. It brings in a whole list of (3rd party) dependencies, namely:
 
@@ -65,7 +69,7 @@ public class AccountClientBootTests{
 
 ### Sample code #2
 
-The sample below shows a test class where TestRestTemplate is used to test the endpoints of the application:
+The sample below shows a test class where TestRestTemplate is used to test the endpoints of the application, more specifically using a GET, POST and DELETE request:
 
 ```
 @Test
@@ -85,4 +89,27 @@ public void addAndDeleteBeneficiary(){
 }
 ```
 
+## Using MockMVC testing
+
+The previous sample code had the Tomcat server running because of `@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)`. There is an alternative way to test endpoints whereby the internal server (or web container you might call it) is not being used. It is called MockMVC. It comes from spring-test.jar and processes its requests through the DispatcherServlet. No ports are involved.
+
+### Main annotations
+
+Annotate the test class with the following two annotations:
+
+- @SpringBootTest(webEnvironment=WebEnvironment.MOCK)
+- @AutoConfigureMockMvc
+
+### Use static imports
+
+Both the video tutorial and the Spring documentation recoomends the use of static imports, to easily use Builder and Matcher methods. These are the imports:
+
+```
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
+```
+
+
+
+ 
 
