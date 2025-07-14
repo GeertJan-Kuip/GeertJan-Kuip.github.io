@@ -1,9 +1,16 @@
-# Spring Boot Testing - Overview and TestRestTemplate
+# Spring Boot Testing
 
 [Module 6](https://spring.academy/courses/spring-boot/lessons/spring-boot-testing-intro) of the Spring Boot video tutorials is about Spring Boot testing. Spring Boot testing builds on the Spring Testing framework, see a [previous post](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-06-29-spring-exam-testing.md), but we learn a lot more. 
 
-
 ## General overview
+
+There are three types of testing:
+
+- Full testing: whole application context, running server
+- MockMvc testing: whole application context, no server running
+- Slice testing: partial application context, @MockBean, no server running.
+
+### New annotations being used
 
 The first video starts with an overview of the new Spring annotations that are used in Spring Boot testing. This is the list:
 
@@ -15,7 +22,11 @@ The first video starts with an overview of the new Spring annotations that are u
 
 @SpringBootTest loads the same Application Context as the application does, which is convenient. It searches for @SpringBootConfiguration, which is an annotation of @SpringBootApplication. 
 
-_Use @SpringBootTest for integration testing and use @ContextConfiguration for slice testing._
+### Slice testing
+
+Instead of using @SpringBootApplication you can use @WebMvcTest, @DataJpaTest or a similar one to do so called 'slice testing'. With slice testing, you only initialize a specific part of the context, by providing one or more configuration classes as argument to the annotation. The other parts of the context, as far as they are required for your test, will need to be mocked by **@MockBean**.
+
+### Dependency / pom
 
 Another general thing: you load the dependency _spring-boot-starter-test_ with scope _test_ in the pom file. It will be included automatically if you load a Spring project from start.spring.io. It brings in a whole list of (3rd party) dependencies, namely:
 
@@ -27,7 +38,9 @@ Another general thing: you load the dependency _spring-boot-starter-test_ with s
 - JSONassert
 - JsonPath
 
-There is support for different webEnvironment modes. webEnvironMent is an attribute of @SpringBootTest and you set it like `@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)`:
+### WebEnvironment modes
+
+There is support for different webEnvironment modes. Use RANDOM_PORT or DEFINED_PORT if a server will be running. WebEnvironMent is an attribute of @SpringBootTest and you set it like `@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)`:
 
 - RANDOM_PORT
 - DEFINED_PORT
@@ -140,7 +153,8 @@ mockMvc.perform(get(  "/accounts/{acctId}", "12345").accept("application/json") 
 
 mockMvc.perform(get(  "/accounts/{acctId}", "12345").content("{ ... }")
 				.contentType("application/json")  )   
-				.andExpect(...)
+				.andDo(print())  // add this line to print reult to console. Handy.
+				.andExpect(...)				
 				.andExpect(content().contentType("application/jjson"));
 ```
 
@@ -156,7 +170,9 @@ Some static methods provided by MockHttpServletRequestBuilder are:
 |accept|Set the requested type (Mime type) for the expected response|
 |locale|Set the local for making requests.|
 
-Some static methods provided by MockMvcResultMatchers are:
+### MockMvcResultMatchers - assertions
+
+The methods of MockMvcResultMatchers, imported statically, are found in the argument of `.andExpect(..)`. Some static methods provided by MockMvcResultMatchers are:
 
 |Method|Description|
 |----|----|
@@ -165,6 +181,74 @@ Some static methods provided by MockMvcResultMatchers are:
 |status|Assertions on the HTTP status|
 |xpath|Search returned XML using Xpath expression|
 |jsonPath|Searh returned JSON using JsonPath|
+
+## Slice testing
+
+Slice testing means testing only a part of the application, mocking the other parts. No server is run and only part of the Spring application context is initialized. We thus cannot use @SpringBootTest, as this will initialize the whole context.
+
+### Using @MockBean
+
+The parts of the context that are not initialized but are nevertheless required for the test can be mocked using @MockBean. This is a Spring annotation, don't confuse it with @Mock, which comes from the Mockito framework. @MockBean lets you extend the sliced context so you have enough to work with.
+
+### Slice testing MVC with @WebMvcTest
+
+The code sample below illustrates a typical way of using @WebMvcTest. The argument of @WebMvcTest is the controller class you want to test, it will be initialized as 'sliced' context. Those parts of the context that are not initialized but are required to make things work are mocked with @MockBean, in this case the AccountManager object. The mock for accountManager will need to be created within a test method.
+
+Note that @WebMvcTest autoconfigures a MockMvc bean, you can inject it with @Autowired. 
+
+```
+@WebMvcTest(AccountController.class)
+public class AccountControllerBootTests {
+
+	@Autowired
+	private MockMvc mockMvc;
+
+	@MockBean
+	private AccountManager accountManager;
+
+	@Test
+	public void testHandleDetailsRequest() throws Exception {
+
+		// test code, see below
+	}
+}
+```
+
+Here is the test method in which the AccountManager object is mocked:
+
+```
+	@Test
+	public void testHandleDetailsRequest() throws Exception {
+		
+		// 'arrange'
+		given(accountManager.getAccount(0L)).willReturn(new Account("12345", "John Doe"));
+
+
+		// 'act and assert'
+		mockMvc.perform(get("/accounts/0"))
+			.andExpect(status().isOk())
+			.andExpect(content().contentType(MediaType.APPLICATION_JSON)
+			.andExpect(jsonPath("name").value("John Doe"))
+			.andExpect(jsonPath("number").value("12345"));
+
+		// 'verify'
+		verify(accountManager).getAccount(0L);
+	}
+```
+
+### Slice testing data access layer - @DataJpaTest
+
+If you want to slice test the repository using @DataJpaTest, only the @Repository beans will be loaded, all other components won't. Spring will autoconfigure a TestEntityManager object, which is the test equivalent of EntityManager. TestEntityManager provides a subset of EntityManager methods, just those useful for tests.
+
+By default, an embedded in-memory database is being used to replace any explicit or auto-configured DataSource. If you want to specify what database to use yourself, maybe the production db, use the @AutoConfigureTestDatabase annotation.
+
+
+
+
+
+
+
+
 
 
  
