@@ -22,8 +22,12 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
 - Spring Boot can autoconfigure DataSource if it can find appropriate database dependency. You do not have to mention DataSource anymore, nor inject it in JdbcTemplate.
 - For autoconfiguration of DataSource, set driver, url, username, password in some properties file or environment or wherever.
 - Use Jdbc if you need fine-grained control, performance, minimal dependencies or when you work with legacy databases. 
+- Repositories or DAO's for Jdbc are beans with implemented methods.
 
 #### 2.12 - Execute queries using callbacks to handle result sets
+
+- `.queryForObject(String query, Class<T> returntype)` returns one object.
+- .queryForObject(..) can include bind variables as varargs: `.queryForObject(String query, Class<T> returntype, var1, var2, ..)`
 
 #### 2.13 - Handle data access exceptions
 
