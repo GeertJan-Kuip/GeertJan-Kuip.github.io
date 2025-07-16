@@ -27,7 +27,21 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
 #### 2.12 - Execute queries using callbacks to handle result sets
 
 - `.queryForObject(String query, Class<T> returntype)` returns one object.
-- .queryForObject(..) can include bind variables as varargs: `.queryForObject(String query, Class<T> returntype, var1, var2, ..)`
+- `.queryForObject(..)` can include bind variables as varargs: `.queryForObject(String query, Class<T> returntype, var1, var2, ..)`
+- `.update(String query, [bind varargs])` can be used for INSERT, UPDATE and DELETE
+
+- `.queryForMap(String query, [bind varargs])` returns `Map<String, Object>`
+- `.queryForList(String query, [bind varargs])` returns `List<Map<String, Object>>`
+
+- Mapping to a domain object can be done with RowMapper, ResultSetExtractor, RowCallbackHandler.
+- These 3 are functional interfaces, their specific implementation provided as second argument. First argument is the query String as always.
+- With these 3 you can still use bind variables as additional varargs argument.
+- RowMapper and RowCallbackHandler are similar, the latter returns void which makes it better to stream the data result.
+
+- RowMapper can be used with `.queryForObject(String query, RowMapper rowMapper)` for one result or with `.query(String query, RowMapper rowMapper)` for multiple results, returned in list.
+- ResultSetExtractor can be used to extract multiple rows into one object. You typically iterate over the resultset with a `while` loop. Good fine-grained control, more freedom to customize.
+
+
 
 #### 2.13 - Handle data access exceptions
 
