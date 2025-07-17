@@ -455,6 +455,47 @@ Most important filters:
 - **ExceptionTranslationFilter** - Converts SpringSecurity exceptions into HTTP response or redirect
 - **AuthorizationFilter** - Authorizes web requests based on config attributes and authorities
 
+- By default, Spring sets up security for all endpoints with the same in-memory user name and password
+- When setting up config class for security, create the filtercahin bean and the userdetailsservice bean (the AuthenticationManager)
+- In filterChain bean, requestMatchers are used to provide different authorizations for different endpoints
+- Use either Spring MVC matching rules, otherwise "Ant-style" pattern matching
+- "/admin/*" only matches "/admin/xxx"
+- "/admin/**" matches any path under admin
+- requestMatchers chaining must (logically) go from most specific to least specific
+- There are no predefined roles, you have to define them yourself
+
+```
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+	http.authorizeHttpRequests((authz)->authz
+	  .requestMatchers("/signup", "/about").permitAll
+	  .requestMatchers(HttpMethod.PUT, "/accounts/edit*").hasRole("ADMIN")
+	  .requestMatchers("/accounts/**").hasAnyRole("USER", "ADMIN")
+	  .anyRequest().authenticated());
+	return http.build();
+}
+```
+
+- Older code may use antMatchers/mvcMatchers. Deprecated in Spring Security 5.8
+- requestMatchers decides which one to use, it uses mvcMatchers if MVC is in the classpath, otherwise antMatchers
+- antMatchers is simpler than mvcMatchers, the latter can work with path variables and adjusts for servlet context path if your app is deployed under one.
+- As said, both are deprecated
+
+If you  want certain endpoints to be open-access and **bypass security**:
+
+```
+@Bean
+public WebSecurityCustomizer webSecurityCustomizer() {
+	return (web)-> web.ignoring().requestMatchers("/ignore1", "/ignore2");
+}
+```
+
+- This is different from `.permitAll()` in the filterChain, as these endpoints will still have to go through the filterchain.
+
+
+
+
+
 
 ### 5.3 - Define Method-level Security
 
