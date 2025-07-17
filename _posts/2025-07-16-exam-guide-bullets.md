@@ -153,6 +153,79 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
 
 ## Section 3 - Spring MVC
 
+### 3.1 - WebApplications with Spring Boot
+
+#### 3.1.1 Explain how to create a Spring MVC application using Spring Boot
+
+- Web Servlet vs  Web   Reactive/Flux. The latter is newer, non-blocking
+- `spring-boot-starter-web` is the basic dependency for MVC application
+- A Spring MVC application typically has:
+    - A @Controller or @RestController class
+    - @RequestMapping or similarly annotated methods
+    - A `Model` onject or JSON responses
+    - A view resolver (Thymeleaf, JSP etc.)
+- Spring does much of the work, you need to create controllers and views
+- @Controller + @ResponseBody = @ RestController
+- To make single method REST: `public @ResponseBody List<Account> list() {...}`
+- Handler adaptor interpretes the request and creates beans and variables you can work with. Examples:
+    - @PathVariable
+    - @RequestParam
+    - @RequestHeader
+    - @RequestBody
+    - Principal
+    - Locale
+    - HttpMethod
+    - HttpSession
+    - HttpServletRequest
+- See [examples](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-08-spring-boot-web-application.md#the-handler-adapter1)
+- `@RequestParam(required=false)` allows for optional request parameter. Can return null, so type cannot be primitive.
+- Client indicates what content type he wants with the 'Accept' header. `application/xml` and `application/json` indicates xml or json
+- Spring reads Accept header and invokes appropriate HttpMessageConverter
+- To build a customized response, including headers, use [ResponseEntity](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-08-spring-boot-web-application.md#customizing-response-with-responseentity). You can build it in a chain.
+
+#### 3.1.2 Describe the basic request processing lifecycle for REST requests
+
+- Http request enter the DispatcherServlet
+- DispatcherServlet delegates to:
+    - HandlerMapping
+    - HandlerAdaptor (wraps Controller)
+    - MessageConverter (like Jackson)
+    - ViewResolver (like Thymeleaf, not for  REST)
+- DispatcherServlet sends back the response
+
+#### 3.1.3 Create a simple RESTful controller to handle GET requests
+
+- See 3.1.1
+- Use @GetMapping with value attribute that defines what url's to handle
+- Or use @RequestMapping with `method=RequestMethod.GET`
+- PATCH, HEAD, OPTIONS and TRACE can also be selected as method.
+    - PATCH partially updates a resource
+    - HEAD is like GET but returns only headers
+    - OPTIONS describes what HTTP methods and features are supported by the server
+    - TRACE echoes the received request for debugging purposes
+- Placeholders in the value arg of GetMapping, check [post](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-08-spring-boot-web-application.md#extracting-path-elements) 
+
+#### 3.1.4 Configure for deployment
+
+- By default Spring Boot starts up an embedded webserver, TomCat
+- To change Tomcat, use `<exclusions>` section in `spring-boot-starter-web` and add alternative server as dependency, like `spring-boot-starter-jetty`.
+- If you want app to run in existing web container, you need to adjust the Spring Boot application class: 
+    - `public class Application extends SpringBootServletInitializer`
+    - Swap `main` method for `configure` method
+- Hybrid approach (does both JAR and WAR):
+    - `public class Application extends SpringBootServletInitializer {`
+    - add both a `main` method for JAR and a `configure` method for WAR. See [here](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-08-spring-boot-web-application.md#the-hybrid-variant)
+- WAR can be run stand-alone if Tomcat or Jetty is embedded. If you have such a WAR file, mark the Tomcat/Jetty dependencies `provided` for the case where the app will be embedded in existing server. This prevents version conflicts between servers. 
+- Spring Boot creates fat and skinny jar and also war. Requires `spring-boot-maven-plugin`
+- Spring Boot Developer Tools: add dependency `spring-boot-devtools`
+- Creates two separate classloaders, decreases startup time as libraries won't be reloaded every time. Feature automatically disabled if Spring thinks app is running in 'production'
+
+### 3.2 - REST Applications
+
+#### 3.2.1 Create controllers to support the REST endpoints for various verbs
+
+#### 3.2.2 Utilize RestTemplate to invoke RESTful services
+
 ## Section 4 - Testing
 
 ## Section 5 - Security
