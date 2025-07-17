@@ -64,21 +64,20 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
     - Declare a PlatformTransactionManager Bean
     - Declare the transactional methods with annotation or programmatic
     - Add @EnableTransactionManagement to a configuration class
-- PlatformTransactionManager is an interface, implementations are DataSourceTransactionManager, JpaTransactionManager and others
+- PlatformTransactionManager is an interface, implementations are DataSourceTransactionManager, JpaTransactionManager and others.
+- @Transactional can be added to method or class, in latter case all methods in class are transactional.
 
 - These are the 5 isolation levels in trtansactions (attribute 'isolation'):
     - DEFAULT
     - READ_UNCOMMITTED
-    - READ_COMMITTED
+    - READ_COMMITTED  // most often the default
     - REPEATABLE_READ
     - SERIALIZABLE
 - Apart from default, which is dependent on the database, the order is from loose to strict. READ_UNCOMMITTED is loose, SERIALIZABLE most strict.
 - Relevant terms: 
     - Dirty Read: reading uncommitted data from another transaction
     - Non-repeatable Read: getting different results for the same query in the same transaction
-    - Phantom Read: A query 
-
-
+    - Phantom Read: A query returns different sets of rows due to new inserts by others
 
 #### 2.2.2 Configure Transaction Propagation
 
@@ -98,21 +97,32 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
 
 #### 2.2.4 Use Transactions in Tests
 
-
-
-#### 2.2.1 - Describe and use Spring Transaction Management
-
-#### 2.2.2 - Configure Transaction Propagation
-
-#### 2.2.3 - Setup Rollback rules
-
-#### 2.2.4 - Use Transactions in Tests
+- Adding @Transactional to a @Test annotated class will make the transaction being rolled back
+- This only applies to the outer transaction, not to an inner transaction!
+- If you add @Commit to a test or class annotated with @Test and @Transactional prevents the rollback
 
 ### 2.3 - Spring Boot and Spring Data for Backing Stores
 
 #### 2.3.1 - Implement a Spring JPA application using Spring Boot
 
+- JPA can be used by Spring Boot or Spring Framework
+- In Spring Framework, you need to manually configure:
+    - DataSource, 
+    - EntityManagerFactory, 
+    - JpaTransactionManager, 
+    - and add @EnableJpaRepositories
+- In Spring Boot, everything is autoconfigured. You need to add the @Entity annotations to domain classes and add the `spring-boot-starter-data-jpa` dependency.
+- @EntityScan("other.package") customizes where to search for domain classes. Note: it will _only_ scan other.package now.
+- application.properties requires some settings to guide autoconfiguration
+    - `spring.jpa.database=default` is recommended 
+    - `spring.jpa.hibernate.ddl-auto=xxx` is important. Options: `validate | update | create | create-drop`
+    - `spring.jpa.show-sql=true` + `spring.jpa.properties.hibernate.format-sql=true` show SQL being run in log, well-formatted
+    - `spring.jpa.properties.hibernate.xxx=???` sets any Hibernate property
+
 #### 2.3.2 - Create Spring Data Repositories for JPA
+
+- You need domain classes annotated with @Entity (and things like @Id, @Table). They will be auto-scanned by Spring Boot.
+- You need 
 
 ## Section 3 - Spring MVC
 
