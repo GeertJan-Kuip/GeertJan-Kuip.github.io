@@ -550,22 +550,27 @@ Challenges of Password Encoding Schemes:
 - Should accomodate old password formats
 - Should allow usage of multiple password formats
 
+DelegatingPasswordEncoder stores passwords with a prefix that tells the hash algorithm. BCrypt is the current default.
 
-
-
-
-
-
-
-
-
-
+- Add `.httpBasic(withDefaults())` to the SecurityFilterChain code to let the browser prompt the user for username and password
+- To add login via form in website, use the `.formLogin(..)` and `.logout(..)` in the SecurityFilterChain code.
+- Form login requires a html form in the webpage. The input field for username should have the name "username" and the field for password should have the name "password". The filter will recognize this as default values and handle it well.
+- The form should send a POST request to "/login" and the login page should be "/login" itself.
 
 ### 5.3 - Define Method-level Security
 
-
+- **@PreAuthorize** and **@PostAuthorize** are the annotations added to methods
+- These two have a value attribute with some sort of SpEL expression indicating what the user should have (role, name, whatever) to be allowed access.
+- This expression language has some methods/terms added by Spring Security
+- **@EnableMethodSecurity** is the annotation added to a configuration class
+- Spring Security uses AOP for method level security
+- Recommendation 1: Secure your services
+- Recommendation 2: Do not access other layers directly (ie do not bypass the service layer, this nullifies the security methods you place on them
+- A secured method is wrapped as a proxy bean (AOP) and to access the methods, you will need to go past a Spring SecurityInterceptor, who delegates to the AuthorizationManager to see if the access should be granted.
+- If unauthorized access is tried, it throws AccessDeniedException
 
 ## Section 6 - Spring Boot
+
 
 
 
