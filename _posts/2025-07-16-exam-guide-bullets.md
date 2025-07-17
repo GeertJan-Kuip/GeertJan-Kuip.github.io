@@ -249,7 +249,7 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
     - postForLocation -> returns URI
     - put
     - delete 
-- Use `.getForEntity` instead of `.getForObject` to get access to the whole response, including headers etc. 
+- Use `.getForEntity` instead of `.getForObject` to get access to the whole response, including headers etc. See [link](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-11-get-put-post-delete-resttemplate.md#access-response-headers-with-responseentity). 
 - `.getForEntity` returns a ResponseEntity<T> object. Methods:
     - getStatusCode()
     - getHeaders()
@@ -258,6 +258,67 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
 
 
 ## Section 4 - Testing
+
+### 4.1 - Testing Spring Applications
+
+#### 4.1.1 Write tests using JUnit 5
+
+- [Here](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-06-29-spring-exam-testing.md) is the article
+- Testing is done with JUnit, Spring gets involved when annotations need to be processed and when (parts of) the application context are required (integration testing)
+- JUnit 5 annotation commonly  used are:
+    - **@BeforeEach** (was @Before)
+    - **@BeforeAll** (was @BeforeClass)
+    - **@AfterEach** (was @After)
+    - **@AfterAll** (was @AfterClass)
+    - **@Disabled** (was @Ignore)
+- Be aware that @Before, @BeforeClass, @After, @AfterClass, @Ignore are JUnit 4. Not used anymore.
+
+- Other important JUnit 5 annotations are:
+    - **@ExtendWith** (was @RunWith in JUnit 4)
+    - **@DisplayName**
+    - **@Nested**
+    - **@ParameterizedTest**
+
+#### 4.1.2 Write Integration Tests using Spring
+
+-  The relevant Spring annotations are:
+    - **@ContextConfiguration**
+    - **@SpringJUnitConfig**
+    - **@TestPropertySource**
+    - **@DirtiesContext**
+    - **@ActiveProfiles**
+    - **@Sql**
+
+- @ExtendWith(SpringExtension.class) + @ContextConfiguration = @SpringJUnitConfig
+- Give @SpringJUnitConfig a value attribute type Class that points to relevant configuration class/bean
+- JUnit 5 has Platform, Jupiter, Vintage
+
+- @DirtiesContext is used to reload a fresh application context after the test, because its state might be compromised
+- @TestPropertySource imports properties in files or directly. Higher precedence than other properties. Highest for values directly set as attribute
+- @TestPropertySource looks automatically for a properties file with the same name as the testclass.
+- @ActiveProfiles sets which profiles you want to use. Automatically includes all beans that belong to no profile.
+
+#### 4.1.4 Extend Spring Tests to work with Databases
+
+- Use @Sql to prepare a database to be used during the test
+- Spring looks in the application context of your test what database to use. It is found in the DataSource bean.
+- Spring Boot autoconfigures DataSource, based on application.properties or application-test.properties, if active profile is test
+- Spring Boot configures in-memory db if none is found
+- If multiple DataSources are available, mark one with @Primary. Or use @SqlConfig(dataSource="..")
+- The value/scripts annotation lets you define .sql script files to run before the test (create tables etc, load some data)
+- The 'executionPhase' lets you set whether .sql file is run before or after the method (allows for cleanup)
+- Example: `@Sql(scripts = "/testfiles/cleanup.sql", executionPhase=Sql.ExecutionPhase.AFTER_TEST_METHOD)`
+- @Sql can be added to class and method (easier to customize) 
+- In attribute you can tell what to do when script fails:
+    - FAIL_ON_ERROR
+    - CONTINUE_ON_ERROR
+    - IGNORE_FAILED_DROPS
+    - DEFAULT
+- In attribute you can as well set something about syntax control: comments, statement separator
+
+### 4.2 - Advanced Testing with Spring Boot and MockMVC
+
+
 
 ## Section 5 - Security
 
