@@ -455,6 +455,7 @@ Most important filters:
 - **ExceptionTranslationFilter** - Converts SpringSecurity exceptions into HTTP response or redirect
 - **AuthorizationFilter** - Authorizes web requests based on config attributes and authorities
 
+More points:
 - By default, Spring sets up security for all endpoints with the same in-memory user name and password
 - When setting up config class for security, create the filtercahin bean and the userdetailsservice bean (the AuthenticationManager)
 - In filterChain bean, requestMatchers are used to provide different authorizations for different endpoints
@@ -491,6 +492,69 @@ public WebSecurityCustomizer webSecurityCustomizer() {
 ```
 
 - This is different from `.permitAll()` in the filterChain, as these endpoints will still have to go through the filterchain.
+
+Authentication flow
+- It starts with BasicAuthenticationFilter, one in the filter chain
+- It extracts a UsernamePasswordAuthenticationToken from the request
+- It delegates to AuthenticationManager/ProviderManager
+- Who delegates to some AuthenticationProvider
+- Who delegates to some UserDetailsService
+- Who tries to load the user and returns a UserDetails object if so
+- If not, it throws an Exception
+- The UserDetails object is stored in the SecurityContext as Authentication, including authorizations
+- The SecurityContext is wrapped in SecurityContextHolder, who associates SecurityContext with the current execution thread
+
+Out-of-the-box AuthenticationProviders:
+- DaoAuthenticationProvider
+- JaasAuthenticationProvider
+- LdapAuthenticationProvider
+- OpenIDAuthenticationProvider
+- RememberMeAuthenticationProvider
+
+Out-of-the-box UserDetailsService implementations:
+- InMemoryUserDetailsManager
+- JdbcUserDetailsManager
+- LdapUserDetailsManager
+
+You create an UserDetailsManager as a bean. Example:
+
+```
+@Bean
+public InMemoryUserdetailsManager userDetailsService(){
+
+	UserDetails user = User.withUsername("user").password(passwordEncoder.encode("user")).roles("USER").build();
+
+	UserDetails admin = User.withUsername("admin").password(passwordEncoder.encode("admin")).roles("ADMIN").build();
+
+	return new InMemoryUserDetailsManager(user, admin);
+}
+```
+
+InMemoryUserdetailsManager is a class that implements UserDetailService and UserDetailManager interface. It is not suited for working with a database.
+
+- JdbcUserDetailsManager is used for working with db
+- Bean creation is easy
+- There are default queries that Spring Security will execute to find the user but you can override them
+- Support for groups is also available. Don't know what that means
+- To implement custom authentication, you can implement custom UserDetailsService
+- Or you can implement custom AuthenticationProvider
+- Note: UserDetailService and AuthenticationProvider are the last two in the chain, the latter calls the former
+- AuthenticationProvider has more information, namely the Authentication object. UserDetailsService has less information.
+
+Password Encoding
+- MD5PasswordEncoder and SHAPassWordEncoder are deprecated, cracked
+- BcryptPasswordEncoder is the recommende encoder now
+
+Challenges of Password Encoding Schemes:
+- Should be future proof
+- Should accomodate old password formats
+- Should allow usage of multiple password formats
+
+
+
+
+
+
 
 
 
