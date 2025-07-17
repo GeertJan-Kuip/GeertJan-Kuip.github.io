@@ -398,24 +398,24 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
 
 ### 5.1 - Explain basic security concepts
 
-- Major concepts
-    - Principal
-    - Authentication
-    - Authorization
-    - Authority
-    - Secured Resource
+Major concepts
+- Principal
+- Authentication
+- Authorization
+- Authority
+- Secured Resource
 
-- Authentication mechanisms:
-    - Basic
-    - Digest
-    - Form
-    - X.509
-    - OAuth 2.0 / OIDC
+Authentication mechanisms:
+- Basic
+- Digest
+- Form
+- X.509
+- OAuth 2.0 / OIDC
 
-- Storage options for credential and authority data:
-    - in-memory (development only)
-    - Database
-    - LDAP
+Storage options for credential and authority data:
+- in-memory (development only)
+- Database
+- LDAP
 
 Why Spring Security?
 
@@ -449,11 +449,11 @@ Three steps for Setup and Configuration
 - The reponse will take the same route back, again through all the filters.
 
 Most important filters:
-- SecurityContextPersistencefilter - Establishes SecurityContext and maintains between HTTP requests
-- LogoutFilter - Clears SecurityContextHolder when logout requested
-- UsernamePasswordAuthenticationFilter - Puts Authentication into the SecurityContext on login request
-- ExceptionTranslationFilter - Converts SpringSecurity exceptions into HTTP response or redirect
-- AuthorizationFilter - Authorizes web requests based on config attributes and authorities
+- **SecurityContextPersistencefilter** - Establishes SecurityContext and maintains between HTTP requests
+- **LogoutFilter** - Clears SecurityContextHolder when logout requested
+- **UsernamePasswordAuthenticationFilter** - Puts Authentication into the SecurityContext on login request
+- **ExceptionTranslationFilter** - Converts SpringSecurity exceptions into HTTP response or redirect
+- **AuthorizationFilter** - Authorizes web requests based on config attributes and authorities
 
 
 ### 5.3 - Define Method-level Security
