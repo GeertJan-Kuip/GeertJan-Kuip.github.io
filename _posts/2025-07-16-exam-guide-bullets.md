@@ -290,7 +290,7 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
     - **@ActiveProfiles**
     - **@Sql**
 
-- **@ExtendWith(SpringExtension.class)** +** @ContextConfiguration** = **@SpringJUnitConfig**
+- **@ExtendWith(SpringExtension.class)** + **@ContextConfiguration** = **@SpringJUnitConfig**
 - Give **@SpringJUnitConfig** a value attribute type Class that points to relevant configuration class/bean
 - JUnit 5 has Platform, Jupiter, Vintage
 
@@ -394,11 +394,71 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
 - By default, an in-memory database is used to replace the production db
 - To specify the db yourself, use the **@AutoConfigureTestDatabase** annotation
 
-
-
-
-
 ## Section 5 - Security
+
+### 5.1 - Explain basic security concepts
+
+- Major concepts
+    - Principal
+    - Authentication
+    - Authorization
+    - Authority
+    - Secured Resource
+
+- Authentication mechanisms:
+    - Basic
+    - Digest
+    - Form
+    - X.509
+    - OAuth 2.0 / OIDC
+
+- Storage options for credential and authority data:
+    - in-memory (development only)
+    - Database
+    - LDAP
+
+Why Spring Security?
+
+- **Portable**
+    - Can be used on any Spring project
+- **Separation of Concerns**
+    - Business logic is decoupled from security concern
+    - Authentication and Authorization are decoupled
+- **Flexible and Extensible**
+    - Choose Authentication method yourself
+    - Choose storage method yourself
+    - Highly customizable
+
+The Schema according to video tutorial:
+- Security Context delegates to Authentication Manager
+- Access to Secured Resource is intercepted by Security Interceptor
+- Security Interceptor consults Configuration Attributes and delegates to Authorization Manager
+
+Three steps for Setup and Configuration
+- Setup filter chain
+- Configure securtity (authorization) rules
+- Setup Web Authentication
+
+### 5.2 - Use Spring security to confugure Authentication and Authorization
+
+- Step 1 is to set up a filter chain
+- Requires a DelegatingFilterProxy, which is autoconfigured by Spring Boot. To match the different life cycles. 
+- DelegatingFilterProxy is not a Spring Security class but a Spring MVC class. All requests pass through it.
+- It delegates to SpringSecurityFilterChain, that knows which filters to call by what method in what order. 
+- Only after the filtering is done, DelegatingFilterProxy sends the request to DispatcherServlet.
+- The reponse will take the same route back, again through all the filters.
+
+Most important filters:
+- SecurityContextPersistencefilter - Establishes SecurityContext and maintains between HTTP requests
+- LogoutFilter - Clears SecurityContextHolder when logout requested
+- UsernamePasswordAuthenticationFilter - Puts Authentication into the SecurityContext on login request
+- ExceptionTranslationFilter - Converts SpringSecurity exceptions into HTTP response or redirect
+- AuthorizationFilter - Authorizes web requests based on config attributes and authorities
+
+
+### 5.3 - Define Method-level Security
+
+
 
 ## Section 6 - Spring Boot
 
