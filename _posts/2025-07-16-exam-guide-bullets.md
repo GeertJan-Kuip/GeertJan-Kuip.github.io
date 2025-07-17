@@ -122,7 +122,34 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
 #### 2.3.2 - Create Spring Data Repositories for JPA
 
 - You need domain classes annotated with @Entity (and things like @Id, @Table). They will be auto-scanned by Spring Boot.
-- You need 
+- DB table name will be class name unless you annotate class with @Table("otherName")
+- The field representing a key must be of Long type. Annotate with @Id and GeneratedValue(strategy=GenerationType.AUTO)
+- Other values for strategy:
+    - GenerationType.IDENTITY
+    - GenerationType.SEQUENCE
+    - GenerationType.TABLE
+
+- Create a repository by extending interface `Repository<T, ID>` or a child of it. Those are:
+    - CrudRepository (has CRUD methods)
+    - PagingAndSortingRepository (CRUD + Iterable, Page, fiindAll)
+    - JpaRepository (has everything plus more)
+- No method implementations required
+- Method names are translated to db operations
+- Unless you add @Query("some query") to a method. This allows for finer grained control/complex queries. Can be used with placehiolders.
+- Spring Boot scans for these repository interfaces in its own package and below
+- Change places to scan with `@EnableJpaRepositories(basePackages="com.jan.repository")` added to @Configuration class.
+- Repository interfaces are proxied and these proxies are beans that can be injected as arguments, for example in a service bean. No @Autowired just by the name. Good practice.
+
+- Valid starters of method names (there are more), see [link](https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html#jpa.query-methods.query-creation):
+    - findBy
+    - findTopBy
+    - queryFirst10By
+    - findTop3By
+    - findFirst10By
+    - findDistinctPeopleBy
+    - findPeopleDistinctBy
+    - findByLastnameOrFirstname
+    - findContainingEscaped
 
 ## Section 3 - Spring MVC
 
