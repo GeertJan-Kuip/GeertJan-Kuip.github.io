@@ -336,16 +336,16 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
     - Mockito
     - JSONassert
     - JsonPath
-- **@SpringBootTest** loads same AC as application. It searches for **SpringBootConfiguration**,  annotation of @SpringBootApplication.
-- Use @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT) for full integration test. Or DEFINED_PORT.
-- Use MOCK for MockMVC testing
+- **@SpringBootTest** loads same AC as application. It searches for **@SpringBootConfiguration**,  annotation of @SpringBootApplication.
+- Use **@SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT)** for full integration test. Or DEFINED_PORT.
+- Use WebEnvironment.MOCK for MockMVC testing
 - There is also WebEnvironment.NONE
 
 #### 4.2.2 Perform integration testing
 
 - Integration testing is organized around **TestRestTemplate** (no child of RestTemplate)
 - TestRestTemplate builds and sends HTTP requests to the application
-- TestRestTemplate is autoconfigured if you use `RANDOM_PORT` OR `DEFINED_PORT`
+- TestRestTemplate is autoconfigured if you use `RANDOM_PORT` or `DEFINED_PORT`
 - Use RestTemplateBuilder to build a TestRestTemplate HTTP request
 - Methods:
     - .postForLocation(..) -> returns URI
@@ -380,15 +380,19 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
     - **@DataJpaTest @DataJdbcTest @JdbcTest**
     - **@DataMongoTest @DataRedisTest**
 - The attribute for those anotations is the class where the configuration for it is found. For @WebMVCTest this is the @Controller or @RestController annotated class. See [here](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-13-spring-boot-testing-overview-testresttemplate.md#slice-testing-mvc-with-webmvctest)
-- These annotations result in the autoconfiguration of a MockMVC bean, just like in full integration testing
-- Inject MockMVC bean with @Autowired
+- These annotations result in the autoconfiguration of a MockMVC bean, just like in MockMVC testing
+- Inject MockMVC bean with @Autowired in your test class
 - @MockBean is the central annotation. Use it on a field that declares an object of a type that is a bean in the AC but not in the sliced AC of the test. Now it will be included as a mock.
-- 
-- 
+- @MockBean is a Spring annotation, @Mock is a Mockito annotation.
+- In the @Test class, define how the mock should behave or what value it should return on a specific request
+- Now use `mockMVC.perform(..)` exactly in the way you would use it in MockMVC testing
 
-
-
-- In slice testing, the mocking of those parts of the AC that are not generated, is done by **@MockBean**
+- If you want to test the repository, you can use @DataJpaTest
+- Only the @Repository beans will be loaded
+- Spring will autoconfigure a TestEntityManager object, that can be used instead of EntityManager
+- TestEntityManager provides a subset of EntityManager's methods
+- By default, an in-memory database is used to replace the production db
+- To specify the db yourself, use the **@AutoConfigureTestDatabase** annotation
 
 
 
