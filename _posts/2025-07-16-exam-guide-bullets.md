@@ -322,13 +322,73 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
 
 ### 4.2 - Advanced Testing with Spring Boot and MockMVC
 
-- AC means Application Context for convenience
-- Three types: 
-    - Full test (full application context + server)
-    - MockMVC test (full application test, no server)
-    - Slice testing (partial application context, no server)
+- Here, AC means Application Context for convenience
+
+#### 4.2.1 Enable Spring Boot Testing
+
+- Add `spring-boot-starter-test` with scope 'test' in pom
+- This starter is included automatically if you load a Spring Boot project from start.spring.io
+- Included dependencies are:
+    - JUnit
+    - Spring Test & Spring Boot Test
+    - AssertJ
+    - Hamcrest
+    - Mockito
+    - JSONassert
+    - JsonPath
 - **@SpringBootTest** loads same AC as application. It searches for **SpringBootConfiguration**,  annotation of @SpringBootApplication.
-- In slice testing, the mocking of those part of the AC that is not generated, is done by **@MockBean**
+- Use @SpringBootTest(webEnvironment=WebEnvironment.RANDOM_PORT) for full integration test. Or DEFINED_PORT.
+- Use MOCK for MockMVC testing
+- There is also WebEnvironment.NONE
+
+#### 4.2.2 Perform integration testing
+
+- Integration testing is organized around **TestRestTemplate** (no child of RestTemplate)
+- TestRestTemplate builds and sends HTTP requests to the application
+- TestRestTemplate is autoconfigured if you use `RANDOM_PORT` OR `DEFINED_PORT`
+- Use RestTemplateBuilder to build a TestRestTemplate HTTP request
+- Methods:
+    - .postForLocation(..) -> returns URI
+    - .getForObject(..) -> returns Object
+    - .getForEntity(..) -> returns ResponseEntity
+    - .delete(..) -> returns void
+- Good traits of TestRestTemplate:
+    - Takes a relative path instead of an absolute
+    - Does not throw error when an error response (such as 404) is thrown from server
+    - Configured to ignore cookies and redirects
+
+#### 4.2.3 Perform MockMVC testing
+
+- Server not running, no ports involved. Requests through DispatcherServlet.
+- Use `@SpringBootTest(webEnvironment=WebEnvironment.MOCK)`
+- Central element is the MockMVC bean, which is autoconfigured
+- Use `@AutoConfigureMockMvc` to get autoconfigured MockMVC bean
+- Inject MockMVC bean in @Test class with @Autowired on field
+- MockMVC uses the `.perform(RequestBuilder requestBuilder)` method to do the mock request
+- Difficulty lies in generating the HTTP request
+- Use [static imports](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-13-spring-boot-testing-overview-testresttemplate.md#use-static-imports) 
+- Static imports provide the methods of MockMvcRequestBuilders and MockMVCResultMatchers
+- The `.get()`  method of MockMvcRequestBuilders returns a MockHttpServletRequestBuilder object which allows for chain build, adding content, headers etc.
+- No standard assert-like code is required, the testing is done in the .andExpect() method.
+- Click [here](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-13-spring-boot-testing-overview-testresttemplate.md#mockmvc-object) to get more detailed explanation
+
+#### 4.2.4 Perform slice testing
+
+- Do not use @SpringBootTest
+- Instead use annotations for partial AC loading like:
+    - **@WebMvcTest @WebFluxTest**
+    - **@DataJpaTest @DataJdbcTest @JdbcTest**
+    - **@DataMongoTest @DataRedisTest**
+- The attribute for those anotations is the class where the configuration for it is found. For @WebMVCTest this is the @Controller or @RestController annotated class. See [here](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-13-spring-boot-testing-overview-testresttemplate.md#slice-testing-mvc-with-webmvctest)
+- These annotations result in the autoconfiguration of a MockMVC bean, just like in full integration testing
+- Inject MockMVC bean with @Autowired
+- @MockBean is the central annotation. Use it on a field that declares an object of a type that is a bean in the AC but not in the sliced AC of the test. Now it will be included as a mock.
+- 
+- 
+
+
+
+- In slice testing, the mocking of those parts of the AC that are not generated, is done by **@MockBean**
 
 
 
