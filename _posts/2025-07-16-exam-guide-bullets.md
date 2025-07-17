@@ -272,6 +272,7 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
     - **@AfterAll** (was @AfterClass)
     - **@Disabled** (was @Ignore)
 - Be aware that @Before, @BeforeClass, @After, @AfterClass, @Ignore are JUnit 4. Not used anymore.
+- Remember by: _**Each and All, Disabled. No Class, always a postfix.**_
 
 - Other important JUnit 5 annotations are:
     - **@ExtendWith** (was @RunWith in JUnit 4)
@@ -289,22 +290,22 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
     - **@ActiveProfiles**
     - **@Sql**
 
-- @ExtendWith(SpringExtension.class) + @ContextConfiguration = @SpringJUnitConfig
-- Give @SpringJUnitConfig a value attribute type Class that points to relevant configuration class/bean
+- **@ExtendWith(SpringExtension.class)** +** @ContextConfiguration** = **@SpringJUnitConfig**
+- Give **@SpringJUnitConfig** a value attribute type Class that points to relevant configuration class/bean
 - JUnit 5 has Platform, Jupiter, Vintage
 
-- @DirtiesContext is used to reload a fresh application context after the test, because its state might be compromised
-- @TestPropertySource imports properties in files or directly. Higher precedence than other properties. Highest for values directly set as attribute
-- @TestPropertySource looks automatically for a properties file with the same name as the testclass.
-- @ActiveProfiles sets which profiles you want to use. Automatically includes all beans that belong to no profile.
+- **@DirtiesContext** is used to reload a fresh application context after the test, because its state might be compromised
+- **@TestPropertySource** imports properties in files or directly. Higher precedence than other properties. Highest for values directly set as attribute value.
+- **@TestPropertySource** looks automatically for a properties file with the same name as the testclass.
+- **@ActiveProfiles** sets which profiles you want to use. Automatically includes all beans that belong to no profile.
 
 #### 4.1.4 Extend Spring Tests to work with Databases
 
-- Use @Sql to prepare a database to be used during the test
+- Use **@Sql** to prepare a database to be used during the test
 - Spring looks in the application context of your test what database to use. It is found in the DataSource bean.
 - Spring Boot autoconfigures DataSource, based on application.properties or application-test.properties, if active profile is test
 - Spring Boot configures in-memory db if none is found
-- If multiple DataSources are available, mark one with @Primary. Or use @SqlConfig(dataSource="..")
+- If multiple DataSources are available, mark one with @Primary. Or use **@SqlConfig(dataSource="..")**
 - The value/scripts annotation lets you define .sql script files to run before the test (create tables etc, load some data)
 - The 'executionPhase' lets you set whether .sql file is run before or after the method (allows for cleanup)
 - Example: `@Sql(scripts = "/testfiles/cleanup.sql", executionPhase=Sql.ExecutionPhase.AFTER_TEST_METHOD)`
@@ -315,8 +316,21 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
     - IGNORE_FAILED_DROPS
     - DEFAULT
 - In attribute you can as well set something about syntax control: comments, statement separator
+- Example: `@Sql(scripts = "/test-schema.sql", config = @SqlConfig(commentPrefix = "`"))`
+
+- [More info](https://docs.spring.io/spring-framework/reference/6.2-SNAPSHOT/testing/testcontext-framework/executing-sql.html#testcontext-executing-sql-declaratively)
 
 ### 4.2 - Advanced Testing with Spring Boot and MockMVC
+
+- AC means Application Context for convenience
+- Three types: 
+    - Full test (full application context + server)
+    - MockMVC test (full application test, no server)
+    - Slice testing (partial application context, no server)
+- **@SpringBootTest** loads same AC as application. It searches for **SpringBootConfiguration**,  annotation of @SpringBootApplication.
+- In slice testing, the mocking of those part of the AC that is not generated, is done by **@MockBean**
+
+
 
 
 
