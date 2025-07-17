@@ -224,7 +224,38 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
 
 #### 3.2.1 Create controllers to support the REST endpoints for various verbs
 
+- MessageConverters do ORM both ways
+- The return value of a controller method is the body of the response. Use void for empty body
+
+- [@PutMapping](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-11-get-put-post-delete-resttemplate.md#putmapping)
+- The @ResponseStatus annotation on method lets you respond specific status, like in @ResponseStatus(HttpStatus.NO_CONTENT) that returns 204 with no body.
+- Access body content of request with @RequestBody before method argument
+- Type of body (say json) is converted to domain object immediately, automatically
+- This decoupling of web- and application environment makes testing much easier.
+
+- [@PostMapping](@ResponseStatus(HttpStatus.NO_CONTENT))
+- This one is difficult because the URI of the location where item is stored needs to be sent back under the 'Location' header
+- PostMapping returns `201 Created` upon success, empty body
+
+- [@DeleteMapping](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-11-get-put-post-delete-resttemplate.md#deletemapping)
+- You typically return `204 No Content`
+- Can use `@ResponseStatus(HttpStatus.NO_CONTENT)` for that 
+
 #### 3.2.2 Utilize RestTemplate to invoke RESTful services
+
+- [RestTemplate](@ResponseStatus(HttpStatus.NO_CONTENT)) lets you build requests to other servers. It needs RequestEntity to customize headers. 
+- GET, POST, PUT, DELETE correspond to the following RestTemplate methods:
+    - getForObject -> returns Object (MessageConverter at work)
+    - postForLocation -> returns URI
+    - put
+    - delete 
+- Use `.getForEntity` instead of `.getForObject` to get access to the whole response, including headers etc. 
+- `.getForEntity` returns a ResponseEntity<T> object. Methods:
+    - getStatusCode()
+    - getHeaders()
+    - getBody() -> returns object, using MessageConverter
+- [RequestEntity](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-11-get-put-post-delete-resttemplate.md#customizing-requests-with-requestentity) is the counterpart of ResponseEntity. Used by RestTemplate to customize headers etc of request
+
 
 ## Section 4 - Testing
 
