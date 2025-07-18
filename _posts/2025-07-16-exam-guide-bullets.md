@@ -616,14 +616,14 @@ DelegatingPasswordEncoder stores passwords with a prefix that tells the hash alg
     - **@ConfigurationPropertiesScan** on the application class (Spring Boot 2.2.0+)
     - **@Component** on the properties class itself
 - In all three cases, the class annotated with @ConfigurationProperties becomes a bean. It must be a bean, otherwise no binding takes place. And if it is a bean, you can wire it to other beans and then its fields become accessible.
-- See [here](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-04-spring-boot-properties.md#making-properties-available)
-- **@ConfigurationProperties utilizes relaxed binfing, which means that property names will be recognized even if they are written in a different nameing style (camel case, snake case, capitalized etc
+- See [here](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-04-spring-boot-properties.md#making-properties-available) for blog post on @ConfigurationProperties.
+- **@ConfigurationProperties** utilizes relaxed binfing, which means that property names will be recognized even if they are written in a different nameing style (camel case, snake case, capitalized etc
 -  This is to make it easier to work with properties from different sources, like SystemProperties, Windows environment variables etc.
 
 #### 6.2.2 Utilize auto-configuration
 
 - **@EnableAutoconfiguration** enables auto-configuration
-- Spring boot automatically creates beans it thinks you need based on contents of class path and application context.
+- Spring boot automatically creates beans it thinks you need based on contents of class path, application context and configuration files.
 - **@ComponentScan** has the attribute that tells where to find components. If **@SpringBootapplication**, then this annotation will have that attribute, named as 'scanBasePackages'.
 - Spring Boot autoconfigures DataSource if in-memory db is on classpath.
 - It will autocinfigure JdbcTemplate if (1) Starter JDBC is on classpath and (2) a DataSource is configured
@@ -653,13 +653,194 @@ DelegatingPasswordEncoder stores passwords with a prefix that tells the hash alg
 
 ### 6.3 Spring Boot Actuator
 
+- Actuator provides
+    - Production grade monitoring without having to implement it yourself
+    - A framework to easily gather and return metrics and health indicators
+    - Integration with 3rd party monitoring system for aggregation and visualization
+- Accessible via JMX
+- Or as HTTP endpoints:
+    - /actuator/info (empty by default, not exposed by default)
+    - /actuator/health (default is minimal, status "UP")
+    - /actuator/metrics (not exposed by default, allows deeper url paths)
+
 #### 6.3.1 Configure Actuator endpoints
+
+- requires `spring-boot-starter-actuator` dependency
+- list of endpoints (not exhaustive):
+    - beans
+    - conditions - conditions used by autoconfiguration
+    - env - properties in Spring environment
+    - health
+    - configprops - collated list of all @ConfigurationProperties
+    - info
+    - loggers - query and modify log levels
+    - mappings - Spring MVC request mappings
+    - metrics
+    - session - fetch or delete user sessions (only if using Spring Session)
+    - shutdown - shutdown gracefully, disabled by default
+    - threaddump - performs a thread dump
+    - jolokia - exposes JMX beans over HTTP (not just actuators)
+- All endpoint except shutdown are enabled by default. There exist a bean for them.
+- HTTP: Only health is exposed by default
+- JMX: all enabled endpoints are exposed by default
+- JMX can be enabled/disabled with property: `spring.jmx.enabled=true`
+- HTTP capability only available when using Spring MVC, WebFlux or Jersey
+- Change basepath actuator to 'admin' with `management.endponts.web.base-path=/admin`
+- Actuator can be run on a different port as the application
+- To expose endpoints, do:
+    - `management.endponts.web.exposure.include=beans,env,info`
+    - `management.endponts.web.exposure.include=*` (exposes all)
 
 #### 6.3.2 Secure Actuator HTTP endpoints
 
+- To secure an endpoint, we need to edit the SecurityFilterChain`bean. This can be done using the relative path or by using some classes/methods that are base-path agnostic. The latter prevents a scenario in which 'actuator' in the basepath is changed for another term, like 'admin'.
+
+Example code:
+
+```
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception{
+
+  http.authorizeHttpRequests((authz)->authz
+	.requestMatchers("/actuator/health").permitAll()
+	.requestMatchers("/actuator/**).hasRole("ACTUATOR")
+	.anyRequest().authenticated());
+  return http.build();
+}
+```
+```
+// base-path agnostic, preferred option
+@Bean
+public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+
+  http.authorizeHttpRequests((authz)->authz
+	.requestMatchers(EndpointRequest.to(HealthEndpoint.class)).permitAll()
+	.requestMatchers(EndpointRequest.toAnyendpoint()).hasRole("ACTUATOR")
+	.anyRequest().authenticated());
+  return http.build();
+}
+```
+
 #### 6.3.3 Define custom metrics
 
+- Spring Boot 2.0 uses Micrometer library (Multidimensional metrics, collected in vendor neutral way, then you can expose it in vendor specific format)
+- Micrometer instruments your JVM-based application code without vendor lock-in (SLF4J for metrics)
+- Designed to add little to no overhead to your metrics collection activity
+- Four different types of metrics:
+    - Counter
+    - Gauge
+    - Timer
+    - DistributionSummary
+- Classes are created or registered with a MeterRegistry bean
+- Custom metric names are listed on the `/actuator/metrics` endpoint
+- Custom metric data can be fetched at `/actuator/metrics/[custom-metric-name]`
+- Two ways to access metrics data: Hierarchical vs Dimensional (This is about last part of url)
+- **Hierchical metrics** uses sysem in which the name consists of subsequent key-value pairs separated by dot, like:
+    - http.method.get.status.200
+    - http.method.get.status.*
+- method and status are keys, get and 200 are its respective values
+- Difficult convention, often there is no hierarchy to decide the order. Adding new attributes can break queries.
+- **Dimensional metrics**. Better way to achive the same. Metrics are tagged. Examples:
+    - http?tag=method:get&tag=status:200
+    - http?tag=method:get&tag=status:200&tag=region:us-east
+- Characteristics: flexible, adding new attribute to query is easy. Order doesn't matter anymore. 
+
+Creating a custom metric, doing it the complicated wat, in words: 
+- There is a MeterRegistry bean that has methods to create a Counter, Gauge, Timer or DistributionSummary object
+- Inject this MeterRegistry object in your @Controller class via the constructor
+- `this.timer = registry.timer("orders.submit")' in your constructor sets the timer field to a Timer object that is registered under 'orders.submit'
+- Your controller class must of course have the appropriate field for it (type Timer, Gauge, Controller or DistributionSummary)
+- In a @RequestMapping-like method: wrap the method in the timer.record method, using a lambda.
+
+Doing it the easy way:
+- Use the @Timed annotation on a method with the name under which it is registered as attribute. No need to inject MeterRegistry or create a Timer object yourself.
+
+Sample code, both ways:
+
+```
+public class OrderController{
+
+  private Timer timer;
+
+  public class OrderController(MeterRegistry registry){
+	this.timer=registry.timer("orders.submit"));
+  }
+
+  @PostMapping("/orders")
+  public Order placeOrder( ...){
+	return timer.record(()-> { /* code placing an order ...*/});
+  }
+
+  @GetMapping("/orders")
+  @Timed("orders.summary")  // all in one annotation
+  public List<Order> orderSummary() {...}
+}
+```
+
+- A Timer object provides count, mean, max and total of its metric
+- Timer is part of MicroMeter
+
+DistributionSummary works slightly different, with a builder:
+
+```
+@Controller
+public class RewardController { 
+
+  private final DistributionSummary summary;
+
+  public RewardController(Meterregistry meter){
+	summary = distributionSummary.builder("reward.summary")
+				.baseUnit("dollars")
+				.register(meter);
+  }
+
+  @PostMapping(value="/rewards")
+  public RespomseEntity<Void> create(@RequestBody Reward reward) {
+	summary.record(reward.amount);
+  }
+}
+```
+
+To get the metrics collected by the above sample, use `/actuator/metrics/reward.summary` 
+
+
 #### 6.3.4 Define custom health indicators
+
+- By default, you see only one metric under actuator/health
+- Set `management.endpoint.health.show-details=always` to see more
+- You can group health indicators in application.properties. Example:
+    - `management.endpoint.health.group.mysystem.include=diskSpace,db`
+- in the example, 'mysystem' is the name given to the group. diskSpace and db are known names for health metrics. Group name can be added as element to /actuator/health/
+- Many health indicators setup automatically, provided their dependencies are on the classpath
+
+Create custom health indicator:
+- Create @Component class implementing Healthindicator interface. Override the health() method to return the status in the form of a Health type object
+- Or extend the AbstractHealthIndicator and override the doHealthCheck() method
+- Built-in statusses that can be returned are: 
+    - DOWN
+    - OUT_OF_SERVICE
+    - UNKNOWN
+    - UP
+- You can add more details as well to the Health object, those will show up in the /health url
+
+Integrate the actuator data in monitoring system, like:
+- Atlas (Netflix)
+- CloudWatch
+- Datadog
+- Dynatrace
+- Ganglia
+- Graphite
+- InfluxDB
+- JMX
+- New Relic
+- Prometheus
+_ SignalFx
+- StatsD
+- Wavefront (VMware)
+
+
+
+
 
 
 
