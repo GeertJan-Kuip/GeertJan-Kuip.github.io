@@ -105,6 +105,7 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
 
 #### 2.3.1 - Implement a Spring JPA application using Spring Boot
 
+- [Spring Boot DataJPA](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-08-spring-boot-data-jpa.md) post and [JPA under the Hood](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-07-JPA-under-the-hood.md) post.  
 - JPA can be used by Spring Boot or Spring Framework
 - In Spring Framework, you need to manually configure:
     - DataSource, 
@@ -693,7 +694,7 @@ DelegatingPasswordEncoder stores passwords with a prefix that tells the hash alg
 
 #### 6.3.2 Secure Actuator HTTP endpoints
 
-- To secure an endpoint, we need to edit the SecurityFilterChain`bean. This can be done using the relative path or by using some classes/methods that are base-path agnostic. The latter prevents a scenario in which 'actuator' in the basepath is changed for another term, like 'admin'.
+- To secure an endpoint, we need to edit the SecurityFilterChain bean. This can be done using the relative path or by using some classes/methods that are base-path agnostic. The latter prevents a scenario in which 'actuator' in the basepath is changed for another term, like 'admin'.
 
 Example code:
 
@@ -735,7 +736,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 - Custom metric names are listed on the `/actuator/metrics` endpoint
 - Custom metric data can be fetched at `/actuator/metrics/[custom-metric-name]`
 - Two ways to access metrics data: Hierarchical vs Dimensional (This is about last part of url)
-- **Hierchical metrics** uses sysem in which the name consists of subsequent key-value pairs separated by dot, like:
+- **Hierchical metrics** uses system in which the name consists of subsequent key-value pairs separated by dot, like:
     - http.method.get.status.200
     - http.method.get.status.*
 - method and status are keys, get and 200 are its respective values
@@ -745,7 +746,7 @@ public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
     - http?tag=method:get&tag=status:200&tag=region:us-east
 - Characteristics: flexible, adding new attribute to query is easy. Order doesn't matter anymore. 
 
-Creating a custom metric, doing it the complicated wat, in words: 
+Creating a custom metric, doing it the complicated way, in words: 
 - There is a MeterRegistry bean that has methods to create a Counter, Gauge, Timer or DistributionSummary object
 - Inject this MeterRegistry object in your @Controller class via the constructor
 - `this.timer = registry.timer("orders.submit")' in your constructor sets the timer field to a Timer object that is registered under 'orders.submit'
