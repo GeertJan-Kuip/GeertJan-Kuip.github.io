@@ -571,6 +571,97 @@ DelegatingPasswordEncoder stores passwords with a prefix that tells the hash alg
 
 ## Section 6 - Spring Boot
 
+### 6.1 - Spring Boot Feature Introduction
+
+#### 6.1.1 Explain and use Spring Boot features
+
+- Spring Boot
+    - Takes opinionated view of the Spring platform and third-party libraries
+    - Supports different project types like Web or Batch
+    - Handles most low-level, predictable set-up for you
+- Why Spring Boot?
+    - Provide a radically faster and widely accessible getting-started experience for all Spring development
+    - Be opinionated out of the box but get out of the way quickly as requirements start to diverge from the defaults
+    - Provide a range of non-functional features that are common to large classes of projects
+        - Embedded servers, metrics, health checks, externalized configuration, containerization, etc.
+
+#### 6.1.2 Describe Spring Boot dependency management
+
+- Spring Boot parent resolves versioning
+- Spring Boot starters include all required transitive dependencies
+- You can always overwrite: exclude dependencies you don't use, define the dependencies or their versions explicitly yourself
+- Spring Boot parent pom does the following:
+    - Defines versions of key dependencies
+    - Defines Maven plugins
+    - Sets up Java version
+
+### 6.2 - Spring Boot Properties and Autoconfiguration
+
+#### 6.2.1 Describe options for defining and loading properties
+
+- Spring Boot will look for application.properties in:
+    - in the config subdirectory of the working directory (`file:./config/`)
+    - in the working directory itself `file:./`
+    - in the config package in the classpath (`src/main/resources/config`)
+    - in the classpath root (`src/main/resources`)
+- Spring Boot will look for profile-specific property files: `application-{profile}.properties`. 
+- application.properties will always be used, but profile specific files can override it
+- In Spring Boot application.yml is accepted as alternative format, in regular Spring it won't work
+- application.yml has the benefit that you can include profile-specific properties in it. No need for separate files
+- Precedence order of properties: see [here](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-04-spring-boot-properties.md#precedence). Note the highe precedence pf **@TestPropertySource** and **@SpringBootTest** properties
+
+- **@ConfigurationProperties** can be used as an efficient replacement for **@Value**. It is aware of all properties in application.properties and their prefixes and utilizes this to map the properties on the fields of the class that have the right names.
+- To make the properties bind to the fields and become available to the application context you can use the following strategies:
+    - **@EnableConfigurationProperties** on the application class (main entry). Add Class argument.
+    - **@ConfigurationPropertiesScan** on the application class (Spring Boot 2.2.0+)
+    - **@Component** on the properties class itself
+- In all three cases, the class annotated with @ConfigurationProperties becomes a bean. It must be a bean, otherwise no binding takes place. And if it is a bean, you can wire it to other beans and then its fields become accessible.
+- See [here](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-04-spring-boot-properties.md#making-properties-available)
+- **@ConfigurationProperties utilizes relaxed binfing, which means that property names will be recognized even if they are written in a different nameing style (camel case, snake case, capitalized etc
+-  This is to make it easier to work with properties from different sources, like SystemProperties, Windows environment variables etc.
+
+#### 6.2.2 Utilize auto-configuration
+
+- **@EnableAutoconfiguration** enables auto-configuration
+- Spring boot automatically creates beans it thinks you need based on contents of class path and application context.
+- **@ComponentScan** has the attribute that tells where to find components. If **@SpringBootapplication**, then this annotation will have that attribute, named as 'scanBasePackages'.
+- Spring Boot autoconfigures DataSource if in-memory db is on classpath.
+- It will autocinfigure JdbcTemplate if (1) Starter JDBC is on classpath and (2) a DataSource is configured
+
+#### 6.2.3 Override default configuration
+
+- You can override Spring Boot's default configuration in the following ways:
+    - Set some of Spring Boot's properties
+    - Explicitly define beans yourself so Spring Boot won't
+    - Explicitly disable some autoconfiguration
+    - Change dependencies or their versions
+- Blog post [here](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-04-spring-boot-auto-configuration.md)
+- Spring properties can best be put in application.properties because this is read early
+- Connection pool settings can be set to override the default settings: 
+    - spring.datasource.initial-size = 
+    - spring.datasource.max-active = 
+    - spring.datasource.max-idle =
+    - spring.datasource.min-idle =
+- As autoconfiguration is based on type and not name, it is not important when overriding a bean what name you give it.
+- Add 'exclude' attribute to **@EnableAutoConfiguration** or **@SpringBootApplication** to exclude autoconfiguration classes (and thus override default configuration):
+    - `@EnableAutoConfiguration(exclude=DataSourceAutoConfiguration.class)`
+    - `@SpringBootApplication(exclude=DataSourceAutoConfiguration.class)`
+- You can disable as well via application.properties:
+    - `spring.autoconfigure.exclude = org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration`
+- If you want a different version of a dependency, set the desired version in its pom with a properties tag. It overrides the version set by the parent pom
+- Changing one library for another can be done using the `<exclusions>` section under a dependency. Add the new dependency as a separate dependency. Main example: Jetty instead of Tomcat.
+
+### 6.3 Spring Boot Actuator
+
+#### 6.3.1 Configure Actuator endpoints
+
+#### 6.3.2 Secure Actuator HTTP endpoints
+
+#### 6.3.3 Define custom metrics
+
+#### 6.3.4 Define custom health indicators
+
+
 
 
 
