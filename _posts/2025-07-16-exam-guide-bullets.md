@@ -105,7 +105,7 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
 
 #### 2.3.1 - Implement a Spring JPA application using Spring Boot
 
-- [Spring Boot DataJPA](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-08-spring-boot-data-jpa.md) post and [JPA under the Hood](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-07-JPA-under-the-hood.md) post.  
+- [Spring Boot Data JPA](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-08-spring-boot-data-jpa.md) post and [JPA under the Hood](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-07-JPA-under-the-hood.md) post.  
 - JPA can be used by Spring Boot or Spring Framework
 - In Spring Framework, you need to manually configure:
     - DataSource, 
@@ -124,7 +124,7 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
 
 - You need domain classes annotated with @Entity (and things like @Id, @Table). They will be auto-scanned by Spring Boot.
 - DB table name will be class name unless you annotate class with @Table("otherName")
-- The field representing a key must be of Long type. Annotate with @Id and GeneratedValue(strategy=GenerationType.AUTO)
+- The field representing a key must be of Long type. Annotate with @Id and @GeneratedValue(strategy=GenerationType.AUTO)
 - Other values for strategy:
     - GenerationType.IDENTITY
     - GenerationType.SEQUENCE
