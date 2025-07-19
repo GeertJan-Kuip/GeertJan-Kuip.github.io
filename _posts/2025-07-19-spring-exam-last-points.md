@@ -128,4 +128,22 @@ This means you can add @RequestParam to the following types, and it will extract
 - List<Integer>
 - MultiValueMap<String, String>  (Spring collection, one-to-many key-value pairs)
 
+### Autoconfiguration
 
+- Types of @Conditional annotations:
+    - **@ConditionalOnClass**: A specific class is on the classpath.
+    - **@ConditionalOnMissingClass**: A class is not on the classpath.
+    - **@ConditionalOnBean**: A specific bean is present in the context.
+    - **@ConditionalOnMissingBean**: A specific bean is not present.
+    - **@ConditionalOnProperty**: A specific property (like my.feature.enabled=true) is set.
+    - **@ConditionalOnResource**: A resource (like a file) is available.
+    - **@ConditionalOnWebApplication**: The application is a web app.
+    - **@ConditionalOnNotWebApplication**: The app is not a web app.
+    - **@ConditionalOnExpression**: A SpEL expression evaluates to true.
+    - **@ConditionalOnJava**: A minimum Java version is detected.
+    - **@ConditionalOnCloudPlatform**: Running on a specific cloud platform (like AWS or Kubernetes).
+
+- Ordering annotations:
+    - **@AutoConfigureOrder**(Ordered.HIGHEST_PRECEDENCE)
+    - **@AutoConfigureBefore**(DataSourceAutoConfiguration.class)
+    - **@AutoConfigureAfter**(DataSourceAutoConfiguration.class)
