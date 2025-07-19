@@ -54,6 +54,9 @@ This monday I have planned to do the VMWare Spring Exam. I'm slightly improving 
 
 - [This page](https://docs.spring.io/spring-boot/docs/2.1.11.RELEASE/reference/html/production-ready-endpoints.html) has a ton of info, although a bit old
 - [This is the recent version}(https://docs.spring.io/spring-boot/api/rest/actuator/index.html)
+- There was a question in mock test asking which endpoints existed. 
+- Set all endpoints enabled: `management.endpoints.enabled-by-default=true`
+- Set all endpoints exposed: `management.endpoints.web.exposure.include=*`
 
 ### Return NO_CONTENT 204
 
@@ -82,8 +85,47 @@ These are the options:
 |MANDATORY|Must join an existing transaction; throws an exception if none exists.|
 |NESTED|Run within a nested transaction if a current one exists; otherwise, behave like REQUIRED.|
 
+### CGLib proxy, JDK proxy and self-invocation
 
+- Self invocation = inner method call
+- Both CGLib and JDK proxy do not support this. They can't, as the Java thing does not intercept inner method calls.
+- Thus neither CGLib nor JDK Proxy support self-invocation. It is a problem for all stuff working with proxies.
 
+### Supported loggers
 
+- [Spring Boot logging documentation](https://docs.spring.io/spring-boot/reference/features/logging.html)
+- The supported loggers are:
+    - Java Util Logging (bit simplistic)
+    - Log4J2 (pretty good)
+    - Logback (default, pretty good)
+- Those are supported with a default configuration
+- By default, if you use the starters, **Logback** is used for logging.
+- In Spring Boot, default logging level is INFO
+- TRACE and DEBUG are thus not shown.
+- Change log level with `logging.level.root=`
+- SLF4J is not a logging implementation, it is just an interface. Fits on all.
+- Log4J2 is a complete rewrite of Log4J with better performance, async logging, and safer configuration. Apache.
+
+### Optional type as controller argument
+
+- JDK 8’s java.util.Optional is supported as a method argument in combination with annotations that have a required attribute (for example, @RequestParam, @RequestHeader, and others) and is equivalent to required=false.
+
+### Spring Boot devtools
+
+- `spring-boot-devtools` is the name of the dependency
+- [link to docs](https://docs.spring.io/spring-boot/reference/using/devtools.html)
+- If your application is launched from java -jar or if it is started from a special classloader, then it is considered a “production application”. Devtools is enabled then.
+- `-Dspring.devtools.restart.enabled=true` turns it on anyway
+- Applications that use spring-boot-devtools automatically restart whenever files on the classpath change.
+- DevTools works with two classloaders to speed up startup (only one needs reloading)
+
+### Data types compliant with @RequestParam
+
+This means you can add @RequestParam to the following types, and it will extract them from the url:
+- String
+- int
+- Map<String,String>
+- List<Integer>
+- MultiValueMap<String, String>  (Spring collection, one-to-many key-value pairs)
 
 
