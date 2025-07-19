@@ -121,12 +121,37 @@ These are the options:
 
 ### Data types compliant with @RequestParam
 
-This means you can add @RequestParam to the following types, and it will extract them from the url:
+You can add @RequestParam to the following types, and it will extract them from the url:
 - String
 - int
 - Map<String,String>
 - List<Integer>
 - MultiValueMap<String, String>  (Spring collection, one-to-many key-value pairs)
+
+### Possible annotations on controller method parameter
+
+There are multiple annotations, some of them obscure:
+- @MatrixVariable
+- @CookieValue
+- @RequestParam
+- @RequestHeader
+- @RequestBody
+- @PathVariable
+- @RequestPart
+- @RequestAttribute
+- @ModelAttribute
+- @SessionAttribute
+- @SessionAttributes
+
+### Supported controller method arguments
+
+See the [overview](https://docs.spring.io/spring-framework/reference/web/webmvc/mvc-controller/ann-methods/arguments.html)
+
+A list, without annotations like @RequestParam:
+- Reader, Writer, ZoneId, Locale, HttpMethod, Principal, HttpSession, 
+- PushBuilder, ServletRequest, ServletResponse, NativeWebRequest
+
+You can use these as arguments (Principal principal), and Spring automatically provides them for you. 
 
 ### Autoconfiguration
 
@@ -147,3 +172,63 @@ This means you can add @RequestParam to the following types, and it will extract
     - **@AutoConfigureOrder**(Ordered.HIGHEST_PRECEDENCE)
     - **@AutoConfigureBefore**(DataSourceAutoConfiguration.class)
     - **@AutoConfigureAfter**(DataSourceAutoConfiguration.class)
+
+### JPA Repository method names
+
+- [Query keyword reference](https://docs.spring.io/spring-data/jpa/reference/repositories/query-keywords-reference.html)
+- [List of examples](https://docs.spring.io/spring-data/jpa/reference/jpa/query-methods.html)
+- There is always `By` in the name. These are the possible prefix parts:
+    - find...By
+    - read...By
+    - get...By
+    - query...By
+    - search...By
+    - stream...By
+    - exists...By
+    - count...By
+    - delete...By
+    - remove...By
+- Informative examples:
+    - ...OrderByFirstnameAscLastnameDesc (Asc and Desc)
+    - findByLastNameAndFirstName  (Use 'And' if more criteria)
+    - findByFirstname,findByFirstnameIs,findByFirstnameEquals  (all ok)
+    - findByStartDateAfter  (After is ok)
+    - findByAgeIsNull, findByAgeNull  (both ok)
+    - deleteInBulkByRoleId
+    - deleteByRoleId    
+- Remarkable keywords:
+    - Regex, MatchesRegex, Matches
+    - IgnoreCase, IgnoringCase
+    - AllIgnoreCase, AllIgnoringCase
+    - Null, IsNul, NotNull, IsNotNull
+    - StartingWith, IsStartingWith, StartsWith - 'Is' often an option
+    - Exists
+    - Distinct
+
+### @Autowiring, @Qualifier and fatal exception
+
+- By default, Spring resolves @Autowired entries by type. 
+- If more than one bean of the same type is available in the container, the framework will throw a fatal exception.
+- To resolve, use @Qualifier(name of the bean you want)
+
+### GrantedAuthority - Spring Security user permissions
+
+- **GrantedAuthority** is the interface in Spring Security that encapsulates high-level user permissions
+- this is a correct way of annotating: `@PreAuthorize("hasRole('ADMIN')")`
+- this too: `@PreAuthorize (“#username == authentication.name”)`
+- Note: @PreAuthorize needs to evaluate a SpEL expression. It must be true or false.
+- this too: `@Secured("ROLE_ADMIN")`
+- The difference between ROLE_ADMIN and ADMIN is something historical
+
+
+
+
+
+
+
+
+
+
+
+
+

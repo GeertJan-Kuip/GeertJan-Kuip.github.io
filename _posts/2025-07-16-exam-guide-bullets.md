@@ -565,6 +565,8 @@ DelegatingPasswordEncoder stores passwords with a prefix that tells the hash alg
 - This expression language has some methods/terms added by Spring Security
 - **@EnableMethodSecurity** is the annotation added to a configuration class
 - Spring Security uses AOP for method level security
+- Use **@Secured** annotation on the method: `@Secured("ROLE_ADMIN")` 
+- Btw @PreAuthorize supports SpEL, @Secured doesn't
 - Recommendation 1: Secure your services
 - Recommendation 2: Do not access other layers directly (ie do not bypass the service layer, this nullifies the security methods you place on them
 - A secured method is wrapped as a proxy bean (AOP) and to access the methods, you will need to go past a Spring SecurityInterceptor, who delegates to the AuthorizationManager to see if the access should be granted.
