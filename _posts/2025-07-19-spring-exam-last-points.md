@@ -109,6 +109,8 @@ These are the options:
 ### Optional type as controller argument
 
 - JDK 8’s java.util.Optional is supported as a method argument in combination with annotations that have a required attribute (for example, @RequestParam, @RequestHeader, and others) and is equivalent to required=false.
+- This is a correct argument: `@RequestHeader(required=false) Optional<String> greeting` 
+- (but only because the required=false attribute)
 
 ### Spring Boot devtools
 
@@ -124,9 +126,9 @@ These are the options:
 You can add @RequestParam to the following types, and it will extract them from the url:
 - String
 - int
-- Map<String,String>
-- List<Integer>
-- MultiValueMap<String, String>  (Spring collection, one-to-many key-value pairs)
+- `Map<String,String>`
+- `List<Integer>`
+- `MultiValueMap<String, String>`  (Spring collection, one-to-many key-value pairs)
 
 ### Possible annotations on controller method parameter
 
@@ -217,7 +219,7 @@ You can use these as arguments (Principal principal), and Spring automatically p
 - this is a correct way of annotating: `@PreAuthorize("hasRole('ADMIN')")`
 - this too: `@PreAuthorize (“#username == authentication.name”)`
 - Note: @PreAuthorize needs to evaluate a SpEL expression. It must be true or false.
-- this too: `@Secured("ROLE_ADMIN")`
+- this is correct syntax: `@Secured("ROLE_ADMIN")`. Note: no SpEL on @Secured
 - The difference between ROLE_ADMIN and ADMIN is something historical
 
 
