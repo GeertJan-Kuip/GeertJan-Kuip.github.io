@@ -15,6 +15,8 @@ This monday I have planned to do the VMWare Spring Exam. I'm slightly improving 
     - @AutoConfigureTestDatabase(replace = AutoConfigureTestDatabase.Replace.NONE)
 - Each test method is wrapped in a transaction that is rolled back after the test completes, so changes made during the test won’t persist.
 - It scans only your domain/entity classes (and possibly converters, embeddables, etc.) — not controllers or services.
+- When using @DataJpaTest with JUnit 5, it's not necessary to use @ExtendWith(SpringExtension.class)  because @DataJpaTest already contains it.
+- The same is true for WebMvcTest.
 
 ### Initialization callbacks of a Spring bean
 
@@ -57,6 +59,7 @@ This monday I have planned to do the VMWare Spring Exam. I'm slightly improving 
 - There was a question in mock test asking which endpoints existed. 
 - Set all endpoints enabled: `management.endpoints.enabled-by-default=true`
 - Set all endpoints exposed: `management.endpoints.web.exposure.include=*`
+- You can change the default mapping of Health Indicator Statuses: `management.health.status.http-mapping.DOWN=501`
 
 ### Return NO_CONTENT 204
 
@@ -65,6 +68,8 @@ This monday I have planned to do the VMWare Spring Exam. I'm slightly improving 
 - return HttpStatus.NO_CONTENT;
 - return new ResponseEntity<>(headers, HttpStatus.NO_CONTENT);
 - response.setStatus(HttpServletResponse.SC_NO_CONTENT); (a bit odd)
+- **Not possible**: Using the statusCode attribute on @RequestMapping. It doesn't have that attribute.
+- You can place @ResponseStatus annotation on top of a class. All methods in class, unless specified otherwise, will return this status.
 
 ### @ConfigurationProperties
 
@@ -99,11 +104,13 @@ These are the options:
     - Log4J2 (pretty good)
     - Logback (default, pretty good)
 - Those are supported with a default configuration
-- By default, if you use the starters, **Logback** is used for logging.
+- Spring Boot uses Commons Logging for all internal logging but leaves the underlying log implementation open.
+- By default, if you use the starters, **Logback** is used for logging, being the implementation.
 - In Spring Boot, default logging level is INFO
 - TRACE and DEBUG are thus not shown.
 - Change log level with `logging.level.root=`
 - SLF4J is not a logging implementation, it is just an interface. Fits on all.
+- Commons Logging is also an interface, it is used for internal logging.
 - Log4J2 is a complete rewrite of Log4J with better performance, async logging, and safer configuration. Apache.
 
 ### Optional type as controller argument
@@ -152,6 +159,8 @@ See the [overview](https://docs.spring.io/spring-framework/reference/web/webmvc/
 A list, without annotations like @RequestParam:
 - Reader, Writer, ZoneId, Locale, HttpMethod, Principal, HttpSession, 
 - PushBuilder, ServletRequest, ServletResponse, NativeWebRequest
+- `HttpEntity<B>`, Model, ModelMap, RedirectAttributes, Errors, BindingResult
+- SessionStatus, UriComponentsBuilder
 
 You can use these as arguments (Principal principal), and Spring automatically provides them for you. 
 
@@ -211,7 +220,8 @@ You can use these as arguments (Principal principal), and Spring automatically p
 
 - By default, Spring resolves @Autowired entries by type. 
 - If more than one bean of the same type is available in the container, the framework will throw a fatal exception.
-- To resolve, use @Qualifier(name of the bean you want)
+- To resolve, use @Qualifier(name of the bean you want)\
+- If you put @Autowiring on a final field, It will basically not compile. Error.
 
 ### GrantedAuthority - Spring Security user permissions
 
@@ -222,7 +232,52 @@ You can use these as arguments (Principal principal), and Spring automatically p
 - this is correct syntax: `@Secured("ROLE_ADMIN")`. Note: no SpEL on @Secured
 - The difference between ROLE_ADMIN and ADMIN is something historical
 
+### Spring Data JPA is transactional, Jdbc is not
 
+- In Spring data most repository methods (e.g., save(), delete(), etc.) run within a transaction, either explicitly or implicitly.
+- For read-only operations (like findById()), Spring will often use a transaction marked as read-only (for optimization), though this depends on configuration.
+- Jdbc is not transactional. You have to apply the @Transactional annotation yourself.
+
+### RequestMapping
+
+- @RequestMapping can be applied at both class and method levels.
+- By default, if the HTTP method is not specified, methods annotated with @RequestMapping are mapped to handle requests for all HTTP methods.
+- There is no statuscode attribute in @RequestMapping.
+
+### Idempotent Behavior of HTTP methods
+
+- GET, HEAD, PUT, DELETE, OPTIONS, and TRACE are idempotent methods. You can safely repeat them, doesn't affect outcome.
+- PATCH and POST do _not_ show idempotent behaviour.
+- So only two methods are not idempotent, POST and PATCH.
+
+### Default message converters
+
+|Message Converter|What it does|
+|----|----|
+|ByteArrayHttpMessageConverter|converts byte arrays|
+|StringHttpMessageConverter|converts Strings|
+|ResourceHttpMessageConverter|converts org.springframework.core.io.Resource for any type of octet-stream|
+|SourceHttpMessageConverter|converts javax.xml.transform.Source|
+|FormHttpMessageConverter|converts form data to/from a MultiValueMap<String, String>|
+|Jaxb2RootElementHttpMessageConverter|converts Java objects to/from XML (added only if JAXB2 is present on the classpath)|
+|MappingJackson2HttpMessageConverter|converts JSON (added only if Jackson 2 is present on the classpath)|
+|MappingJacksonHttpMessageConverter|converts JSON (added only if Jackson is present on the classpath)|
+|AtomFeedHttpMessageConverter|converts Atom feeds (added only if Rome is present on the classpath)|
+|RssChannelHttpMessageConverter|converts RSS feeds (added only if Rome is present on the classpath)|
+
+### Method Security
+
+@EnableMethodSecurity has the following attributes:
+
+|boolean|jsr250Enabled|Determines if JSR-250 annotations (**@RolesAllowed**) should be enabled.|
+|...AdviceMode|mode|Indicate how security advice should be applied.|
+|int|offset|Indicate additional offset in the ordering of the execution of the security interceptors when multiple advices are applied at a specific joinpoint.|
+|boolean|prePostEnabled|Determines if Spring Security's **@PreAuthorize**, **@PostAuthorize**, **@PreFilter**, and **@PostFilter** annotations should be enabled.|
+|boolean|proxyTargetClass|Indicate whether subclass-based (CGLIB) proxies are to be created as opposed to standard Java interface-based proxies.|
+|boolean|securedEnabled|Determines if Spring Security's **@Secured** annotation should be enabled.|
+
+- @RolesAllowed("ADMIN") is a JSR-250 annotation. 
+- Test had a question suggesting @RolesAllowed could be disabled by prePostEnabled.
 
 
 
