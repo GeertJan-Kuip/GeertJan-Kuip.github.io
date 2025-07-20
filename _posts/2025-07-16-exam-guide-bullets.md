@@ -67,11 +67,11 @@ Here I will recreate the exam guide and provide bulletpoints for each topic ment
 - PlatformTransactionManager is an interface, implementations are DataSourceTransactionManager, JpaTransactionManager and others.
 - @Transactional can be added to method or class, in latter case all methods in class are transactional.
 
-- These are the 5 isolation levels in trtansactions (attribute 'isolation'):
+- These are the 5 isolation levels in transactions (attribute 'isolation'):
     - DEFAULT
-    - READ_UNCOMMITTED
-    - READ_COMMITTED  // most often the default
-    - REPEATABLE_READ
+    - READ_UNCOMMITTED - phantom reads, non-repeatable reads and dirty reads
+    - READ_COMMITTED  // most often the default - still phantom reads and non-repeatable reads
+    - REPEATABLE_READ - still phantom reads
     - SERIALIZABLE
 - Apart from default, which is dependent on the database, the order is from loose to strict. READ_UNCOMMITTED is loose, SERIALIZABLE most strict.
 - Relevant terms: 

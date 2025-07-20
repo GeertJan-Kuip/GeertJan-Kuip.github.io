@@ -294,6 +294,8 @@ You can use these as arguments (Principal principal), and Spring automatically p
 - Test had a question suggesting @RolesAllowed could be disabled by prePostEnabled.
 - @PreFilter and @PostFilter are used for filering method arguments (@PreFilter) and return values (@PostFilter) when those are collections.
 - They use SpEL with some auto iteration, you can for example check if the method user has the right authorization for each returned document in a collection.
+- prePostEnabled is true by default, jsr250Enabled and securedEnabled are false by default.
+- @RolesAllowed and @Secured cannot use SpEL.
 
 ### View Resolution - setup
 
@@ -404,5 +406,44 @@ I was not aware of scope **Application**.
 |application|Scopes a single bean definition to the lifecycle of a ServletContext. Only valid in the context of a web-aware Spring ApplicationContext.|
 |websocket|Scopes a single bean definition to the lifecycle of a WebSocket. Only valid in the context of a web-aware Spring ApplicationContext.|
 
+### Beans and access modifiers
 
+- @Bean methods cannot be final or private but they can be static
+- @Configuration classes cannot be final 
 
+### Superinterfaces of ApplicationContext
+
+Listing:
+- ApplicationEventPublisher: The ability to publish events to registered listeners.
+- BeanFactory
+- EnvironmentCapable
+- HierarchicalBeanFactory
+- ListableBeanFactory
+- MessageSource: The ability to resolve messages, supporting internationalization
+- ResourceLoader: The ability to load file resources in a generic fashion.
+- ResourcePatternResolver
+
+- The important features of ApplicationContext are resolving messages, supporting internationalization, publishing events, and application-layer specific contexts. 
+
+### JdbcTemplate methods
+
+- JdbcTemplate.execute(String sql) returns void
+- execute(..) is typically used for DDL methods
+- JdbcTemplate.query with RowCallBackHandler returns void. With RowMapper it returns `List<T>`
+
+### Supported pointcut designators
+
+- See [link](https://docs.spring.io/spring-framework/docs/2.0.x/reference/aop.html)
+- **execution, within, this, target, args** are supported pointcut designators
+- @Pointcut is a valid annotation but it sucks, the pointcut you define must be on a marker method that is then called by a real advice (@BEfore etc).
+
+|Designator | Role|
+|----|----|
+|Execution|matches join points for method execution.|
+|Within|matches join points within certain types or packages.|
+|This|matches join points where the bean reference is an instance of a given type.|
+|Target|matches join points where the target object is an instance of a given type.|
+|Args|matches join points where the arguments to the method being executed match a given type or expression.|
+|Annotation|matches join points where the subject has the given annotation.|
+
+- What I understand from this table: Target specifies a specific class type, ie the class the method is in. If you want to add an aspect to all methods in a specific class, this is your chance.
