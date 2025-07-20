@@ -225,6 +225,10 @@ You can use these as arguments (Principal principal), and Spring automatically p
 - If more than one bean of the same type is available in the container, the framework will throw a fatal exception.
 - To resolve, use @Qualifier(name of the bean you want)\
 - If you put @Autowiring on a final field, It will basically not compile. Error.
+- What will happen if you use @Autowired on a beans collection, say `List<Foo>`? 
+    - It is a collection so all same type
+    - It will instantiate a collection filled with all the beans of the type
+    - Docs: _It is also possible to provide all beans of a particular type from the ApplicationContext by adding the annotation to a field or method that expects an array of that type_
 
 ### GrantedAuthority - Spring Security user permissions
 
@@ -240,6 +244,7 @@ You can use these as arguments (Principal principal), and Spring automatically p
 - In Spring data most repository methods (e.g., save(), delete(), etc.) run within a transaction, either explicitly or implicitly.
 - For read-only operations (like findById()), Spring will often use a transaction marked as read-only (for optimization), though this depends on configuration.
 - Jdbc is not transactional. You have to apply the @Transactional annotation yourself.
+- Jdbc is set by default to auto-commit=true.
 
 ### RequestMapping
 
@@ -321,6 +326,8 @@ You can use these as arguments (Principal principal), and Spring automatically p
 
 ### Actuator Health Indicators
 
+Spring Boot autoconfigures the following, if available:
+
 - **CassandraDriver**HealthIndicator: Checks that a Cassandra database is up.
 - **Couchbase**HealthIndicator: Checks that a Couchbase cluster is up.
 - **DataSource**HealthIndicator: Checks that a connection to DataSource can be obtained.
@@ -338,8 +345,14 @@ You can use these as arguments (Principal principal), and Spring automatically p
 - **Redis**HealthIndicator: Checks that a Redis server is up.
 - **Solr**HealthIndicator: Checks that a Solr server is up.
 
+### @ControllerAdvice
 
+- @ControllerAdvice annotated classes are used to handle cross-cutting concerns for controller classes
+- Instead of writing @ExceptionHandler methods in every controller, you can define them once in a @ControllerAdvice class. This reduces duplication and ensures consistent error responses.
+- @ControllerAdvice annotated classes are configured by slice test classes (@WebMvcTest)
 
+### Random server port
 
+- Set the server.port=0 property in the application.properties file of the test resources
 
 
