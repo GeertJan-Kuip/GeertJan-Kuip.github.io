@@ -55,7 +55,7 @@ This monday I have planned to do the VMWare Spring Exam. I'm slightly improving 
 ### Spring Boot Actuator
 
 - [This page](https://docs.spring.io/spring-boot/docs/2.1.11.RELEASE/reference/html/production-ready-endpoints.html) has a ton of info, although a bit old
-- [This is the recent version}(https://docs.spring.io/spring-boot/api/rest/actuator/index.html)
+- [This is the recent version}(https://docs.spring.io/spring-boot/reference/actuator/endpoints.html)
 - There was a question in mock test asking which endpoints existed. 
 - Set all endpoints enabled: `management.endpoints.enabled-by-default=true`
 - Set all endpoints exposed: `management.endpoints.web.exposure.include=*`
@@ -63,6 +63,10 @@ This monday I have planned to do the VMWare Spring Exam. I'm slightly improving 
     - `management.health.status.http-mapping.DOWN=501`
 - You can change the logging level for the package by:
     - HTTP via POST to `/actuator/loggers/${LOGGER_NAME}`
+- There are many endpoints, but three of them apply only to web applications (Spring MVC, Spring WebFlux, or Jersey): 
+    - heapdump
+    - logfile
+    - prometheus
 
 ### Return NO_CONTENT 204
 
@@ -354,5 +358,51 @@ Spring Boot autoconfigures the following, if available:
 ### Random server port
 
 - Set the server.port=0 property in the application.properties file of the test resources
+
+### Mock annotations
+
+| Annotation               | Purpose / What it Mocks                                    | Typical Usage Context                          |
+|--------------------------|-----------------------------------------------------------|-----------------------------------------------|
+| **@MockBean**              | Creates and injects a mock bean into Spring context    | Mocking dependencies in Spring Boot tests     |
+| **@SpyBean**               | Injects a Mockito spy (partial mock) into Spring context  | When you want to spy on a real bean            |
+| **@InjectMocks**| Mockito annotation |             |
+| **@WithMockUser**          | Mocks a Spring Security authenticated user                | Secured method or controller tests             |
+| **@WithAnonymousUser**     | Simulates an anonymous (unauthenticated) user             | Testing access control for anonymous users     |
+| **@WithUserDetails**       | Loads a real user from `UserDetailsService` and mocks auth| Testing with specific user details              |
+| **@AutoConfigureMockMvc**  | Auto-configures `MockMvc` for testing MVC controllers      | Setting up mock HTTP request testing            |
+| **@MockHttpServletRequest**| Mock HTTP servlet request                                  | Simulating HTTP request parameters              |
+
+- @WithMockUser, @WithAnonymousUser, and @WithUserDetails are from Spring Security.
+
+### Using .requestMatchers()
+
+Correct examples:
+
+- `.requestMatchers("/signup", "/about").permitAll`
+- `.requestMatchers(HttpMethod.PUT, "/accounts/edit*").hasRole("ADMIN")`
+- `.requestMatchers("/accounts/**").hasAnyRole("USER", "ADMIN")`
+- `.anyRequest().authenticated());`
+
+### TransactionTemplate
+
+- Is used in Spring to simplify programmatic transaction demarcation and management.
+- Class that provides extra control over transactions, more than with the @Transactional attributes
+    - Full control over transaction propagation and behavior.
+    - Easy to define custom rollback logic.
+    - Helps when annotation-based style is too limiting.
+
+### Scope
+
+I was not aware of scope **Application**. 
+
+|Scope|Description|
+|----|----|
+|singleton|(Default) Scopes a single bean definition to a single object instance for each Spring IoC container.|
+|prototype|Scopes a single bean definition to any number of object instances.|
+|request|Scopes a single bean definition to the lifecycle of a single HTTP request. That is, each HTTP request has its own instance of a bean created off the back of a single bean definition. Only valid in the context of a web-aware Spring ApplicationContext.|
+|session|Scopes a single bean definition to the lifecycle of an HTTP Session. Only valid in the context of a web-aware Spring ApplicationContext.|
+|application|Scopes a single bean definition to the lifecycle of a ServletContext. Only valid in the context of a web-aware Spring ApplicationContext.|
+|websocket|Scopes a single bean definition to the lifecycle of a WebSocket. Only valid in the context of a web-aware Spring ApplicationContext.|
+
 
 
