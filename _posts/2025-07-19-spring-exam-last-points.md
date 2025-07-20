@@ -59,7 +59,10 @@ This monday I have planned to do the VMWare Spring Exam. I'm slightly improving 
 - There was a question in mock test asking which endpoints existed. 
 - Set all endpoints enabled: `management.endpoints.enabled-by-default=true`
 - Set all endpoints exposed: `management.endpoints.web.exposure.include=*`
-- You can change the default mapping of Health Indicator Statuses: `management.health.status.http-mapping.DOWN=501`
+- You can change the default mapping of Health Indicator Statuses: 
+    - `management.health.status.http-mapping.DOWN=501`
+- You can change the logging level for the package by:
+    - HTTP via POST to `/actuator/loggers/${LOGGER_NAME}`
 
 ### Return NO_CONTENT 204
 
@@ -280,11 +283,60 @@ You can use these as arguments (Principal principal), and Spring automatically p
 
 - @RolesAllowed("ADMIN") is a JSR-250 annotation. 
 - Test had a question suggesting @RolesAllowed could be disabled by prePostEnabled.
+- @PreFilter and @PostFilter are used for filering method arguments (@PreFilter) and return values (@PostFilter) when those are collections.
+- They use SpEL with some auto iteration, you can for example check if the method user has the right authorization for each returned document in a collection.
 
+### View Resolution - setup
 
+- Spring Boot automatically configures a ViewResolver when you include a templating engine on the classpath.
+- If you do not include template engine as dependency, no view resolver is configured
+- Thymeleaf is not automatically included in spring-boot-starter-web
+- Include Thymeleaf like this: `spring-boot-starter-thymeleaf`
+- Without Spring Boot, you must register a ViewResolver if you want to return HTML views, even if you have a templating engine on classpath
+- List of template engines:
+    - Thymeleaf
+    - Mustache
+    - FreeMarker
+    - Groovy Templates
 
+### View Resolution - use
 
+- You store html template files in like: `src/main/resources/templates/home.html`
+- In controller method, work on the `Model` object: `model.addAttribute("message", "Welcome to Spring MVC!");`
+- The 'ModelAndView' type object is a bit outdated (was mentioned in some question)
+- the `return "home";` statement returns the home.html content with model parameters inserted on placeholders
+- Return type of controller method is String
+- Thymeleaf is a template engine
+- Spring Boot auto-configures a ThymeleafViewResolver when you add Thymeleaf to your classpath
+- A ViewResolver maps the name "home" to a template file (src/main/resources/templates/home.html)
+- _**They can map a String (the logical name of the view) to a View.**_ (was in test)
+- And it tells Spring which template engine to use
 
+### View Resolution - "Model" object
+
+- `Model` is not a bean but an interface. Is created per request.
+- It is injected as argument in controller method
+- When Spring notices, it creates and populates a Model object behind the scenes, typically a BindingAwareModelMap instance.
+- This model is then passed to the view rendering phase (e.g., Thymeleaf).
+
+### Actuator Health Indicators
+
+- **CassandraDriver**HealthIndicator: Checks that a Cassandra database is up.
+- **Couchbase**HealthIndicator: Checks that a Couchbase cluster is up.
+- **DataSource**HealthIndicator: Checks that a connection to DataSource can be obtained.
+- **DiskSpace**HealthIndicator: Checks for low disk space.
+- **ElasticsearchRest**HealthIndicator: Checks that an Elasticsearch cluster is up.
+- **Hazelcast**HealthIndicator: Checks that a Hazelcast server is up.
+- **InfluxDb**HealthIndicator: Checks that an InfluxDB server is up.
+- **Jms**HealthIndicator: Checks that a JMS broker is up.
+- **Ldap**HealthIndicator: Checks that an LDAP server is up.
+- **Mail**HealthIndicator: Checks that a mail server is up.
+- **Mongo**HealthIndicator: Checks that a Mongo database is up.
+- **Neo4j**HealthIndicator: Checks that a Neo4j database is up.
+- **Ping**HealthIndicator: Always responds with UP.
+- **Rabbit**HealthIndicator: Checks that a Rabbit server is up.
+- **Redis**HealthIndicator: Checks that a Redis server is up.
+- **Solr**HealthIndicator: Checks that a Solr server is up.
 
 
 
