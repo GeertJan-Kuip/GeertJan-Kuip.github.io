@@ -254,21 +254,23 @@ You can use these as arguments (Principal principal), and Spring automatically p
 
 |Message Converter|What it does|
 |----|----|
-|ByteArrayHttpMessageConverter|converts byte arrays|
-|StringHttpMessageConverter|converts Strings|
-|ResourceHttpMessageConverter|converts org.springframework.core.io.Resource for any type of octet-stream|
-|SourceHttpMessageConverter|converts javax.xml.transform.Source|
-|FormHttpMessageConverter|converts form data to/from a MultiValueMap<String, String>|
-|Jaxb2RootElementHttpMessageConverter|converts Java objects to/from XML (added only if JAXB2 is present on the classpath)|
-|MappingJackson2HttpMessageConverter|converts JSON (added only if Jackson 2 is present on the classpath)|
-|MappingJacksonHttpMessageConverter|converts JSON (added only if Jackson is present on the classpath)|
-|AtomFeedHttpMessageConverter|converts Atom feeds (added only if Rome is present on the classpath)|
-|RssChannelHttpMessageConverter|converts RSS feeds (added only if Rome is present on the classpath)|
+|**ByteArray**HttpMessageConverter|converts byte arrays|
+|**String**HttpMessageConverter|converts Strings|
+|**Resource**HttpMessageConverter|converts org.springframework.core.io.Resource for any type of octet-stream|
+|**Source**HttpMessageConverter|converts javax.xml.transform.Source|
+|**Form**HttpMessageConverter|converts form data to/from a MultiValueMap<String, String>|
+|**Jaxb2RootElement**HttpMessageConverter|converts Java objects to/from XML (added only if JAXB2 is present on the classpath)|
+|**MappingJackson2**HttpMessageConverter|converts JSON (added only if Jackson 2 is present on the classpath)|
+|**MappingJackson**HttpMessageConverter|converts JSON (added only if Jackson is present on the classpath)|
+|**AtomFeed**HttpMessageConverter|converts Atom feeds (added only if Rome is present on the classpath)|
+|**RssChannel**HttpMessageConverter|converts RSS feeds (added only if Rome is present on the classpath)|
 
 ### Method Security
 
 @EnableMethodSecurity has the following attributes:
 
+|Return value|Attribute|Description|
+|----|----|----|
 |boolean|jsr250Enabled|Determines if JSR-250 annotations (**@RolesAllowed**) should be enabled.|
 |...AdviceMode|mode|Indicate how security advice should be applied.|
 |int|offset|Indicate additional offset in the ordering of the execution of the security interceptors when multiple advices are applied at a specific joinpoint.|
