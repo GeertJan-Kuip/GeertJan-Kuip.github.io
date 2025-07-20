@@ -97,6 +97,15 @@ These are the options:
 |MANDATORY|Must join an existing transaction; throws an exception if none exists.|
 |NESTED|Run within a nested transaction if a current one exists; otherwise, behave like REQUIRED.|
 
+### Transactions - readOnly
+
+- You can set the `readOnly` attribute on **@Transactional** to true
+- This only eventually optimizes query performance
+- It doesn't prevent writing, it is just a hint. 
+- This hint may allow the underlying database connection to optimize the query performance. 
+- It is important to note that if write operations are attempted within a read-only transaction, an exception may be thrown.
+
+
 ### CGLib proxy, JDK proxy and self-invocation
 
 - Self invocation = inner method call
@@ -447,3 +456,16 @@ Listing:
 |Annotation|matches join points where the subject has the given annotation.|
 
 - What I understand from this table: Target specifies a specific class type, ie the class the method is in. If you want to add an aspect to all methods in a specific class, this is your chance.
+
+
+### DataSource is not a Spring interface
+
+- It is a Java interface
+- Suited for relational databases, not for NoSQL databases
+- The DataSource interface is implemented by a driver vendor.
+
+### Spring Boot database initialization
+
+- Spring Boot will load the `schema-${platform}.sql` and `data-${platform}.sql` files (if present), where platform is the value of `spring.datasource.platform`.
+- Spring JDBC has a DataSource initializer feature. Spring Boot enables it by default and loads SQL from the standard locations schema.sql and data.sql (in the root of the classpath).
+- Spring Boot will NOT initialize the external database by default. Why? To avoid accidentally wiping production data.

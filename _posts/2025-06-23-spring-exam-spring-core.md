@@ -39,14 +39,14 @@ ApplicationContext is an interface that extends BeanFactory and is used as the r
 
 |Class|Description|
 |----|----|
-|ClassPathXmlApplicationContext|Standalone apps or legacy systems using XML config files located on the classpath (e.g., applicationContext.xml). Simple to use, especially in early Spring projects.|
-|FileSystemXmlApplicationContext|Desktop apps or services that load XML configuration from the filesystem, allowing externalized configuration without modifying the packaged app.|
-|AnnotationConfigApplicationContext|Modern standalone apps or tests using Java-based config (@Configuration), annotation scanning, etc. Common in pure Java Spring applications.|
-|AnnotationConfigServletWebServerApplicationContext|Spring Boot servlet-based web applications using embedded Tomcat/Jetty/Undertow. It handles servlet wiring and uses annotation-based config.|
-|AnnotationConfigReactiveWebServerApplicationContext|Spring WebFlux applications using reactive, non-blocking servers (like Netty). Used when building reactive microservices in Spring Boot.|
-|AnnotationConfigWebApplicationContext|Traditional servlet-based web applications (non-Spring Boot) using annotation-based config. Registered in web.xml or via WebApplicationInitializer.|
-|GenericWebApplicationContext|A flexible and programmable context often used in frameworks or integration tests. Allows registration of beans programmatically (no annotations or XML required).|
-|StaticWebApplicationContext|Mainly used for lightweight unit testing of Spring MVC components. It allows registration of mock beans without scanning or external config.|
+|**ClassPathXml**ApplicationContext|Standalone apps or legacy systems using XML config files located on the classpath (e.g., applicationContext.xml). Simple to use, especially in early Spring projects.|
+|**FileSystemXml**ApplicationContext|Desktop apps or services that load XML configuration from the filesystem, allowing externalized configuration without modifying the packaged app.|
+|**AnnotationConfig**ApplicationContext|Modern standalone apps or tests using Java-based config (@Configuration), annotation scanning, etc. Common in pure Java Spring applications.|
+|**AnnotationConfigServletWebServer**ApplicationContext|Spring Boot servlet-based web applications using embedded Tomcat/Jetty/Undertow. It handles servlet wiring and uses annotation-based config.|
+|**AnnotationConfigReactiveWebServer**ApplicationContext|Spring WebFlux applications using reactive, non-blocking servers (like Netty). Used when building reactive microservices in Spring Boot.|
+|**AnnotationConfigWeb**ApplicationContext|Traditional servlet-based web applications (non-Spring Boot) using annotation-based config. Registered in web.xml or via WebApplicationInitializer.|
+|**GenericWeb**ApplicationContext|A flexible and programmable context often used in frameworks or integration tests. Allows registration of beans programmatically (no annotations or XML required).|
+|**StaticWe**bApplicationContext|Mainly used for lightweight unit testing of Spring MVC components. It allows registration of mock beans without scanning or external config.|
 
 From the documentation: _"The org.springframework.context.ApplicationContext interface represents the Spring IoC container and is responsible for instantiating, configuring, and assembling the beans. The container gets its instructions on the components to instantiate, configure, and assemble by reading configuration metadata."_
 
