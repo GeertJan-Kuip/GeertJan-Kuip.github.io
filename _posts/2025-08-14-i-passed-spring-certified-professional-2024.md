@@ -1,0 +1,3 @@
+# I passed Spring Certified Professional 2024 [v2]
+
+A bit late, but on July 21st I passed VMWare Spring Certified Professional 2024 [v2]. I had 431 points on a 100-500 scale. The week before the test I was a bit nervous as my Udemy mock test results weren't sufficient. The VMWare video tutorials were okay but didn't cover all the content, so I just focussed learning tons of finer grained details like you find [here](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-16-exam-guide-bullets.md). This helped and I'm happy with it. Now I will start building some portfolio projects.
