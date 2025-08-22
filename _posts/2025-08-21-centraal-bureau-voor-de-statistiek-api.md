@@ -72,17 +72,35 @@ This url provides all the possible basic links to the data and metadata of the t
 }
 ```
 
-Any of these links is valid and tells you more. The `/UntypedDataSet` and `/TypedDataSet` often return too much data and require refinement (more on that later). A useful link, sort of hack, is this one:
+Any of these links is valid and tells you more. The `/UntypedDataSet` and `/TypedDataSet` are the path segments that you will need for inquiry into the data, the others are for metadata. `/UntypedDataSet` and `/TypedDataSet` often return too much data rows and thus require refinement (more on that later). 
+
+A useful link, sort of hack, is this one:
 
 ```
 https://opendata.cbs.nl/ODataApi/OData/83642NED/TypedDataSet?$top=1
 ```
 
-It provides a sort of definitive list of the variable names you can use in your queries.
+It provides a sort of definitive list of the variable names you can use in your queries. 
 
-### 4 - Region and time codes (2)
+### 4 - Understanding Dimension and Topic
 
-Spatial and temporal dimensions (region and time) are standardized in CBS data. There is a [dutch manual](https://www.cbs.nl/-/media/open-data/cbs-open-data-services.pdf) that documents the way geographical and time units are coded. On page 15 you find time codes, more on region codes can be found on page 20. 
+If you visit the `/DataProperties` endpoint you find a list of values that can be of the following odata types:
+
+- Dimension
+- Topic
+- TopicGroup
+- GeoDimension
+- GeoDetail
+- TimeDimension
+
+The important thing here is to understand the difference between Dimension and Topic. Note that GeoDimension, GeoDetail and TimeDimension are all specialized and standardized dimension types, and that TopicGroup is a sort of dummy object that groups similar Topics.
+
+The difference between Dimension and Topic is that the latter refers to the things that are measured, resulting in the numbers, codes or maybe boolean values that you find in the tables. A topic can be 'number of bankruptcies' or 'average income'. Dimension is the thing that specifies which items should be counted and which should not be counted for a given topic. For example, if you want to limit the measurement of average income to a certain age group, then average income is the topic and age group is the dimension. This explains why GeoDetail, GeoDimension and TimeDimension are dimensions and not topics, as we use them to restrict the number of things to count or measure to a specific period or geographical area.
+
+
+### 5 - Region and time codes
+
+Spatial and temporal dimensions (region and time) are standardized in CBS data as GeoDimension, GeoDetail and TimeDimension. There is a [dutch manual](https://www.cbs.nl/-/media/open-data/cbs-open-data-services.pdf) that documents the way geographical and time units are coded. On page 15 you find time codes, more on region codes can be found on page 20. 
 
 While the codes for the temporal dimension can be understood by the manual, the region codes only make sense if you know which region code refers to which region. Using postfixes like `/Regions`, `/RegioS` and `/WijkenEnBuurten` provides listings of geographical units. Be aware that a table base url only supports this parameter if the table contains spatial data. Check the base url to see which postfixes are possible. Here are some useful links:
 
