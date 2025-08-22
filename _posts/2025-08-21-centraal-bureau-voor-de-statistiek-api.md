@@ -116,7 +116,7 @@ It is worthwile to note that while all topics used in a table can be found in `/
     }
 ```
 
-Nowhere in /DataProperties you can find that, with regards to opleidingsniveau, you can select the following options:
+Nowhere in /DataProperties you can find that opleidingsniveau has the following options:
 
 - 1 Basisonderwijs, vmbo, mbo1
 - 2 Havo, vwo, mbo2-4
@@ -170,7 +170,7 @@ The codes for the temporal dimension can be understood by the manual, but if you
 https://opendata.cbs.nl/ODataApi/OData/83642NED/Perioden
 ```
 
-To check what endpoint to use, check `/DataProperties`, here you should find it as one of the 'Key' values. It is also findable in /$metadata, in the `<EntityContainer>` section you find all valid endpoints. Or you can just visit the base url, here it is to be found as well.
+To check what endpoint to use, check `/DataProperties`, here you should find it as one of the 'Key' values. It is also findable in `/$metadata`, in the `<EntityContainer>` section you find all valid endpoints. Or you can just visit the base url, here it is to be found as well.
 
 #### Region codes
 
