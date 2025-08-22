@@ -95,14 +95,76 @@ If you visit the `/DataProperties` endpoint you find a list of values that can b
 
 The important thing here is to understand the difference between Dimension and Topic. Note that GeoDimension, GeoDetail and TimeDimension are all specialized and standardized dimension types, and that TopicGroup is a sort of dummy object that groups similar Topics.
 
-The difference between Dimension and Topic is that the latter refers to the things that are measured, resulting in the numbers, codes or maybe boolean values that you find in the tables. A topic can be 'number of bankruptcies' or 'average income'. Dimension is the thing that specifies which items should be counted and which should not be counted for a given topic. For example, if you want to limit the measurement of average income to a certain age group, then average income is the topic and age group is the dimension. This explains why GeoDetail, GeoDimension and TimeDimension are dimensions and not topics, as we use them to restrict the number of things to count or measure to a specific period or geographical area.
+The difference between Dimension and Topic is that the latter refers to the things that are measured, resulting in the numbers, codes or maybe boolean values that you find in the tables. A topic can be 'number of bankruptcies' or 'average income'. 
 
+Dimension is the thing that specifies which items should be counted and which should not be counted for a given topic. For example, if you want to limit the measurement of average income to a certain age group, then average income is the topic and age group is the dimension. This explains why GeoDetail, GeoDimension and TimeDimension are dimensions and not topics, as we use them to restrict the number of things to count or measure to a specific period or geographical area. 
 
-### 5 - Region and time codes
+### 5 - The structure of a dimension
+
+It is worthwile to note that while all topics used in a table can be found in `/DataProperties`, the dimensions are only found by their main description. For example, table 86052NED has a dimension 'Opleidingsniveau' that shows up like this in /DataProperties:
+
+```
+    {
+      "odata.type": "Cbs.OData.Dimension",
+      "ID": 0,
+      "Position": 0,
+      "ParentID": null,
+      "Type": "Dimension",
+      "Key": "Opleidingsniveau",
+      "Title": "Opleidingsniveau",
+      "Description": ""
+    }
+```
+
+Nowhere in /DataProperties you can find that, with regards to opleidingsniveau, you can select the following options:
+
+- 1 Basisonderwijs, vmbo, mbo1
+- 2 Havo, vwo, mbo2-4
+- 3 Hbo, wo
+
+But if you visit the following endpoint:
+
+```
+https://opendata.cbs.nl/ODataApi/OData/86052NED/Opleidingsniveau
+```
+
+You see how the dimension is structured:
+
+```
+{
+  "odata.metadata": "https://opendata.cbs.nl/ODataApi/OData/86052NED/$metadata#Cbs.OData.WebAPI.Opleidingsniveau",
+  "value": [
+    {
+      "Key": "2018700",
+      "Title": "1 Basisonderwijs, vmbo, mbo1",
+      "Description": "Het behaalde onderwijsniveau omvat het basisonderwijs, het vmbo, de eerste 3 leerjaren van havo/vwo, de entreeopleiding (mbo1) en het praktijkonderwijs.",
+      "CategoryGroupID": 1
+    },
+    {
+      "Key": "2018740",
+      "Title": "2 Havo, vwo, mbo2-4",
+      "Description": "Het behaalde onderwijsniveau omvat de bovenbouw van havo/vwo, de basisberoepsopleiding (mbo2), de vakopleiding (mbo3) en de middenkader- en specialistenopleidingen (mbo4).",
+      "CategoryGroupID": 1
+    },
+    {
+      "Key": "2018790",
+      "Title": "3 Hbo, wo",
+      "Description": "Het behaalde onderwijsniveau omvat de hbo- en wo-opleidingen (inclusief die leidend tot de doctorsgraad).",
+      "CategoryGroupID": 1
+    }
+  ]
+}
+```
+
+More generally, if you want to see how a dimension is built, you can take the base url of the dataset and add the dimension name as last segment. This is true for any dimension, including GeoDimension, GeoDetail and TimeDimension. 
+
+### 6 - Region and time codes
 
 Spatial and temporal dimensions (region and time) are standardized in CBS data as GeoDimension, GeoDetail and TimeDimension. There is a [dutch manual](https://www.cbs.nl/-/media/open-data/cbs-open-data-services.pdf) that documents the way geographical and time units are coded. On page 15 you find time codes, more on region codes can be found on page 20. 
 
-While the codes for the temporal dimension can be understood by the manual, the region codes only make sense if you know which region code refers to which region. Using postfixes like `/Regions`, `/RegioS` and `/WijkenEnBuurten` provides listings of geographical units. Be aware that a table base url only supports this parameter if the table contains spatial data. Check the base url to see which postfixes are possible. Here are some useful links:
+While the codes for the temporal dimension can be understood by the manual, the region codes only make sense if you know which region code refers to which region. Using postfixes like `/Regions`, `/RegioS` and `/WijkenEnBuurten` provides listings of geographical units. 
+
+Be aware that a table base url only supports this parameter if the table contains spatial data. Check the base url to see which postfixes are possible. Here are some useful links:
 
 ```
 https://opendata.cbs.nl/ODataApi/OData/83642ENG/Regions  // all municipalities
@@ -113,6 +175,7 @@ https://opendata.cbs.nl/ODataApi/OData/82211NED/RegioS  // provinces, 'landsdele
 
 https://opendata.cbs.nl/ODataApi/OData/83502NED/Postcode   // all postal codes
 ```
+
 
 
 
