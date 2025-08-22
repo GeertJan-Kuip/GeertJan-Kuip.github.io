@@ -10,11 +10,11 @@ CBS (Centraal Bureau voor de Statistiek) is a different story. They have an [api
 
 ## Decrypting the CBS Open Data portal
 
-To get the information you want, you can take the following steps:
+I created a set of small chapters that help to understand the CBS tables and the working of api. Without understanding how the tables work and how the variables are named and used it is not possible to generate proper url's, so everything below is required reading.
 
 ### 1 - Find the right table
 
-Go to the [website](https://opendata.cbs.nl/statline/portal.html?_la=nl&_catalog=CBS). You can also go [here](https://opendata.cbs.nl/statline/#/CBS/nl/navigatieScherm/thema), this one has better navigation. You can search for a table with a description that matches your search request. [This link](https://opendata.cbs.nl/ODataApi/) provides a full listing as well, without further descriptions.
+Go to the [CBS website](https://opendata.cbs.nl/statline/portal.html?_la=nl&_catalog=CBS). You can also go [here](https://opendata.cbs.nl/statline/#/CBS/nl/navigatieScherm/thema), this one has better navigation. You can search for a table with a description that matches your search request. [This link](https://opendata.cbs.nl/ODataApi/) provides a full listing as well, without further descriptions.
 
 ### 2 - Check the table preview 
 
@@ -192,11 +192,31 @@ https://opendata.cbs.nl/ODataApi/OData/83502NED/Postcode   // all postal codes
 
 TypedDataSet and UntypedDataSet are use as last path segment and provide access to the actual data in the table. The difference can be found on page 23 and 24 of the [manual](https://www.cbs.nl/-/media/open-data/cbs-open-data-services.pdf), it comes down to the use of table info in calculations and visual representations, for which TypedDataSets is better suited. They provide the same content.
 
-When requesting the full dataset by creating a base url plus /TypedDataSet the CBS server will most often protest, as you cannot retrieve more than 10K rows at once. Therefore you need to restrict the table output. Basically there are three main request methods that will help you customize the response:
+When requesting the full dataset by creating a base url plus /TypedDataSet the CBS server will most often protest, as you cannot retrieve more than 10K rows at once. Therefore you need to restrict the table output. Basically there are three main request methods that will help you customize the response. The dollar sign is mandatory:
 
-- $top (eventually with additional $skip) 
+- $top (eventually combined with $skip) 
 - $select
 - $filter
+
+The specific Odata query language you need to use is a sort of derivative of sql but has its own syntax. It is described [here](https://docs.oasis-open.org/odata/odata/v4.01/odata-v4.01-part2-url-conventions.html). The CBS manual suggests that the official syntax allows more than what is implemented by CBS itself, but I cannot find more precise documentation on it. 
+
+What I find useful, with regards to the application I am building, is the possibility to filter on substrings (using startswith or substring) so that it is possible to find only province, municipalities, wijken or buurten. It also allows for limiting the timeperiods for which you want data. Furthermore $select is convenient if you are only interested in specific fields. In the case that the number of rows you need is more than the allowed 10k, using $top and $skip helps to subdivide the resultset in smaller batches.
+
+To illustrate what is possible, I created some working queries:
+
+```
+https://opendata.cbs.nl/ODataApi/OData/37230NED/TypedDataSet?$select=*&$filter=substring(RegioS,0,5) eq 'GM051'
+
+https://opendata.cbs.nl/ODataApi/OData/37230NED/TypedDataSet?$filter=RegioS eq 'GM0518' and Perioden eq '2002MM02'
+
+https://opendata.cbs.nl/ODataApi/OData/37230NED/TypedDataSet?$filter=RegioS eq 'GM0518' and substring(Perioden,0,4) eq '2002'
+
+https://opendata.cbs.nl/ODataApi/OData/37230NED/TypedDataSet?$select=*&$top=10&$skip=20
+
+https://opendata.cbs.nl/ODataApi/OData/37230NED/TypedDataSet?$filter=startswith(RegioS, 'GM03')&$top=3
+```
+
+The whitespaces and quotation marks in the url's are, I suppose, no problem, but if so eventually you can use some Java URI method to create a proper url. 
 
 
 
