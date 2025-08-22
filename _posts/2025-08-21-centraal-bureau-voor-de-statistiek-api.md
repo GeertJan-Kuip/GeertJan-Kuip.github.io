@@ -22,15 +22,15 @@ The preview that you will see shows just one of the many ways in which data can 
 
 ### 3 - Create the base url for the table api
 
-The url of the table page contains a code, five digits followed by either 'NED' or 'ENG. Create a new url like this (the last parameter points to a specific table):
+The url of the table page contains a code, five digits followed by either 'NED' or 'ENG. Create a new url like this (the last path segment points to a specific table):
 
 ```
 https://opendata.cbs.nl/ODataApi/OData/83642NED/
 ```
 
-### 4 - Figure out variable names (1)
+### 4 - Figure out variable names
 
-This url provides all the possible basic links to the data and metadata of the table. This is what it looks for table 83642NED:
+This base url provides all the possible basic links to the data, dimensions and metadata of the table. This is what it looks for table 83642NED:
 
 ```
 {
@@ -72,7 +72,7 @@ This url provides all the possible basic links to the data and metadata of the t
 }
 ```
 
-Any of these links is valid and tells you more. The `/UntypedDataSet` and `/TypedDataSet` are the path segments that you will need for inquiry into the data, the others are for metadata. `/UntypedDataSet` and `/TypedDataSet` often return too much data rows and thus require refinement (more on that later). 
+Any of these links is valid and tells you more. The `/UntypedDataSet` and `/TypedDataSet` are the path segments that you will need for inquiry into the data, the others are for metadata and dimensions (see next subchapters). `/UntypedDataSet` and `/TypedDataSet` often return too much data rows and thus require refinement (more on that later). 
 
 A useful link, sort of hack, is this one:
 
@@ -82,7 +82,7 @@ https://opendata.cbs.nl/ODataApi/OData/83642NED/TypedDataSet?$top=1
 
 It provides a list of the variable names you can use in your queries.
 
-### 4 - Understanding Dimension and Topic
+### 4 - Understand Dimension and Topic
 
 If you visit the `/DataProperties` endpoint you find a list of values that can be of the following odata types:
 
@@ -93,11 +93,11 @@ If you visit the `/DataProperties` endpoint you find a list of values that can b
 - GeoDetail
 - TimeDimension
 
-The important thing here is to understand the difference between Dimension and Topic. Note that GeoDimension, GeoDetail and TimeDimension are all specialized and standardized dimension types, and that TopicGroup is a sort of dummy object that groups similar Topics.
+The important thing here is to understand the difference between Dimension and Topic. Note that GeoDimension, GeoDetail and TimeDimension are all specialized and standardized dimension types, and that TopicGroup is a sort of non-consequential dummy object that groups similar Topics.
 
-The difference between Dimension and Topic is that the latter refers to the things that are measured, resulting in the numbers, codes or maybe boolean values that you find in the tables. A topic can be 'number of bankruptcies' or 'average income'. 
+The difference between Dimension and Topic is that the latter refers to the things that are measured, resulting in the numbers, codes or maybe boolean values that you find in the tables. A topic can be things like 'number of bankruptcies' or 'average income'. 
 
-Dimension is the thing that specifies which items should be counted and which should not be counted for a given topic. For example, if you want to limit the measurement of average income to a certain age group, then average income is the topic and age group is the dimension. This explains why GeoDetail, GeoDimension and TimeDimension are dimensions and not topics, as we use them to restrict the number of things to measure to a specific period or geographical area. 
+Dimension is the thing that specifies which items should be counted and which should not be counted for a given topic. For example, if you want to limit the measurement of average income to a certain age group, then average income is the topic and age group is the dimension. This explains why GeoDetail, GeoDimension and TimeDimension are considered dimensions and not topics, as we use them to restrict the number of things to measure to a specific period or geographical area. 
 
 ### 5 - The structure of a dimension
 
@@ -156,9 +156,9 @@ You see how the dimension is structured:
 }
 ```
 
-More generally, if you want to see how a dimension is built, you can take the base url of the dataset and add the dimension name as last segment. This is true for any dimension, including GeoDimension, GeoDetail and TimeDimension. 
+More generally, if you want to see how a dimension is built, you can take the base url of the dataset and add the dimension name as last segment. This is true for any dimension, including GeoDimension, GeoDetail and TimeDimension. Those are often found with endopoints like /RegioS, /WijkenEnBuurten, /Perioden etc.
 
-### 6 - Region and time codes
+### 6 - Understand region and time codes
 
 Spatial and temporal dimensions (region and time) are standardized in CBS data as GeoDimension, GeoDetail and TimeDimension. There is a [dutch manual](https://www.cbs.nl/-/media/open-data/cbs-open-data-services.pdf) that documents the way geographical and time units are coded. On page 15 you find time codes, more on region codes can be found on page 20. 
 
@@ -187,6 +187,22 @@ https://opendata.cbs.nl/ODataApi/OData/82211NED/RegioS  // provinces, 'landsdele
 
 https://opendata.cbs.nl/ODataApi/OData/83502NED/Postcode   // all postal codes
 ```
+
+### 7 - Querying the (Un)TypedDataSet 
+
+TypedDataSet and UntypedDataSet are use as last path segment and provide access to the actual data in the table. The difference can be found on page 23 and 24 of the [manual](https://www.cbs.nl/-/media/open-data/cbs-open-data-services.pdf), it comes down to the use of table info in calculations and visual representations, for which TypedDataSets is better suited. They provide the same content.
+
+When requesting the full dataset by creating a base url plus /TypedDataSet the CBS server will most often protest, as you cannot retrieve more than 10K rows at once. Therefore you need to restrict the table output. Basically there are three main request methods that will help you customize the response:
+
+- $top (eventually with additional $skip) 
+- $select
+- $filter
+
+
+
+
+
+
 
 
 
