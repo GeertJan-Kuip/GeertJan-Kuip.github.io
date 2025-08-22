@@ -14,11 +14,11 @@ To get the information you want, you can take the following steps:
 
 ### 1 - Find the right table
 
-Go to [website](https://opendata.cbs.nl/statline/portal.html?_la=nl&_catalog=CBS). You can also go [here](https://opendata.cbs.nl/statline/#/CBS/nl/navigatieScherm/thema), this one has better navigation. [This link](https://opendata.cbs.nl/ODataApi/) provides a full listing as well, without further descriptions.
+Go to the [website](https://opendata.cbs.nl/statline/portal.html?_la=nl&_catalog=CBS). You can also go [here](https://opendata.cbs.nl/statline/#/CBS/nl/navigatieScherm/thema), this one has better navigation. You can search for a table with a description that matches your search request. [This link](https://opendata.cbs.nl/ODataApi/) provides a full listing as well, without further descriptions.
 
 ### 2 - Check the table preview 
 
-The preview that you will see shows just one of the many ways in which data can be ordered and subselections can be made. You can drag the variables around (I think there is a maximum of seven) and you can click the funnel symbols to make subselections within a variable (or call it a topic or a dimension). What you learn here is whether the table is able to generate the info you need. For example, if you want a fine grained geographical level (municipality or 'wijk'), you should be able to select municipalities or 'wijken' when you click a variable related to geography.
+The preview that you will see shows just one of the many ways in which data can be ordered and subselections can be made. You can drag the variables around (I think there is a maximum of seven) and you can click the funnel symbols to make subselections within a variable (or call it a topic or a dimension). What you learn here is whether the table is able to generate the info you need. For example, if you want a fine grained geographical level (municipality or district ('wijk')), you should be able to select municipalities or 'wijken' when you click a variable related to geography.
 
 ### 3 - Create the base url for the table api
 
@@ -80,7 +80,7 @@ A useful link, sort of hack, is this one:
 https://opendata.cbs.nl/ODataApi/OData/83642NED/TypedDataSet?$top=1
 ```
 
-It provides a sort of definitive list of the variable names you can use in your queries. 
+It provides a list of the variable names you can use in your queries.
 
 ### 4 - Understanding Dimension and Topic
 
@@ -97,11 +97,11 @@ The important thing here is to understand the difference between Dimension and T
 
 The difference between Dimension and Topic is that the latter refers to the things that are measured, resulting in the numbers, codes or maybe boolean values that you find in the tables. A topic can be 'number of bankruptcies' or 'average income'. 
 
-Dimension is the thing that specifies which items should be counted and which should not be counted for a given topic. For example, if you want to limit the measurement of average income to a certain age group, then average income is the topic and age group is the dimension. This explains why GeoDetail, GeoDimension and TimeDimension are dimensions and not topics, as we use them to restrict the number of things to count or measure to a specific period or geographical area. 
+Dimension is the thing that specifies which items should be counted and which should not be counted for a given topic. For example, if you want to limit the measurement of average income to a certain age group, then average income is the topic and age group is the dimension. This explains why GeoDetail, GeoDimension and TimeDimension are dimensions and not topics, as we use them to restrict the number of things to measure to a specific period or geographical area. 
 
 ### 5 - The structure of a dimension
 
-It is worthwile to note that while all topics used in a table can be found in `/DataProperties`, the dimensions are only found by their main description. For example, table 86052NED has a dimension 'Opleidingsniveau' that shows up like this in /DataProperties:
+It is worthwile to note that while all topics used in a table can be found in `/DataProperties` or via `/TypedDataSet?$top=1`, the dimensions are only found by their main description. For example, table 86052NED has a dimension 'Opleidingsniveau' that shows up like this in /DataProperties:
 
 ```
     {
@@ -162,7 +162,19 @@ More generally, if you want to see how a dimension is built, you can take the ba
 
 Spatial and temporal dimensions (region and time) are standardized in CBS data as GeoDimension, GeoDetail and TimeDimension. There is a [dutch manual](https://www.cbs.nl/-/media/open-data/cbs-open-data-services.pdf) that documents the way geographical and time units are coded. On page 15 you find time codes, more on region codes can be found on page 20. 
 
-While the codes for the temporal dimension can be understood by the manual, the region codes only make sense if you know which region code refers to which region. Using postfixes like `/Regions`, `/RegioS` and `/WijkenEnBuurten` provides listings of geographical units. 
+#### Time codes
+
+The codes for the temporal dimension can be understood by the manual, but if you want to know which TimeDimensions are used in a dataset, you can check either the /Perioden or /Periods endpoint like this:
+
+```
+https://opendata.cbs.nl/ODataApi/OData/83642NED/Perioden
+```
+
+To check what endpoint to use, check `/DataProperties`, here you should find it as one of the 'Key' values. It is also findable in /$metadata, in the `<EntityContainer>` section you find all valid endpoints. Or you can just visit the base url, here it is to be found as well.
+
+#### Region codes
+
+The region codes only make sense if you know which region code refers to which region. Using postfixes like `/Regions`, `/RegioS` and `/WijkenEnBuurten` provides listings of geographical units. 
 
 Be aware that a table base url only supports this parameter if the table contains spatial data. Check the base url to see which postfixes are possible. Here are some useful links:
 
