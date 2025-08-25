@@ -1,10 +1,10 @@
 # JPA, SQL and @Embeddable
 
-I'm working on an application that provides information on dutch towns. Creating it is less straightforward as I initially thought, for example because town is not a geographical unit in the data structure of the Central Bureau of Statistics. It requires some jiggling with different datasets, also from PDOK, and some JOIN statements in my database queries. That's what this blog is about.
+I'm working on an application that provides information on dutch towns. Creating it is less straightforward than I initially thought, for example because town is not a geographical unit in the data structure of the Central Bureau of Statistics. It requires some jiggling with different datasets, also from PDOK, and some JOIN statements in my database queries. That's what this blog post is about.
 
 ## Spring Boot and native SQL queries
 
-I was always used to write SQL queries in Java, PHP or Python, with either MySql or SQLite as database. Databases are great, superfast and you can ask them [anything you want](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-01-26-you-can-ask-databases-anything.md). It requires some skill but you can become good at it.
+I'm pretty familiar with writing SQL queries in Java, PHP or Python, working with either MySql or SQLite. Databases are great, superfast and you can ask them [anything you want](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-01-26-you-can-ask-databases-anything.md). It requires some skill but you can become good and reasonably fast at it. Working with JPA in Spring Boot is kind of a weird thing, making you wonder if you really need to add that extra layer. But fortunately, you can still use native SQL in Spring Boot.
 
 ### Using @Query with _nativeQuery=true_
 
@@ -27,13 +27,13 @@ Note that the difference between the names ot @Entity-annotated classes and its 
     private String cbsWijkenEnBuurten;
 ```
 
-Note that if you autogenerate getter and setter for this field in Intellij, these methods will be named _getCbsWijkenEnBuurten_ and _setCbsWijkenEnBuurten_. Note the added capital.
+Note also that if you autogenerate getter and setter for this field in Intellij, these methods will be named _getCbsWijkenEnBuurten_ and _setCbsWijkenEnBuurten_. A capital is added.
 
 ### Using JDBC
 
-Spring Boot autoconfigures JdbcTemplate if you (1) add `spring-boot-starter-jdbc` or `spring-boot-starter-data-jpa` to the class path and (2) if you provide the database connection properties in application.properties. The former results in the Jdbc dependencies being on the classpath, the latter in the autoconfiguration of a DataSource bean. If this bean is available then the JdbcTemplate can and will be autoconfigured as well.
+Spring Boot autoconfigures JdbcTemplate if you (1) add `spring-boot-starter-jdbc` or `spring-boot-starter-data-jpa` to the class path and (2) if you provide the database connection properties in application.properties. The former results in the transitive Jdbc dependencies being on the classpath, the latter in the autoconfiguration of a DataSource bean. If this bean is available then the JdbcTemplate can and will be autoconfigured.
 
-Given that the JdbcTemplate bean exists, you can inject it into a Jcbc repository class. Of course constructor injection is the most proper way to do it but @Autowired is also possible. Note that if you combine Sjpring Boot JPA with hardcore Jdbc, you need an interface for the first and a class for the latter. This repository class can look like this (see also a dedicated [blog post](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-01-spring-exam-jdbc.md):
+Given that the JdbcTemplate bean exists, you can inject it into a Jdbc repository class. Of course constructor injection is the most proper way to do it but @Autowired is also possible. Note that if you combine Spring Boot JPA with hardcore Jdbc, you need an interface for the first and a class for the latter. This repository class can look like this (see also a dedicated [blog post](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-01-spring-exam-jdbc.md):
 
 ```
 @Repository
@@ -59,12 +59,15 @@ There are multiple methods to use, like:
 - queryForMap()
 - queryForList()
 - query()
+- execute()
 
-Furthermore you can use RowMapper, ResultSetExtractor and RowCallbackHandler as arguments for more advanced use. It is all in the [blog post](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-01-spring-exam-jdbc.md). Inject the Repository bean whereever you need it, it will often be in some service class.
+Furthermore you can use RowMapper, ResultSetExtractor and RowCallbackHandler as arguments for more advanced use. It is all in the [blog post](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2025-07-01-spring-exam-jdbc.md). Inject the Repository bean whereever you need it, for example in some service class.
+
+Oh, and be aware that while JPA in Spring is transactional, Jdbc isn't. You need to add the @Transactional annotation yourself.
 
 ## Preventing duplicate table entries
 
-For my data structure I needed a cross table named _postcode4_ with two columns (town and postal code) and actually wondered (1) how to prevent double entries and (2) whether it would need a key. ChatGPT suggested I should first add something to the @Table annotation:
+For my data structure I needed a cross table named _postcode4_ with two columns (town and postal code) and actually wondered (1) how to prevent double entries and (2) whether it would need a key. ChatGPT suggested I should first add an attribute to the @Table annotation:
 
 ```
 @Entity
@@ -73,7 +76,7 @@ For my data structure I needed a cross table named _postcode4_ with two columns 
 public class Postcode4 {..}
 ```
 
-Upon creation of the table a constraint is placed on it, meaning it will return an error on every attempt to add a duplicate. I was surprised that the errors really showed up in the terminal, as from my Python/Sqlite days I remember that placing a 'unique' constrained simply worked without error. So I asked ChatGPT how to prevent the errors, and that should be done by not trying to insert duplicates at all. Hibernate can do that, but it requires the introduction of a so called @Embeddable Id class that holds the key to the crosstable. The primary key of this table will not be either one of the columns, but the combination of the columns.
+Upon creation of the table a constraint is placed on it, meaning it will return an error on every attempt to add a duplicate row. I was surprised that the errors really showed up in the terminal, as from my Python/Sqlite days I remember that placing a 'unique' constraint simply worked without error. ChatGPT replied that this should be achiebved by not trying to insert duplicates at all. Hibernate can help with that, but to have Hibernate do this a so called @Embeddable Id class that holds the key to the crosstable is required. The primary key of the _postcode4_ table will not be a separate new column or one of the two existing columns, but the combination of the two existing columns.
 
 ## The @Embeddable annotation
 
@@ -85,7 +88,7 @@ Normally, with Spring Boot JPA, you add a primary key to a table by adding this 
     private Long id;
 ```
 
-This does not work if you want your key to be made up of multiple columns. In this case, what you do in your Spring Boot code is to create an extra class annotated with @Embeddable that holds the key columns. This class takes over some of the jobs of the domain class. The following elements must be included:
+This does not work if you want your key to be made up of multiple columns. In this case, what you do in your Spring Boot code is to create an extra class annotated with @Embeddable that holds the key columns. This class takes over some of the jobs of the domain class. The following elements must be included in the @Embeddable class:
 
 - The @Embeddable annotation
 - Implementation of the Serializable interface
@@ -173,9 +176,9 @@ public class Postcode4 {
 
 As you see this domain class now has the @Embeddable class as dependency. 
 
-What happens now because of this all is the Hibernate uses the embedded id as a key in its identity map. To make sure this identity map only contains references to unique objects, it needs the correct hashCode() and equals() methods. The default implementations of these do not work correctly so they need to be overridden.
+Hibernate will now use the embedded id as a key in its identity map. To make sure this identity map only contains references to unique objects, it needs the correct hashCode() and equals() methods. The default implementations of these Object methods do not work correctly (default equals() method uses == , which doesn't return true if two object instances hold the same values but refer to different objects) so they need to be overridden.
 
-Ok, I'm happy that ChatGPT is there to explain it, really don't know how I would have learned this quickly. Anyhow, the entries are unique, no errors are thrown, and the table is properly indexed which imprives performance.
+Ok, I'm happy that ChatGPT is available to explain it, really don't know how I would have learned this quickly in any other way. For now, the entries are unique, no errors are thrown, and the table is properly indexed which improves performance.
 
 
 
