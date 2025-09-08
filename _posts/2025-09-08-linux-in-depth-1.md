@@ -69,11 +69,11 @@ sudo chown vivek:vivek demo.txt  // demo.txt owned by user vivek and group vivek
 
 It is possibly changing ownership for all nested content of a directory using flag -R (recursive). This is strongly warned against on the fora, as it can mess up the whole OS.
 
-### The /etc folder
+## Users, groups and sudo
 
 This folder is on the root and contains the text files that are about groups, users and their privileges. The relevant files are:
 
-#### `/etc/passwd`
+### `/etc/passwd`
 
 In this textfile you find the users. You can get with `cat /etc/passwd`, which gives the contents of the file. Besides the 'real' human users, all sorts of installed services are also listed. A typical line for them is:
 
@@ -103,34 +103,42 @@ root:x:0:0:root:/root:/bin/bash
 geertjan:x:1000:1000:Geert-Jan,,,:/home/geertjan:/bin/bash
 ```
 
-Note that any new user has `/bin/bash` as last element, meaning that they all work with the same terminal. Users that are not root have a folder with their username in the /home directory that they own (like `/home/geertjan`). If you want a specific user printyed out and not the whole contents of passwd, type:  
+Note that any new user has `/bin/bash` as last element, meaning that they all work with the same terminal. Users that are not root have a folder with their username in the /home directory that they own (like `/home/geertjan`). If you want a specific user printed out and not the whole contents of passwd, type:  
 
 ```
 cat /etc/passwd | grep -i geertjan
 ```
 
-#### `/etc/group`
+### `/etc/group`
 
-Every user belongs to a group. To see in which group, you can type `id {username}` which gives you something like this:
+Every user belongs to a group. Of these groups, only one can be the primary group. To see to which group(s) a user belongs, you can type `id {username}` which gives you something like this:
 
 ```
 uid=1000(geertjan) gid=1000(geertjan) groups=1000(geertjan),27(sudo),100(users)
 ```
 
-Upon creation of the user the similarly named group was created, and to get geertjan in the sudo group the following command was used:
+or use `groups geertjan`:
+
+```
+output:
+geertjan : geertjan sudo users
+```
+
+A user named geertjan has userid 1000 and is in groups 'geertjan' and group 'sudo'. Upon creation of this user the similarly named group was created, and to get geertjan in the sudo group the following command was used:
 
 ```
 usermod -aG sudo geertjan
 ```
 
-Note that sudo is missing, I created this change logged in as the root user.
+Note that sudo is missing, I created this change logged in as the root user. `usermod` allows for all sorts of modifications to a user, including password, home directory and group memberships. It can only be called by either the root user or a sudo user.
 
+### `/etc/sudoers`
 
-A user named geertjan has userid 1000 and is in groups 'geertjan' and group 'sudo'. 
-
-#### `/etc/sudoers`
+If you use the `cat /etc/sudoers` command you get the textfile in which the sudo users are defined. At least in Ubuntu the sudo users are not mentioned by name, instead the sudoers file includes the groups of which the members automatically get sudo privilege. These are the members of the `admin` and `sudo` group. Below you can identify the lines where this is communicated. 
 
 ```
+# The sudoers file, leaving out most of the lines with comments
+
 Defaults        env_reset
 Defaults        mail_badpass
 Defaults        secure_path="/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/snap/bin"
@@ -148,9 +156,11 @@ root    ALL=(ALL:ALL) ALL
 @includedir /etc/sudoers.d
 ```
 
-### The `sudo` command
+The last line of the file is an interesting one. The file `sudoers.d` is a sort of additional file that can be used to add extra sudo info, without having to modify the sudoers file itself.
 
-To be able to use the sudo command you must have been granted the privilege, meaning you are added to the sudoers file. This file lives in /etc/sudoers and you need root permission to access it.
+It is important not to modify the files. Instead, as a safety measure, use command `visudo` or `sudo visudo`. This opens the so-called Nano editor where you can make changes. Typing errors that might be fatal when directly modifying the sudoers file are caught by this visudo thing.
+
+
 
 
 
