@@ -43,6 +43,11 @@ Briljant [video of NetwerkChuck](https://www.youtube.com/watch?v=gd7BXuUQ91w) tu
 - systemctl stop {processname} _- stops process_
 - systemctl status {processname} _- status of process_
 - systemctl restart {processname} _- restart process_
+- systemctl enable {processname} _- process will start automatically on startup_
+- systemctl disable {processname} _- process won't start automatically on startup_
+- systemctl daemon-reload _- soft reloading, required for changes in service files to tkae effect_
+- nohup {command} _- chosen command will keep running after logout/closing terminal_
+- {command} & _- command will run in background
 
 ## Internet
 
@@ -91,7 +96,7 @@ Briljant [video of NetwerkChuck](https://www.youtube.com/watch?v=gd7BXuUQ91w) tu
 - zip {filename zipfile} {filename original} _- zip_
 - unzip {filename zipfile} _- unzip, you get options if file exists_
 - find {directory} (-name, -type, -perm etc) {expression} _- [link](https://www.redhat.com/en/blog/linux-find-command) and [another link](https://help.ubuntu.com/community/find)_
-- chmod {change formula} {filename} _- change file permissions. [link](https://www.digitalocean.com/community/tutorials/how-to-set-permissions-linux)_
+- chmod {change formula} {filename} _- "change mode", change file permissions. [link](https://www.digitalocean.com/community/tutorials/how-to-set-permissions-linux)_
 - chown {options} {user/group} {file} _- change ownership of file. [link](https://linuxize.com/post/linux-chown-command/)_
 
 
