@@ -27,6 +27,9 @@ Briljant [video of NetwerkChuck](https://www.youtube.com/watch?v=gd7BXuUQ91w) tu
 - passwd {username} _- change password. requires sudo_
 - passwd _- change own password_
 - finger {username} _- inspect user. finger must be installed_
+- usermod {flag} {value} {user} _modify user properties. [link](https://www.geeksforgeeks.org/linux-unix/usermod-command-in-linux-with-examples/)_
+- usermod -aG sudo {username} _- add user to sudo group. requires sudo permissions_
+
 
 ## Processes
 
@@ -45,20 +48,20 @@ Briljant [video of NetwerkChuck](https://www.youtube.com/watch?v=gd7BXuUQ91w) tu
 
 - wget {url} _- get contents of url and stores it in current dir under url last element name_
 - curl {url} > {filename} _- same_
-- ifconfig _find ip address_
-- ip address _find ip address_
-- ip address | grep eth0 _only see eth0 address (sort of)_
-- ip address | grep eth0 | grep inet | awk '{print $2}' _really only the ip address_
-- cat /etc/resolv.conf _find DNS info_
-- resolvectl status _find current DNS server_
-- ping {url} _see if website is up. use ctrl c to stop it_
-- ping {url} {integer n} _ping url n times_
-- traceroute {url} _displays the route taken by the response, all hubs_
-- netstat _list of all ports on machine. [link](https://www.geeksforgeeks.org/linux-unix/netstat-command-linux/)_
-- netstat -tulpn _more relevant list. only listening tcp and udp with info about process involved_
-- ss _socket statistics, similar to netstat, can use -tulpn as well_
-- ufw allow {port number} _requires sudo. allows traffic on specified port_
-- ufw enable _port from previous command now works_
+- ifconfig _- find ip address_
+- ip address _- find ip address_
+- ip address | grep eth0 _- only see eth0 address (sort of)_
+- ip address | grep eth0 | grep inet | awk '{print $2}' _- really only the ip address_
+- cat /etc/resolv.conf _- find DNS info_
+- resolvectl status _- find current DNS server_
+- ping {url} _- see if website is up. use ctrl c to stop it_
+- ping {url} {integer n} _- ping url n times_
+- traceroute {url} _- displays the route taken by the response, all hubs_
+- netstat _- list of all ports on machine. [link](https://www.geeksforgeeks.org/linux-unix/netstat-command-linux/)_
+- netstat -tulpn _- more relevant list. only listening tcp and udp with info about process involved_
+- ss _- socket statistics, similar to netstat, can use -tulpn as well_
+- ufw allow {port number} _- requires sudo. allows traffic on specified port_
+- ufw enable _- port from previous command now works_
 
 ## Files
 
@@ -74,6 +77,7 @@ Briljant [video of NetwerkChuck](https://www.youtube.com/watch?v=gd7BXuUQ91w) tu
 - less {filename} _- read file page by page_
 - head { filename} _- read begin of file_
 - tail {filename} _- read end of file}
+- stat {filename} _file metadata_
 - cmp {file1} {file2} _- compare two files_
 - diff {file1} {file2} _- precise descriptions of differences between two files_
 - shred {filename} _- overwrite file so it becomes unrecoverable_
@@ -83,6 +87,7 @@ Briljant [video of NetwerkChuck](https://www.youtube.com/watch?v=gd7BXuUQ91w) tu
 - rm {file} _- remove file_
 - rmdir (-r) {directory} _- remove directory. -r removes recursively_
 - ln (-s) {file} {link} _- create link to a file_
+- source {filename} _executes commands in file_
 - zip {filename zipfile} {filename original} _- zip_
 - unzip {filename zipfile} _- unzip, you get options if file exists_
 - find {directory} (-name, -type, -perm etc) {expression} _- [link](https://www.redhat.com/en/blog/linux-find-command) and [another link](https://help.ubuntu.com/community/find)_
