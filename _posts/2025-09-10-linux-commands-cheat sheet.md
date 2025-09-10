@@ -45,7 +45,7 @@ Briljant [video of NetwerkChuck](https://www.youtube.com/watch?v=gd7BXuUQ91w) tu
 - systemctl restart {processname} _- restart process_
 - systemctl enable {processname} _- process will start automatically on startup_
 - systemctl disable {processname} _- process won't start automatically on startup_
-- systemctl daemon-reload _- soft reloading, required for changes in service files to tkae effect_
+- systemctl daemon-reload _- soft reloading, required for changes in service files to take effect after restart_
 - nohup {command} _- chosen command will keep running after logout/closing terminal_
 - {command} & _- command will run in background
 
