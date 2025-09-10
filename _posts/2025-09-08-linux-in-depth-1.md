@@ -69,7 +69,7 @@ sudo chown vivek:vivek demo.txt  // demo.txt owned by user vivek and group vivek
 
 It is possibly changing ownership for all nested content of a directory using flag -R (recursive). This is strongly warned against on the fora, as it can mess up the whole OS.
 
-## Users, groups and sudo
+## The `/etc` files
 
 This folder is on the root and contains the text files that are about groups, users and their privileges. The relevant files are:
 
