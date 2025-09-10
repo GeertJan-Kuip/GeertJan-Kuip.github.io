@@ -12,10 +12,10 @@ Briljant [video of NetwerkChuck](https://www.youtube.com/watch?v=gd7BXuUQ91w) tu
 - whatis {command name} _- very brief info about command_
 - which {command name} _- location of command_
 - whereis {command name} _- location of command, provides all locations_
-- uname -a _info on operating system_
-- free _amount of free memory_
-- df -H _disk space info_
-- history _list of previous commands_
+- uname -a _- info on operating system_
+- free _- amount of free memory_
+- df -H _- disk space info_
+- history _- list of previous commands_
 
 ## Users, groups, permissions
 
@@ -27,22 +27,22 @@ Briljant [video of NetwerkChuck](https://www.youtube.com/watch?v=gd7BXuUQ91w) tu
 - passwd {username} _- change password. requires sudo_
 - passwd _- change own password_
 - finger {username} _- inspect user. finger must be installed_
-- usermod {flag} {value} {user} _modify user properties. [link](https://www.geeksforgeeks.org/linux-unix/usermod-command-in-linux-with-examples/)_
+- usermod {flag} {value} {user} _- modify user properties. [link](https://www.geeksforgeeks.org/linux-unix/usermod-command-in-linux-with-examples/)_
 - usermod -aG sudo {username} _- add user to sudo group. requires sudo permissions_
 
 
 ## Processes
 
-- ps -aux _list of processes_
-- ps -aux | grep {nameofprocess} _list specific process
-- top _live list of processes_
-- htop _same as top, looks nicer_
-- kill -9 {PID} _kill process with specified ID_
-- pkill -f {processname} _kill process with specified name_
-- systemctl start {processname} _starts process_
-- systemctl stop {processname} _stops process_
-- systemctl status {processname} _status of process_
-- systemctl restart {processname} _restart process_
+- ps -aux _- list of processes_
+- ps -aux | grep {nameofprocess} _- list specific process
+- top _- live list of processes_
+- htop _- same as top, looks nicer_
+- kill -9 {PID} _- kill process with specified ID_
+- pkill -f {processname} _- kill process with specified name_
+- systemctl start {processname} _- starts process_
+- systemctl stop {processname} _- stops process_
+- systemctl status {processname} _- status of process_
+- systemctl restart {processname} _- restart process_
 
 ## Internet
 
