@@ -25,7 +25,7 @@ The first 'enabled' tells you it works, the second that postgres will be started
 
 - Enter `su postgres` to switch from root- or other user to the user named postgres. This Linux user was created upon postgres installation.
 - Enter `psql` to start the psql program that lets you talk more directly to the db. 
-- `postgres=#` is what you see. Here postgres is the 'superuser' that can play god. The '#' tells you that the active user is a superuser (postgres can make other users superuser as well).
+- `postgres=#` is what you see. Here postgres is the 'superuser' that can play god. The `#` tells you that the active user is a superuser (postgres can make other users superuser as well). If no superuser, you see `>` instead of `#`.
 - You can change the active user with `SET ROLE someotherusername;`Use `SET ROLE postgres;` to revert. 
 - `\q` and `exit` will get u out of things
 
@@ -65,7 +65,7 @@ Good link [here](https://www.digitalocean.com/community/tutorials/how-to-use-rol
 
 The user that creates a database, schema or table (or any other object, there are more) becomes the owner. Only the owner can drop or alter the object. Ownership can be transferred to another user with statement like `ALTER SCHEMA public OWNER TO someother;`. 
 
-Other privileges, think of writing to tables or creating new tables in a database you do not own, can be granted to by owners or the superuser. Without this grant a non-privileged user cannot do anything. The owner of an object on the other hand has all privileges on that specific object.
+Other privileges, think of writing to tables or creating new tables in a database you do not own, can be granted to by owner or the superuser. Without this grant a non-privileged user cannot do anything. The owner of an object on the other hand has all privileges on that specific object.
 
 The confusing thing is that to become an owner, you must create the object, and to create the object, you must first have been granted the right to do so by either the superuser or the owner of the object one level above the object you create yourselves. Examples:
 
