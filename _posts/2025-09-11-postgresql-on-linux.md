@@ -117,3 +117,25 @@ WHERE grantee = 'geert';
 ```
 
 I have not figured out how in what structure the privileges are exactly stored but this hack for now is enough.
+
+### Working with local Dockerized PostgreSQL db
+
+All of the above deals with undockerized PostgreSQL databases. I have a dockerized db locally and wondered how to use psql on it. This is the way to get access to it:
+
+```
+psql -h localhost -p 5432 -U <usernamedb> -d <nameofdatabase>
+```
+
+You are prompted for the password. The connection you get is the same connection as your application has, and this is (naturally) sufficient to use psql commands. You do not need the name of the container, knowing the port that is exposed by the container is enough.
+
+Check port number, 5432 is default but in case you might have created the Docker image with another port mapped, you should use that.
+
+You can also work via `docker execute`, it means you approach the database from inside the container:
+
+```
+docker exec -it <container_name_or_id> psql -U <username> -d <database>
+```
+
+In this case you need the container name or id, you find it in Docker desktop with an easy copy option. The command brings you to the typical psql mode with `db_mijnwoonplaats=#`. I noted that the db in my container had only one role, which was not postgres but the username/role I created upon creating the container, and that it is a superuser. The `#` confirmed this superuser status.
+
+
