@@ -16,6 +16,9 @@ Briljant [video of NetwerkChuck](https://www.youtube.com/watch?v=gd7BXuUQ91w) tu
 - free _- amount of free memory_
 - df -H _- disk space info_
 - history _- list of previous commands_
+- printenv _- list of environment variables_
+- env _- same (list of environment variables)_
+_ `env | sort` _sorted list of environment variables_
 
 ## Users, groups, permissions
 
@@ -55,8 +58,8 @@ Briljant [video of NetwerkChuck](https://www.youtube.com/watch?v=gd7BXuUQ91w) tu
 - curl {url} > {filename} _- same_
 - ifconfig _- find ip address_
 - ip address _- find ip address_
-- ip address | grep eth0 _- only see eth0 address (sort of)_
-- ip address | grep eth0 | grep inet | awk '{print $2}' _- really only the ip address_
+- `ip address | grep eth0` _- only see eth0 address (sort of)_
+- `ip address | grep eth0 | grep inet | awk '{print $2}'` _- really only the ip address_
 - cat /etc/resolv.conf _- find DNS info_
 - resolvectl status _- find current DNS server_
 - ping {url} _- see if website is up. use ctrl c to stop it_
@@ -78,7 +81,7 @@ Briljant [video of NetwerkChuck](https://www.youtube.com/watch?v=gd7BXuUQ91w) tu
 - nano {filename}  _- create/open and edit file. exit by ctrl x, type y for save_
 - vim {filename} _- create/open and edit file. i to start edit, escape :wq to save and exit_
 - cat {filename} _- read file_
-- cat {filename} | sort _- read file and sort output lines_
+- `cat {filename} | sort` _- read file and sort output lines_
 - less {filename} _- read file page by page_
 - head { filename} _- read begin of file_
 - tail {filename} _- read end of file}
