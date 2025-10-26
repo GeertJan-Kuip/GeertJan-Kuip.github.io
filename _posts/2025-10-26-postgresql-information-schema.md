@@ -13,6 +13,7 @@ The most convenient way to find out such things is with using pasql commands lik
 In the current version (18) there are 64 views in information_schema. Below is a table in which I give a description and a 'relevance' flag for each.
 
 |Relevance|View name|Description|
+|----|----|----|
 ||information_schema_catalog_name|Contains only name of current database.|
 |\u2705|administrable_role_​authorizations|Identifies all roles that the current user has the admin option for.|
 |\u2705|applicable_roles|Identifies all roles whose privileges the current user can use.|
