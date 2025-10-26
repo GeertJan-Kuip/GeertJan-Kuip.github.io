@@ -12,8 +12,22 @@ The most convenient way to find out such things is with using pasql commands lik
 
 In the current version (18) there are 64 views in information_schema. Below is a table in which I give a description and a 'relevance' flag for each.
 
+|Relevance|View name|Description|
+||information_schema_catalog_name|Contains only name of current database.|
+|\u2705|administrable_role_​authorizations|Identifies all roles that the current user has the admin option for.|
+|\u2705|applicable_roles|Identifies all roles whose privileges the current user can use.|
+||attributes|Information about the attributes of composite data types defined in the database.|
+||character_sets|Character sets available in the current database. Since PostgreSQL does not support multiple character sets within one database, this view only shows one, which is the database encoding.|
+||check_constraint_routine_usage|Routines (functions and procedures) that are used by a check constraint. Only those routines are shown that are owned by a currently enabled role.|
+||check_constraints|All check constraints, either defined on a table or on a domain, that are owned by a currently enabled role. The owner of the table or domain is the owner of the constraint.|
+||collations|Collations available in the current database. Collation is about sort order and case conversion, which can be language specific.|
+||collation_character_set_​applicability|Identifies which character set the available collations are applicable to.|
+||column_column_usage|All generated columns that depend on another base column in the same table. Only tables owned by a currently enabled role are included.|
+||column_domain_usage|All columns (of a table or a view) that make use of some domain defined in the current database and owned by a currently enabled role.|
+||column_options|All the options defined for foreign table columns in the current database. Only those foreign table columns are shown that the current user has access to.|
+
 \u2705
 
-:white_check_mark:
+
 
 
