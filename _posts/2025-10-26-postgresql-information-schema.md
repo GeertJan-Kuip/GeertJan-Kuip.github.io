@@ -15,8 +15,8 @@ In the current version (18) there are 64 views in information_schema. Below is a
 |Relevance|View name|Description|
 |----|----|----|
 ||information_schema_catalog_name|Contains only name of current database.|
-|\u2705|administrable_role_​authorizations|Identifies all roles that the current user has the admin option for.|
-|\u2705|applicable_roles|Identifies all roles whose privileges the current user can use.|
+|✅|administrable_role_​authorizations|Identifies all roles that the current user has the admin option for.|
+|✅|applicable_roles|Identifies all roles whose privileges the current user can use.|
 ||attributes|Information about the attributes of composite data types defined in the database.|
 ||character_sets|Character sets available in the current database. Since PostgreSQL does not support multiple character sets within one database, this view only shows one, which is the database encoding.|
 ||check_constraint_routine_usage|Routines (functions and procedures) that are used by a check constraint. Only those routines are shown that are owned by a currently enabled role.|
@@ -27,7 +27,6 @@ In the current version (18) there are 64 views in information_schema. Below is a
 ||column_domain_usage|All columns (of a table or a view) that make use of some domain defined in the current database and owned by a currently enabled role.|
 ||column_options|All the options defined for foreign table columns in the current database. Only those foreign table columns are shown that the current user has access to.|
 
-\u2705
 
 
 
