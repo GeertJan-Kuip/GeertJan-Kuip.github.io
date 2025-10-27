@@ -26,8 +26,27 @@ In the current version (18) there are 64 views in information_schema. Below is a
 ||column_column_usage|All generated columns that depend on another base column in the same table. Only tables owned by a currently enabled role are included.|
 ||column_domain_usage|All columns (of a table or a view) that make use of some domain defined in the current database and owned by a currently enabled role.|
 ||column_options|All the options defined for foreign table columns in the current database. Only those foreign table columns are shown that the current user has access to.|
-
-
+||column_privileges|All privileges granted on columns to a currently enabled role or by a currently enabled role. If privilige is granted on whole table, multiple columns will be included in the listing.|
+||column_udt_usage|All columns that use data types owned by a currently enabled role.|
+||columns|All table columns (or view columns) in the database.Only those columns are shown that the current user has access to|
+||constraint_column_usage|All columns in the current database that are used by some constraint. Only those columns are shown that are contained in a table owned by a currently enabled role.
+||constraint_table_usage|All tables in the current database that are used by some constraint and are owned by a currently enabled role.|
+||data_type_privileges|All data type descriptors that the current user has access to, by way of being the owner of the described object or having some privilege for it.|
+||domain_constraints|All constraints belonging to domains defined in the current database. Only those domains are shown that the current user has access to.|
+||domain_udt_usage|All domains that are based on data types owned by a currently enabled role.|
+||domains|All domains defined in the current database. Only those domains are shown that the current user has access to.|
+||element_types|The data type descriptors of the elements of arrays. When a table column, composite-type attribute, domain, function parameter, or function return value is defined to be of an array type, the respective information schema view only contains ARRAY in the column data_type.|
+|✅|enabled_roles|All roles that the current user has direct or indirect, automatically inheriting membership in.|
+||foreign_data_wrapper_options|All the options defined for foreign-data wrappers in the current database. Only those foreign-data wrappers are shown that the current user has access to.|
+||foreign_server_options|All the options defined for foreign servers in the current database. Only those foreign servers are shown that the current user has access to.|
+||foreign_servers|All foreign servers defined in the current database. Only those foreign servers are shown that the current user has access to.|
+||foreign_table_options|All the options defined for foreign tables in the current database. Only those foreign tables are shown that the current user has access to.|
+||foreign_tables|All foreign tables defined in the current database. Only those foreign tables are shown that the current user has access to.|
+|✅|key_column_usage|All columns in the current database that are restricted by some unique, primary key, or foreign key constraint. Check constraints are not included in this view. Only those columns are shown that the current user has access to, by way of being the owner or having some privilege.|
+||parameters|Contains information about the parameters (arguments) of all functions in the current database. Only those functions are shown that the current user has access to.|
+||referential_constraints|All referential (foreign key) constraints in the current database. Only those constraints are shown for which the current user has write access to the referencing table.|
+||role_column_grants|All privileges granted on columns where the grantor or grantee is a currently enabled role.|
+||role_routine_grants|All privileges granted on functions where the grantor or grantee is a currently enabled role.|
 
 
 
