@@ -56,7 +56,7 @@ find / \( -path /proc -prune \) -o -name '*.jar' -print
 
 It is an odd one that needs clarification and this is what ChatGPT learned me:
 
-#### -o stands for OR
+### -o stands for OR
 
 The -o divides the line in two true/false statements. If the left is evaluated to true, the right statement will not be evaluated anymore because the endresult is already determined. Only if the left statement is false, the statement on the right will be evaluated.
 
@@ -64,11 +64,11 @@ The statement left is `-path /prc -prune`, the statement right is `-name '*.jar'
 
 Btw -a means logical AND.
 
-#### `\(` because parentheses need to be escaped
+### `\(` because parentheses need to be escaped
 
 Using parentheses means that you create groups, which is not what you want here according to Chat. So the escaped parentheses have some use but grouping is not what is required here.
 
-#### Evaluating `-path /proc -prune`
+### Evaluating `-path /proc -prune`
 
 `-path /proc -prune` says as much as: if the path of the file is /proc, skip it, don't descend in it and return true. Note that -path and -name are so-called 'tests' (see [manpage](https://www.man7.org/linux/man-pages/man1/find.1.html)) that return true or false. 
 
@@ -78,7 +78,7 @@ What the test thus says is 'if the path contains /proc, skip it. Btw you can do 
 \( -path /proc -path /sys -o -path /dev \) -prune
 ```
 
-#### Evaluating `-name '*.jar' -print`
+### Evaluating `-name '*.jar' -print`
 
 Here the result is true if the file or directory name ends with '.jar' and in this case, the print command will be executed. Note that in this context the -print command is the opposite of the -prune command. The former prints, the latter dismisses.
 
