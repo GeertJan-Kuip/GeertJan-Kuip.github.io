@@ -1,4 +1,4 @@
-# Bash sripting part 2
+# Bash scripting part 2
 
 In a previous post I wrote about bash scripting and gave a specific example of a script meant to create a command that would provide all sorts of info about the Docker installation on a Linux server, including the systemctl status of the daemon and the individual containers, their connection to networks, the images on which they are based, their internal and external ports, the duration of them running, the command executed in them, the restartpolicy and the mounts inside. 
 
@@ -13,7 +13,7 @@ I created other scripts as well and combined them all so that with one command, 
 
 ## How I organized it
 
-In my home folder /home/geert I created a scripts folder> Together they contain everything I scripted.
+In my home folder /home/geert I created a scripts folder.
 
 ```
 └── scripts
@@ -68,7 +68,33 @@ echo ""
 tree ~ --filesfirst  # Shows the home folder contents as file/directory tree
 ```
 
-The tree command is not Linux native but must be installed with `sudo apt install tree -y`. Documentation is [here](https://linux.die.net/man/1/tree). It provides excellent insight into the deep contents of a folder, something that is otherwise hard in cli Linux.
+The tree command is not Linux native but must be installed with `sudo apt install tree -y`. Documentation is [here](https://linux.die.net/man/1/tree). It provides excellent insight into the deep contents of a folder, something that is otherwise hard in cli Linux. The total output in this section looks like this:
+
+```
+.  ..  dockerinfo.sh  etc-systemd-system.sh  homedir.sh  main.sh  nginx.sh  ports.sh  userinfo.sh
+
+/home/geertjan
+├── dump01.sql
+├── func.sh
+├── kort.sh
+├── mijnwoonplaats-0.0.1-SNAPSHOT.jar
+├── myscript.sh
+├── tellme.sh
+├── tellpg.sh
+├── deploy
+│   └── app
+│       └── mijnwoonplaats-0.0.1-SNAPSHOT.jar
+└── scripts
+    ├── dockerinfo.sh
+    ├── etc-systemd-system.sh
+    ├── homedir.sh
+    ├── main.sh
+    ├── nginx.sh
+    ├── ports.sh
+    └── userinfo.sh
+
+4 directories, 15 files
+```
 
 ## /etc/systemd/system
 
@@ -78,6 +104,18 @@ Apart from layout-related stuff, the script contains only this line:
 
 ```
 ls /etc/systemd/system -a
+```
+
+Output:
+
+```
+.                                       emergency.target.wants     ModemManager                    sleep.target.wants                   syslog.service
+..                                      final.target.wants         multi-user.target.wants         sockets.target.wants                 sysstat.service.wants
+cloud-final.service.wants               getty.target.wants         network-online.target.wants     sshd-keygen@.service.d               timers.target.wants
+cloud-init.target.wants                 hibernate.target.wants     oem-config.service.wants        ssh.service.requires                 vmtoolsd.service
+dbus-org.freedesktop.resolve1.service   hybrid-sleep.target.wants  open-vm-tools.service.requires  suspend.target.wants
+dbus-org.freedesktop.timesync1.service  iscsi.service              paths.target.wants              suspend-then-hibernate.target.wants
+display-manager.service.wants           mdmonitor.service.wants    rescue.target.wants             sysinit.target.wants
 ```
 
 ## TCP ports and processes
@@ -95,6 +133,27 @@ sudo ss -antp
 It is very little but great for insight. Note that it requires sudo, which might mean you will be prompted for a password during the execution of this script which is no problem. 
 
 The `sudo ss -antp` worked well for me, I learned that `ss` is a better successor of `netstat` so I use it. The flag -a means that both listening and non-listening sockets must be displayed, -t limits the output to TCP ports (otherwise you'll get a ton of internal Unix ports) and -p displays the process name. The -n description says 'Do not try to resolve service names.' I just noticed that you can omit this flag and have the same result. Anyway, extensive info available via the man page or man command.
+
+Output:
+
+```
+Command: sudo ss -antp. Note: on WSL2 Ubuntu this list will be incomplete.
+
+[sudo] password for geertjan:
+State       Recv-Q       Send-Q             Local Address:Port               Peer Address:Port       Process
+LISTEN      0            511                      0.0.0.0:80                      0.0.0.0:*           users:(("nginx",pid=6842,fd=5),("nginx",pid=6841,fd=5),("nginx",pid=6840,fd=5))
+LISTEN      0            4096                     0.0.0.0:22                      0.0.0.0:*           users:(("sshd",pid=1411,fd=3),("systemd",pid=1,fd=132))
+LISTEN      0            4096               127.0.0.53%lo:53                      0.0.0.0:*           users:(("systemd-resolve",pid=579,fd=15))
+LISTEN      0            4096                  127.0.0.54:53                      0.0.0.0:*           users:(("systemd-resolve",pid=579,fd=17))
+LISTEN      0            4096                   127.0.0.1:43697                   0.0.0.0:*           users:(("containerd",pid=805,fd=11))
+LISTEN      0            4096                     0.0.0.0:8080                    0.0.0.0:*           users:(("docker-proxy",pid=1056025,fd=4))
+LISTEN      0            4096                     0.0.0.0:5678                    0.0.0.0:*           users:(("docker-proxy",pid=1056401,fd=4))
+ESTAB       0            72                  91.98.68.196:22                86.80.245.106:64194       users:(("sshd",pid=1075345,fd=4),("sshd",pid=1075252,fd=4))
+LISTEN      0            511                         [::]:80                         [::]:*           users:(("nginx",pid=6842,fd=6),("nginx",pid=6841,fd=6),("nginx",pid=6840,fd=6))
+LISTEN      0            4096                        [::]:22                         [::]:*           users:(("sshd",pid=1411,fd=4),("systemd",pid=1,fd=133))
+LISTEN      0            4096                        [::]:8080                       [::]:*           users:(("docker-proxy",pid=1056033,fd=4))
+LISTEN      0            4096                        [::]:5678                       [::]:*           users:(("docker-proxy",pid=1056410,fd=4))
+```
 
 ## Nginx
 
@@ -135,11 +194,11 @@ conf.d        fastcgi_params  koi-win     modules-available  nginx.conf    scgi_
 fastcgi.conf  koi-utf         mime.types  modules-enabled    proxy_params  sites-available  snippets       win-utf
 ```
 
-Quite usefull, and later on I will display more information about the configuration.
+Quite usefull, and later on I will adjust it so that more information about the configuration can be read.
 
 ## Docker
 
-I explained the Docker script already in the previous blog on this topic but here it is again. It is more complex, as it iterates over json content. It does so because it wants to provide in-depth info on Docker networks and containers.
+I explained the Docker script already in the previous blog on this topic but here it is again. It is more complex, as it iterates over specific output generated by various Docker commands. Furthermore, there is json output to be parsed. It needs to so because it wants to provide in-depth info on Docker networks and containers.
 
 ```
 sudo systemctl status docker  | grep -m 3 ''
