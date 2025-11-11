@@ -67,7 +67,7 @@ Under 'expression' different categories exist, namely 'tests', 'actions', 'globa
 
 Global options can be set anywhere and will apply to the whole command. This is in contrast to positional options, that only apply to the expressions following it.
 
-As the list of global options contains some useful items, I will summzrize some I consider rekevant here.
+As the list of global options contains some useful items, I will summarize those here.
 
 |Flag|Description|
 |----|----|
