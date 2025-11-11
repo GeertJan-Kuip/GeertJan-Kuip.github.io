@@ -63,6 +63,22 @@ As you see, the expressions come at the end and are proceeded with options relat
 
 Under 'expression' different categories exist, namely 'tests', 'actions', 'global options', 'positional options' and 'operators'. Here we focus on tests but there are some relevant global and positional options that will be discussed at the end.
 
+## Global options
+
+Global options can be set anywhere and will apply to the whole command. This is in contrast to positional options, that only apply to the expressions following it.
+
+As the list of global options contains some useful items, I will summzrize some I consider rekevant here.
+
+|Flag|Description|
+|----|----|
+|-d|Makes that the content of a directory is processed before the directory itself|
+|-depth|Same as -d.|
+|-files0-from _file_|Starting points will be read from the given file instead of the command line|
+|-maxdepth _levels_|Decend at most _levels_ levels of directories below the starting points.|
+|-mindepth _levels_|No tests on directories at levels less than _level_.|
+|-mount|Don't descend into directories in other filesystems.|
+|-xdev|Same as -mount.|
+
 ## Basic globbing, extended globbing, regular expressions
 
 This is a somewhat confusing topic. If you want to use wildcards or regex in your tests be aware of the following:
