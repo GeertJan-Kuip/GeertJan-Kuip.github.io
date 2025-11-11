@@ -194,11 +194,11 @@ Requires a argument that is a valid file, the so-called reference file. Returns 
 
 More extensive variant. X stands for a timestamp of the file to be examined, Y stands for a timestamp of the file being reference. To indicate which timestamp to inspect use the following letters:
 
-a - last access time
-B - birth time (creation)
-c - last status change time
-m - last modification time
-t - only to be used for Y. If used, provide a timestamp as reference and not a file
+- a - last access time
+- B - birth time (creation)
+- c - last status change time
+- m - last modification time
+- t - only to be used for Y. If used, provide a timestamp as reference and not a file
 
 #### -anewer _reference_
 
@@ -292,14 +292,14 @@ You can check type with -type and -xtype. They differ in their handling of symbo
 
 The argument c can be one of the following:
 
-b - block (buffered) special
-c - character (unbuffered) special
-d - directory
-p - named pipe (FIFO)
-f - regular file
-l - symbolic link
-s - socket
-D - door (Solaris). I have no clue what this is.
+- b - block (buffered) special
+- c - character (unbuffered) special
+- d - directory
+- p - named pipe (FIFO)
+- f - regular file
+- l - symbolic link
+- s - socket
+- D - door (Solaris). I have no clue what this is.
 
 #### -xtype _c_
 
@@ -336,7 +336,7 @@ File has more than, less than or exactly n hard links. A hard link is a file tha
 
 File refers to the same inode as name. I do not know how and when this will happen, apart from symbolic links.
 
-#### -context _ pattern_
+#### -context _pattern_
 
 (SELinux only) Security context of the file matches glob pattern. Cannot explain what is meant by this.
 
