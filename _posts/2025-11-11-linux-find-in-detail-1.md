@@ -37,6 +37,41 @@ Symbolic links play a large role in the find command, there are many flags that 
 
 Among the test espressions, we find a couple of tests that specifically care about symbolic links, namely -lname, -ilname, -type l,  -xtype l.
 
+## Basic globbing, extended globbing, regular expressions
+
+This is a somewhat confusing topic. If you want to use wildcards or regex in your tests be aware of the following:
+
+- Only -regex uses regular expressions
+- The default regex syntax is Emacs Regular Expresions
+- This default can be changed using the -regextype option
+- For -name and other tests, _basic globbing_ is being used. 
+- You can turn on _extended globbing_ with command `shopt -s extglob` but:
+- Test expressions will still use basic globbing, so it doesn't matter
+
+### What basic globbing is:
+
+ChatGPT provided this:
+
+| Symbol    | Meaning                            | Example |
+|------------|------------------------------------|----------|
+| `*`        | Matches any string (including empty) | `*.txt` matches `a.txt`, `foo.txt` |
+| `?`        | Matches exactly one character        | `?.txt` matches `a.txt` but not `ab.txt` |
+| `[abc]`    | Matches one of the listed characters | `[ch]at` matches `cat`, `hat` |
+| `[a-z]`    | Character range                      | `[0-9].log` matches `1.log` … `9.log` |
+| `[!abc]`   | Negated character class              | `[!0-9]*` matches anything not starting with a digit |
+
+### Extended globbing
+
+Not relevant here as the test expressions do not use it, but good to know what it is and how it differs from basic globbing and regular expressions:
+
+| Pattern      | Meaning | Example |
+|---------------|----------|----------|
+| `?(pattern)`  | Matches **zero or one** occurrence of `pattern` | `?(foo).txt` matches `foo.txt` or `.txt` |
+| `*(pattern)`  | Matches **zero or more** occurrences of `pattern` | `*(foo).txt` matches `.txt`, `foo.txt`, `foofoo.txt` |
+| `+(pattern)`  | Matches **one or more** occurrences of `pattern` | `+(foo).txt` matches `foo.txt`, `foofoo.txt` |
+| `@(pattern)`  | Matches **exactly one** of the given patterns separated by `|` | `@(foo|bar).txt` matches `foo.txt` or `bar.txt` |
+| `!(pattern)`  | Matches **anything except** the given pattern(s) | `!(foo).txt` matches all `.txt` files except `foo.txt` |
+
 ##  General syntax
 
 The structure of a find command, according to the man page, is the following:
@@ -61,7 +96,14 @@ I did a bit of categorizing to get the test expressions sorted.
 
 These test expressions care about name and/or the full path of the file:
 
-### **-name**
+#### **-name**
+
+The -name test only tests the filename, not the path. It uses the bash shell pattern matching ('basic globbing'), not the more extensive regex pattern. You will use '*' most of the times, but you can use ? or something lilke [a-z0-9] as well. Example:
+
+```
+~$ find . -name '?[a-z][r]??sh'
+./kort.sh
+```
 
 
 
