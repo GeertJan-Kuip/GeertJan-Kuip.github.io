@@ -1,4 +1,4 @@
-# Linux find in detail part 1
+# Linux find in detail - test expressions
 
 In a previous post I discussed the use of find, in this post I will get into more detail. Based on the Linux [man page](https://www.man7.org/linux/man-pages/man1/find.1.html) I will specifically discuss the so called 'tests', which is the subset of expressions that determines what files will be found. In a next post I will discuss the 'actions', which is the subset of expressions that tell Linux what to do with the files and directories being found.
 
