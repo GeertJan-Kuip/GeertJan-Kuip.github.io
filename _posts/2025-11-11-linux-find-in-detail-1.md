@@ -134,6 +134,8 @@ Like -name and its derivatives, -path uses basic globbing. It examines the whole
 
 The path to be examined is the path that starts at one of the starting points of the find command. Unless the starting point is '/', you will not examine the whole absolute path. 
 
+Instead of -path you can use -wholename, but this alternative is 'less portable' according to the docs.
+
 #### **-ipath**
 
 Same as -path but case-insensitive.
@@ -184,16 +186,157 @@ In the case of numeric input, you can set a flag (it is a positional option so i
 
 When you check if a timestamp is before or after a certain 'past minutes' or 'past days', you use the + or - prefix on the numeric input. Not using any of these means that you are checking for the exact timestamp of a file.
 
-#### **-newer** _reference_
+#### -newer _reference_
 
 Requires a argument that is a valid file, the so-called reference file. Returns true for files with a modification timestamp more recent than that of the reference file.
 
-#### **-newerXY** _reference_
+#### -newerXY _reference_
 
+More extensive variant. X stands for a timestamp of the file to be examined, Y stands for a timestamp of the file being reference. To indicate which timestamp to inspect use the following letters:
 
+a - last access time
+B - birth time (creation)
+c - last status change time
+m - last modification time
+t - only to be used for Y. If used, provide a timestamp as reference and not a file
 
+#### -anewer _reference_
 
+Tests if the time of last access of the tested file is more recent than the last modification time of the reference file. Bit odd comparison I would say.
 
+#### -cnewer reference
 
+Tests if the time of last status change of the tested file is more recent than the last modification time of the reference file. Equally far-fetched as the previous I would say.
 
+#### -amin n
+
+File was last accessed less than, more than or exactly n minutes ago. If +n, more than, if -n less than, if n, exactly.
+
+#### -atime n
+
+File was last accessed less than, more than or exactly n*24 hours ago. Be aware that fractional parts are ignored, so -amin +1 means the file nust have been accessed at least two days ago.
+
+#### -cmin n
+
+Same as -amin but now it measures change time (which is different from modification time).
+
+#### -ctime n
+
+Same as -atime, but applied to change timestamp.
+
+#### -mmin n
+
+Same as -amin but now it measures modification time.
+
+#### -mtime n
+
+Same as -atime, but applied to modification timestamp.
+
+#### -used n
+
+File was last accessed less than, more than or exactly n days after its status was last changed.
+
+### Category 4 - Permissions
+
+Every file has permissions, which can be written in different forms. The stat command provides the numeric or octal form (0775) and the string form (-rwxrwxr-x):
+
+```
+Access: (0775/-rwxrwxr-x)
+```
+
+There is also the symbolic form in which you set persmissions using the letters u (user that owns the file), g (group that owns the file), o (other users), a (all users), r (read), w (write) and x (execute). You can add or remove permissions on a file with statements like `u+x`, `g-w`, `+r`, `go=rq` and `u+x,go=rx`.
+
+You can check permissions in an absolute way with `-perm`, which means examining the access 'codes'. It is also possible to examine access permissions based on the current user, using the `-readable`, `-writable` and `-executable` tests.
+
+#### -perm _mode_
+
+Here the permission bits of the file must exactly match the permission bits of the argument. You can use both the octal mode (0774) and the symbolic mode. The two examples below are identiacal and only return true if the permssion string is ?----w----:
+
+```
+-perm g=w
+-perm 0020
+```
+
+#### -perm _-mode-
+
+You can use both octal and symbolic mode, test passes if the indicated permissions are set, while all permissions that are not set in the argument are allowed to vary.
+
+#### - perm _/mode_
+
+This is the least strict way of using -perm. Test passes if only one of the three (owner, group, other user) has the permission that is indicated in the argument. The amn page provides this example:
+
+```
+# Search for files which are writable by either their owner or their group.
+$ find . -perm /220
+$ find . -perm /u+w,g+w
+$ find . -perm /u=w,g=w
+```
+
+#### -readable
+
+File can be read by user.
+
+#### -writable 
+
+File can be written by user.
+
+#### -executable
+
+File can be executed by user.
+
+### Category 6 - Types
+
+You can check type with -type and -xtype. They differ in their handling of symbolic links. 
+
+#### -type c
+
+The argument c can be one of the following:
+
+b - block (buffered) special
+c - character (unbuffered) special
+d - directory
+p - named pipe (FIFO)
+f - regular file
+l - symbolic link
+s - socket
+D - door (Solaris). I have no clue what this is.
+
+#### -xtype c
+
+Like -type but different handling of symbolic links.
+
+#### -fstype type
+
+Returns true if the file is on a filesystem of type type.
+
+### Category 7 - File size
+
+#### -empty
+
+Returns true if file or directory is empty.
+
+#### -size _n[cwbkMG]_
+
+File uses less than, more than or exactly n units of space, rounding up.
+
+- b: 512-byte blocks
+- c: bytes
+- w: two-byte words
+- k: kibibytes (KiB, units of 1024 bytes)
+- M: mebibytes (MiB, megabytes)
+- G: gibibytes (GiB, gigabytes)
+
+### Category 8 - Miscellaneous
+
+#### -links _n_
+
+File has more than, less than or exactly n hard links. A hard link is a file that directly points to the same inode (the files data on disk) as the original file. It is thus not a symbolic link.
+
+#### -samefile _name_
+
+File refers to the same inode as name. I do not know how and when this will happen, apart from symbolic links.
+
+#### -context _ pattern_
+
+(SELinux only) Security context of the file matches glob pattern. Cannot explain what is meant by this.
 
