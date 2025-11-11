@@ -107,7 +107,7 @@ I did a bit of categorizing to get the test expressions sorted.
 
 These test expressions care about name and/or the full path of the file:
 
-#### **-name**
+#### -name _pattern_
 
 The -name test only tests the filename, not the path. It uses the bash shell pattern matching ('basic globbing'), not the more extensive regex pattern. You will use '*' most of the times, but you can use ? or something lilke [a-z0-9] as well. Example:
 
@@ -116,19 +116,19 @@ The -name test only tests the filename, not the path. It uses the bash shell pat
 ./kort.sh
 ```
 
-#### **-iname**
+#### -iname _pattern_
 
 Like -name but case insensitive
 
-#### **-lname** 
+#### -lname _pattern_ 
 
 Like name but only returns symbolic links. Doesn't go well with the -L flag.
 
-#### **-ilname**
+#### -ilname _pattern_
 
 Like -iname but only returns symbolic links, doesn't go well with the -L flag.
 
-#### **-path**
+#### -path _pattern_
 
 Like -name and its derivatives, -path uses basic globbing. It examines the whole path, and `.` and `/` have their literal meaning so you can use them as characters. 
 
@@ -136,15 +136,15 @@ The path to be examined is the path that starts at one of the starting points of
 
 Instead of -path you can use -wholename, but this alternative is 'less portable' according to the docs.
 
-#### **-ipath**
+#### -ipath _pattern_
 
 Same as -path but case-insensitive.
 
-#### **-regex**
+#### -regex _pattern_
 
 Like path, but you use an Emacs type regular expression. This provides extra possibilities at the cost of a more extensive syntax. The matching is done on the whole path, not just on the file name.
 
-#### **-iregex**
+#### -iregex _pattern_
 
 Same as -regex but case-insensitive.
 
@@ -152,27 +152,27 @@ Same as -regex but case-insensitive.
 
 You can select files and directories based on ownership with the following expressions:
 
-#### **-user**
+#### -user _uname_
 
 Selects items owned by specified user. You can either use username or userid.
 
-#### **-uid**
+#### -uid _n_
 
 Specify the user id and use + as prefix to select all users with a higher uid, - to select all users with a lower id and neither - or + to select the user that has exactly the given id.
 
-#### **-group**
+#### -group _groupname_
 
 Selects items owned by specified group. You can either use groupname or group id.
 
-#### **-gid**
+#### -gid _n_
 
 Similar to -uid, use + and - to indicate higher/lower than.
 
-#### **-nouser**
+#### -nouser
 
 No user corresponds to file's numeric user ID.
 
-#### **-nogroup**
+#### -nogroup
 
 No group corresponds to file's numeric group ID.
 
@@ -204,35 +204,35 @@ t - only to be used for Y. If used, provide a timestamp as reference and not a f
 
 Tests if the time of last access of the tested file is more recent than the last modification time of the reference file. Bit odd comparison I would say.
 
-#### -cnewer reference
+#### -cnewer _reference_
 
 Tests if the time of last status change of the tested file is more recent than the last modification time of the reference file. Equally far-fetched as the previous I would say.
 
-#### -amin n
+#### -amin _n_
 
 File was last accessed less than, more than or exactly n minutes ago. If +n, more than, if -n less than, if n, exactly.
 
-#### -atime n
+#### -atime _n_
 
 File was last accessed less than, more than or exactly n*24 hours ago. Be aware that fractional parts are ignored, so -amin +1 means the file nust have been accessed at least two days ago.
 
-#### -cmin n
+#### -cmin _n_
 
 Same as -amin but now it measures change time (which is different from modification time).
 
-#### -ctime n
+#### -ctime _n_
 
 Same as -atime, but applied to change timestamp.
 
-#### -mmin n
+#### -mmin _n_
 
 Same as -amin but now it measures modification time.
 
-#### -mtime n
+#### -mtime _n_
 
 Same as -atime, but applied to modification timestamp.
 
-#### -used n
+#### -used _n_
 
 File was last accessed less than, more than or exactly n days after its status was last changed.
 
@@ -257,7 +257,7 @@ Here the permission bits of the file must exactly match the permission bits of t
 -perm 0020
 ```
 
-#### -perm _-mode-
+#### -perm _-mode_
 
 You can use both octal and symbolic mode, test passes if the indicated permissions are set, while all permissions that are not set in the argument are allowed to vary.
 
@@ -288,7 +288,7 @@ File can be executed by user.
 
 You can check type with -type and -xtype. They differ in their handling of symbolic links. 
 
-#### -type c
+#### -type _c_
 
 The argument c can be one of the following:
 
@@ -301,13 +301,13 @@ l - symbolic link
 s - socket
 D - door (Solaris). I have no clue what this is.
 
-#### -xtype c
+#### -xtype _c_
 
 Like -type but different handling of symbolic links.
 
-#### -fstype type
+#### -fstype _type_
 
-Returns true if the file is on a filesystem of type type.
+Returns true if the file is on a filesystem of type _type_.
 
 ### Category 7 - File size
 
