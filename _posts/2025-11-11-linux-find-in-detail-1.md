@@ -37,16 +37,32 @@ Symbolic links play a large role in the find command, there are many flags that 
 
 Among the test espressions, we find a couple of tests that specifically care about symbolic links, namely -lname, -ilname, -type l,  -xtype l.
 
+##  General syntax
+
+The structure of a find command, according to the man page, is the following:
+
+```
+       find [-H] [-L] [-P] [-D debugopts] [-Olevel] [starting-point...]
+       [expression]
+        .
+```
+
+As you see, the expressions come at the end and are proceeded with options related to the treatment of symbolic links (-H, -L, -P), the -D debugoptions and the -Olevel option that has to do with the under-the-hood optimization process. In examples you hardly see any of these options flags being utilized.
+
+'Starting point' is the one that most of the times follows the 'find' command. You can specify a single directory, using `.`  for the current one, or a list of directories, separated by whitespaces. 
+
+Under 'expression' different categories exist, namely 'tests', 'actions', 'global options', 'positional options' and 'operators'. Here we focus on tests but there are some relevant global and positional options that will be discussed at the end.
+
 ## Basic globbing, extended globbing, regular expressions
 
 This is a somewhat confusing topic. If you want to use wildcards or regex in your tests be aware of the following:
 
 - Only -regex uses regular expressions
-- The default regex syntax is Emacs Regular Expresions
+- The default regex syntax is _Emacs Regular Expresions_
 - This default can be changed using the -regextype option
 - For -name and other tests, _basic globbing_ is being used. 
 - You can turn on _extended globbing_ with command `shopt -s extglob` but:
-- Test expressions will still use basic globbing, so it doesn't matter
+- Test expressions in _find_ will still use basic globbing, so it doesn't matter
 
 ### What basic globbing is:
 
@@ -72,23 +88,8 @@ Not relevant here as the test expressions do not use it, but good to know what i
 | `@(pattern)`  | Matches **exactly one** of the given patterns separated by `|` | `@(foo|bar).txt` matches `foo.txt` or `bar.txt` |
 | `!(pattern)`  | Matches **anything except** the given pattern(s) | `!(foo).txt` matches all `.txt` files except `foo.txt` |
 
-##  General syntax
 
-The structure of a find command, according to the man page, is the following:
-
-```
-       find [-H] [-L] [-P] [-D debugopts] [-Olevel] [starting-point...]
-       [expression]
-        .
-```
-
-As you see, the expressions come at the end and are proceeded with options related to the treatment of symbolic links (-H, -L, -P), the -D debugoptions and the -Olevel option that has to do with the under-the-hood optimization process. In examples you hardly see any of these options flags being utilized.
-
-'Starting point' is the one that most of the times follows the 'find' command. You can specify a single directory, using `.`  for the current one, or a list of directories, separated by whitespaces. 
-
-Under 'expression' different categories exist, namely 'tests', 'actions', 'global options', 'positional options' and 'operators'. Here we focus on tests but there are some relevant global and positional options that will be discussed at the end.
-
-## Test categories
+## All tests categorized
 
 I did a bit of categorizing to get the test expressions sorted. 
 
@@ -105,5 +106,34 @@ The -name test only tests the filename, not the path. It uses the bash shell pat
 ./kort.sh
 ```
 
+#### **-iname**
+
+Like -name but case insensitive
+
+#### **-lname** 
+
+Like name but only returns symbolic links. Doesn't go well with the -L flag.
+
+#### **-ilname
+
+Like -iname but only returns symbolic links, doesn't go well with the -L flag.
+
+#### **-path**
+
+Like -name and its derivatives, -path uses basic globbing. It examines the whole path, and `.` and `/` have their literal meaning so you can use them as characters. 
+
+The path to be examined is the path that starts at one of the starting points of the find command. Unless the starting point is '/', you will not examine the whole absolute path. 
+
+#### **-ipath**
+
+Same as -path but case-insensitive.
+
+#### **-regex**
+
+Like path, but you use an Emacs type regular expression. This provides extra possibilities at the cost of a more extensive syntax. The matching is done on the whole path, not just on the file name.
+
+#### **-iregex**
+
+Same as -regex but case-insensitive.
 
 
