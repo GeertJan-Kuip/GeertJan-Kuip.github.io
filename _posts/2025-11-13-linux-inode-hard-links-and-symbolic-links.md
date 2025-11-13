@@ -4,7 +4,7 @@ I stumbled upon a [YouTube video](https://www.youtube.com/watch?v=ScDv02ff8oc) f
 
 ## What an inode is
 
-For every file, no matter the type, Linux stores three things. There is the path, like `home/geert/scripts/myscript.sh` or `/var/lib`, then there is the inode, which contains the metadata but **not** the path or name of the file, and there is the actual content of the file. The path points to the inode and the inode points to the content/data. 
+For every file, no matter the type, Linux stores three things. There is the path, like `home/geert/scripts/myscript.sh` or `/var/lib`, then there is the inode, which contains the metadata but **not the path or name of the file**, and there is the actual content of the file. The path points to the inode and the inode points to the content/data. 
 
 ### Using `stat` to get Inode data
 
@@ -47,7 +47,9 @@ Change: 2025-11-13 19:15:06.114213728 +0000
  Birth: 2025-11-13 19:15:06.114213728 +0000
 ```
 
-What you see here is that files, directories and symbolic links give very similar output. Each has its own unique Inode number and there is a field that tells what type it is (there are more types than this). Furthermore, each of these three files has the same 'Device' value which indicates that they live on the same filesystem. This `8,1` value is sometimes represented as a large integer, Dave explains why these different forms are actually representing the same value. 
+What you see here is that files, directories and symbolic links give very similar output. Each has its own unique Inode number and there is a field that tells what type it is (there are more types than these 3). Furthermore, each of these three files has the same 'Device' value which indicates that they live on the same filesystem. This `8,1` value is sometimes represented as a large integer, Dave explains why these different forms are actually representing the same value. 
+
+### File size and character count
 
 A remarkable thing is that the 'Size' value equals the amount of characters in the contents of the regular file (so kort.sh has 583 characters) or, in the case of the symbolic link, the amount of characters of the file that the link points to (9 in this case). Because the symbolic link and its target reside in the same folder the full path is not included, but when they live in different directories it needs more bytes.
 
@@ -74,7 +76,7 @@ Change: 2025-10-06 10:00:15.206000000 +0000
 
 ### What a hard link is
 
-Now that we know how a symbolic or soft link works, and now that we have the example of the directory type that have an inode that is pointed to by multiple files, it is easier to understand what a hard lilnk is. A hard link is a regular file that points to the same inode, and therefore the same content, as another file. In Unix/Linux you can create such hard links yourself with command `ln <target> <link_name>`. If you remove either of the files, nothing happens to the underlying inode or datablocks, those will only be removed when no link points to the inode anymore. A sort of garbage collector is at work here.
+Now that we know how a symbolic or soft link works, and now that we have the example of the directory type that has an inode that is pointed to by multiple files, it is easier to understand what a hard lilnk is. A hard link is a regular file that points to the same inode, and therefore the same content, as another file. In Unix/Linux you can create such hard links yourself with command `ln <target> <link_name>`. If you remove either of the files, nothing happens to the underlying inode or datablocks, those will only be removed when no link points to the inode anymore. A sort of garbage collector is at work here.
 
 As an example, I did the following:
 
@@ -114,9 +116,9 @@ My name is Geert-Jan
 
 ### How paths are resolved
 
-If you want to access the contents of a file, no matter the type, Linux works itself through the path (well, not really, it is heavily optimized with all sorts of cache in smart trees and hashes etc). It starts at the beginning (/), reads the datablocks of this root directory and finds the next path element and the inode number, goes to that inode and finds the reference to its datablocks, searches for the next path element in those datablocks, finds its inode number, etc. 
+If you want to access the contents of a file, no matter the type, Linux works itself through the path (well, not really, it is heavily optimized with all sorts of cache in smart trees and hashes etc). It starts at the beginning (`/`), reads the binary datablocks of this root directory and finds the next path element and the inode number, goes to that inode and finds the reference to its datablocks, searches for the next path element in those datablocks, finds its inode number, etc. 
 
-Summary: the names of files annex path elements are found in the datablocks, in a list that links those path element names to their inode numbers.
+Summary: the names of files annex path elements are found in the datablocks, in some sort of list that links those path element names to their inode numbers.
 
 ### Timestamps
 
