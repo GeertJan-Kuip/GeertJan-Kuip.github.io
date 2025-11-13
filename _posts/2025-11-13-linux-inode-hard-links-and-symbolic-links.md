@@ -112,6 +112,12 @@ geertjan@geertjan-server:~/temp$ cat file1.txt
 My name is Geert-Jan
 ```
 
+### How paths are resolved
+
+If you want to access the contents of a file, no matter the type, Linux works itself through the path (well, not really, it is heavily optimized with all sorts of cache in smart trees and hashes etc). It starts at the beginning (/), reads the datablocks of this root directory and finds the next path element and the inode number, goes to that inode and finds the reference to its datablocks, searches for the next path element in those datablocks, finds its inode number, etc. 
+
+Summary: the names of files annex path elements are found in the datablocks, in a list that links those path element names to their inode numbers.
+
 ### Timestamps
 
 Unix/Linux stores different timestamps for creation, last modification, last change and last access. The difference between modification and change is that modification is about the datablocks while change is about the inode. The interesting thing is that, because the size of a file is stored in inode, every modification that results in a change in size, will also update the change timestamp. Dave remarked that he doesn't fully trust the timestamps and that he thinks they are quite expensive, because they need to be updated so often. The creation ('Birth') timestamp, which I considered relevant myself, does not have a flag or method in the find method, which I find odd but it might be that this timestamp is either not always available or simply distrusted.
