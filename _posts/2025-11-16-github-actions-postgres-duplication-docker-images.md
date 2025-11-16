@@ -89,8 +89,8 @@ jobs:
     runs-on: ubuntu-latest
     env:
       DB_URL: ${{ secrets.DB_TEST_URL }}
-      DB_USERNAME: ${{ secrets.DB_TEST_USERNAME }}
-      DB_PASSWORD: ${{ secrets.DB_TEST_PASSWORD }}
+      DB_USERNAME: ${{ secrets.DB_TEST_USER }}
+      DB_PASSWORD: ${{ secrets.DB_TEST_PASS }}
     steps:
       - uses: actions/checkout@v4
       - name: Build with Maven
