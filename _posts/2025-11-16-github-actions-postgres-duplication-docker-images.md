@@ -61,6 +61,42 @@ mytestdatabase=# \i mydumpfile.sql
 
 The description of the `\i` command is: _Reads input from the file filename and executes it as though it had been typed on the keyboard._. It means that it will recreate the database and that is exactly what you want. Btw the tables are created with SQL statements, the insertion of rows is done with a copy function which is much faster.
 
+### Securing database credentials
+
+In application.properties or its derivatives you should not find database credentials. They must be stored as GitHub Actions secrets, which you can set under the settings tab. You find a 'Secrets and variables' item on the left, with 'Actions' under it. This brings you to the page where you can set 'environment' and 'repository' secrets. CHoose the latter.
+
+A problem with application.properties and its derivatives is that the credentials must be valid, even when the app is running and testing on three different machines (home pc, GitHub runner and production server). To solve this problem you can set the values for database access for development/production and testing like this:
+
+```
+# application.properties
+
+spring.datasource.url=${DB_URL}
+spring.datasource.username=${DB_USER}
+spring.datasource.password=${DB_PASS}
+
+# application-test.properties
+
+spring.datasource.url=${DB_TEST_URL}
+spring.datasource.username=${DB_TEST_USER}
+spring.datasource.password=${DB_TEST_PASS}
+```
+
+Subsequently, you need to set those environment variables right in every environment where the app runs so that it has the appropriate credentials. On the local machine it means setting them as windows environment variables, on the production server it means either passing them into the container in which the Java app runs or in the main environment and then passing them when you run the app container. On GitHub Actions itself it means you need to store the required database credentials (only those for testing because that is all what happens on the GitHub Actions runner) and pass them as environment variables in the workflow file, like this:
+
+```
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    env:
+      DB_URL: ${{ secrets.DB_TEST_URL }}
+      DB_USERNAME: ${{ secrets.DB_TEST_USERNAME }}
+      DB_PASSWORD: ${{ secrets.DB_TEST_PASSWORD }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build with Maven
+        run: mvn clean verify
+``` 
+
 ### Firewall and PostgreSQL listen address
 
 The firewall settings can be adjusted on the console of my server. To give the outside world access, the port used on the container for the test db must allow access. ChatGPT suggested to limit this outer access to the IP range of GitHub Actions (you can google it I think) plus the IP address of your work pc. 
@@ -208,7 +244,9 @@ ENTRYPOINT ["java","-jar","app.jar"]
 
 I suspect that I can do without the COPY line but as the jar file already resides in /home/geertjan/deploy/app the WORKDIR directive should stay in place. I do not know if I can use wildcards in Dockerfiles, because that is what I would need to get rid of the long-name-that-I-do-not-know and replace it by app.jar.
 
+### Docker Hub as alternative solution
 
+Instead of copying the jar file to the production server and create an image there ChatGPT suggested a 'cleaner' solution, namely creating a Docker image on the GitHub Actions server, upload this file to Docker Hub in a personal account and then downloading it from there on the production server. I have an account now on Docker Hub and I tried it a week ago, it worked. But I hate to have so many platforms and accounts involved for relatively simple things so I do not know yet at which solution I will end.
 
 
 
