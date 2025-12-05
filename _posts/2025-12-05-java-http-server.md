@@ -41,5 +41,96 @@ To create a HttpContext instance, you need the createContext(..) method in the H
 
 This means that for every valid url on your site you need to generate a HttpContext instance that contains both the url that it applies to and the actions to be taken, described in the lambda expression.
 
+HttpContext objects are stored inside the HttpServer object. To remove them, you need to call the removeContext method on HttpServer.
+
+## Code by ChatGPT
+
+ChatGPT offered to write basic code to make the Http Server work. It took a while before I completely understood it, having lambda's as arguments always requires some more thinking. Anyhow, I'll show the code and will discuss it.
+
+### The Router class
+
+```
+import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpServer;
+
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.InetSocketAddress;
+import java.util.*;
+import java.util.regex.*;
+
+public class Router {
+
+    private final HttpServer server;
+    private final List<Route> routes = new ArrayList<>();
+
+    public Router(int port) throws IOException {
+        server = HttpServer.create(new InetSocketAddress(port), 0);
+        server.createContext("/", this::dispatch);
+    }
+
+    public void start() {
+        server.start();
+        System.out.println("Router started on port " + server.getAddress().getPort());
+    }
+
+    public void get(String path, RouteHandler handler) {
+        addRoute("GET", path, handler);
+    }
+
+    public void post(String path, RouteHandler handler) {
+        addRoute("POST", path, handler);
+    }
+
+    private void addRoute(String method, String path, RouteHandler handler) {
+        routes.add(new Route(method, compilePath(path), handler));
+    }
+
+    private Pattern compilePath(String path) {
+        // Convert "/users/{id}" into a regex "/users/(?<id>[^/]+)"
+        String regex = path.replaceAll("\\{([^/}]+)\\}", "(?<$1>[^/]+)");
+        return Pattern.compile("^" + regex + "$");
+    }
+
+    private void dispatch(HttpExchange exchange) throws IOException {
+        String method = exchange.getRequestMethod();
+        String rawPath = exchange.getRequestURI().getPath();
+
+        for (Route route : routes) {
+            if (route.method.equals(method)) {
+                Matcher m = route.path.matcher(rawPath);
+                if (m.matches()) {
+                    Map<String, String> pathParams = new HashMap<>();
+                    for (String name : route.path.namedGroups()) {
+                        pathParams.put(name, m.group(name));
+                    }
+
+                    route.handler.handle(exchange, pathParams);
+                    return;
+                }
+            }
+        }
+
+        byte[] msg = "Not Found".getBytes();
+        exchange.sendResponseHeaders(404, msg.length);
+        exchange.getResponseBody().write(msg);
+        exchange.close();
+    }
+
+    private static class Route {
+        String method;
+        Pattern path;
+        RouteHandler handler;
+
+        Route(String method, Pattern path, RouteHandler handler) {
+            this.method = method;
+            this.path = path;
+            this.handler = handler;
+        }
+    }
+}
+```
+
+Let's start at the top with the imports. Only classes HttpServer and HttpRequest are imported, as HttpContext is created with a method from HttpServer. 
 
 
