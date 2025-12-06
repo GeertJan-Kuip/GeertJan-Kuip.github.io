@@ -131,6 +131,163 @@ public class Router {
 }
 ```
 
-Let's start at the top with the imports. Only classes HttpServer and HttpRequest are imported, as HttpContext is created with a method from HttpServer. 
+### Imports
+
+Let's start at the top with the imports. Only classes HttpServer and HttpRequest are imported, as HttpContext is created with a method from HttpServer. So these two are the basic imports. Furthermore there is `import java.net.InetSocketAddress;`, which is a class needed as argument upon creating the HttpServer object. It contains both IP address and port number.
+
+### HttpContext
+
+It would be logical to provide a context for every endpoint you want to serve but ChatGPT proposes to only add one HttpContext using this line:
+
+```
+server.createContext("/", this::dispatch);
+```
+
+I asked about the logic and ChatGPT explained that this is a smart solution. As I understand it every request is handled by this context, more specifically by the `private void dispatch(HttpExchange exchange) throws IOException` method. This method has a signature identical to the method signature of the SAM (Single Abstract Method) in functional interface HttpHandler, which is the required argument:
+
+```
+@FunctionalInterface
+public interface HttpHandler {
+    void handle(HttpExchange exchange) throws IOException;
+}
+```
+
+I was not aware of it, I thought that the method used as argument should either be a lambda with the same arguments and return value as 'handle', or that you could provide an anonymous class based on HttpHandler. But I learned that you can provide a method that has the same signature (or actually, not everyting in the signature has to be completely identical, there is some refinement in the rules).
+
+The gist of this all is that the dispatch method does the actual routing. For clarity, here is the method:
+
+```
+    private void dispatch(HttpExchange exchange) throws IOException {
+        String method = exchange.getRequestMethod();
+        String rawPath = exchange.getRequestURI().getPath();
+
+        for (Route route : routes) {
+            if (route.method.equals(method)) {
+                Matcher m = route.path.matcher(rawPath);
+                if (m.matches()) {
+                    Map<String, String> pathParams = new HashMap<>();
+                    for (String name : route.path.namedGroups()) {
+                        pathParams.put(name, m.group(name));
+                    }
+
+                    route.handler.handle(exchange, pathParams);
+                    return;
+                }
+            }
+        }
+```
+
+So now, if any request comes in, it goes through this method, which compares its URI and method (GET or POST) with a list of Route objects. 
+
+### The Route object list
+
+The class contains this nested static class:
+
+```
+    private static class Route {
+        String method;
+        Pattern path;
+        RouteHandler handler;
+
+        Route(String method, Pattern path, RouteHandler handler) {
+            this.method = method;
+            this.path = path;
+            this.handler = handler;
+        }
+    }
+```
+
+It is just a container that can be compared to incoming requests (using method and path fields). If there is a match, the RouteHandler handler method is called.
+
+### RouteHandler
+
+To make it work, a definition of RouteHandler is required:
+
+```
+@FunctionalInterface
+public interface RouteHandler {
+    void handle(HttpExchange exchange, Map<String, String> pathParams) throws IOException;
+}
+```
+
+It is a functional interface with a SAM (Single Abstract Method) .handle(..). An implementation of this method is being called in the dispatch method once a match has been found between an incoming request and a Route object. The line in dispatch responsible for the call is this line:
+
+```
+route.handler.handle(exchange, pathParams);
+```
+
+### How the Route objects are created
+
+The Route objects define how specific requests are to be handled. The creation of Route objects happens in the main class, after the creation or the Router instance. This is the code for Main:
+
+```
+public class Main {
+    public static void main(String[] args) throws Exception {
+
+        Router router = new Router(80);   // your container maps this externally
+
+        router.get("/hello", (exchange, path) -> {
+            String response = "Hello!";
+            exchange.sendResponseHeaders(200, response.length());
+            exchange.getResponseBody().write(response.getBytes());
+            exchange.close();
+        });
+
+        // Example: /users/123
+        router.get("/users/{id}", (exchange, path) -> {
+            String userId = path.get("id");
+            String json = "{ \"user\": \"" + userId + "\" }";
+
+            exchange.getResponseHeaders().add("Content-Type", "application/json");
+            exchange.sendResponseHeaders(200, json.length());
+            exchange.getResponseBody().write(json.getBytes());
+            exchange.close();
+        });
+
+        // POST example
+        router.post("/users", (exchange, path) -> {
+            String jsonBody = RouterUtils.body(exchange);
+            // do something with it
+
+            String response = "Received POST: " + jsonBody;
+            exchange.sendResponseHeaders(200, response.length());
+            exchange.getResponseBody().write(response.getBytes());
+            exchange.close();
+        });
+
+        router.start();
+    }
+}
+```
+
+There are two methods from Router involved, namely 'get' for GET requests and 'post' for POST requests. Calling them creates a Route object containing method, path and RouteHandler method. So right now, the Main class provides the code that defines what would be in a Controller class if this was a Spring project.
+
+### Helper methods
+
+ChatGPT also provided two helper methods to assist in the process, one to extract query parameters and one to read the body of a POST request:
+
+```
+public static Map<String, String> queryParams(HttpExchange exchange) {
+    Map<String, String> params = new HashMap<>();
+    String query = exchange.getRequestURI().getQuery();
+    if (query != null) {
+        for (String pair : query.split("&")) {
+            String[] parts = pair.split("=");
+            if (parts.length == 2) {
+                params.put(parts[0], parts[1]);
+            }
+        }
+    }
+    return params;
+}
+```
+
+```
+public static String body(HttpExchange exchange) throws IOException {
+    return new String(exchange.getRequestBody().readAllBytes());
+}
+```
+
+This is what you get when not working in Spring. I'm gonna use this code as inspiration for the project and by studying it I learned more about this fine little httpserver package.
 
 
