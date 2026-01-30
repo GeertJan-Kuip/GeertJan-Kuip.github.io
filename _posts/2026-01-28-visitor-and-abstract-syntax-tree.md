@@ -240,6 +240,7 @@ As you see both methods are private. Contrary to the scan method, you will not c
     }
 ```
 
+If we go back to the implementation of the visit methods, we see that they have their own Tree type as argument, plus a generic type P as second argument. This second 
 
 
 
