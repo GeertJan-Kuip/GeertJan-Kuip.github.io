@@ -97,7 +97,7 @@ In these classes I have omitted the constructor and the getters and setters but 
 The next thing is the Visitor class, which implements the Visitor interface. 
 
 ```
-public class CarVisitor implements Visitor{
+public class FirstCarVisitor implements Visitor{
 
     @Override
     public visitEngine(CarEngine engine){
@@ -115,4 +115,37 @@ public class CarVisitor implements Visitor{
 }
 ```
 
-The essential thing is that 
+The essential thing is that there is a dedicated method for every specific CarPart object. In this example I have given each of them its own name, but it is also possible to name them the same so that the only difference between them is the argument type. The methods are then overloads of each other. 
+
+The last class to provide is the Car class. This class is the container that contains and structures all the different CarPart objects. It is good practice to have the Car class contain the method(s) needed to traverse the object structure. In this example the structure is very simple (just a list) but more tree-like structures are possible, and often more appropriate.
+
+```
+public class Car{
+
+    List<CarPart> carParts = new ArrayList<>();
+
+    public Car(CarPart engine, CarPart door){
+      
+        carParts.add(engine);
+        carParts.add(door);
+    } 
+
+    public void traverse(Visitor visitor)}
+        
+        for (CarPart carPart : carParts){
+            carPart.accept(visitor);
+        }
+    }
+}
+```
+
+And now the code to run the Visitor (assuming a Car object with all the parts has been created):
+
+```
+car.traverse(new FirstCarVisitor());
+```
+
+Upon running this, every CarPart in the Car object will have its acccept method being called with FirstCarVisitor as argument. Because FirstCarVisitor has a dedicated visit method for every CarPart, every CarPart will be affected in an appropriate way.
+
+
+
