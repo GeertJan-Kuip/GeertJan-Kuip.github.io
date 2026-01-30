@@ -161,9 +161,21 @@ What you can also do is provide empty default implementations for every visit me
 
 ## Visitor and Abstract Syntax Tree
 
-As mentioned, an important target for the Visitor pattern in Java is the Abstract Syntax Tree. The visitor implementation  used for this is slightly more complex than the example discussed before. 
+As mentioned, an important target for the Visitor pattern in Java is the Abstract Syntax Tree. The visitor implementation  used for this is more complex than the example discussed before. 
 
-What makes the AST special is that it is not stored in a single object like Car. The AST in Java is a collection of Tree objects that contain references to parent nodes and child nodes. Traversal of the tree structure is not stored in some method, but is done with a recursive process. 
+What makes the AST special is that it is not stored in a single object like Car. The AST in Java is a collection of Tree objects that contain references to parent nodes and child nodes. Traversal of the tree structure is not stored in some method, but is done with a recursive process. The code jumps from the root branch (CompilationUnitTree is the highest node in the hierarchy but you can start at a lower level), calls its accept method, then calls the methods that provide the references to the different types of children, calls their accept methods, calls the methods that provide the references to their children, calls their accept methods etcetera.
+
+This means that the traversal of the AST happens in a structured way. The nodes of the Tree are of a great number of subtypes and subsubtypes, and every type has its own defined set of children. 
+
+The implementation of this is rather extensive. There is a hierarchy of Tree interfaces, which are conveniently accessible, and behind these interfaces you can find classes that contain the under-the-hood implementations. These classes live in the 3500-line JCTree class (com.sun.tools.javac.tree) as static inner classes and have names like JCCompilationUnit, JCVariableDecl, JCClassDecl, JCBlock etc. The JCTree class is not meant for normal use, this is the disclaimer in the Javadoc comment:
+
+_This is NOT part of any supported API. If you write code that depends on this, you do so at your own risk. This code and its internal interfaces are subject to change or deletion without notice._
+
+To be able to access is you need an --add-export flag when you run or compile the code. To understand the specifics of Tree traversal you can get ahead by reading the code of the Tree interfaces (like ClassTree, BlockTree etc). You will see get-methods that provide access to the Tree elements that are considered valid children, given the way Java AST's are being structured.
+
+### Traversal of the AST
+
+As the Java Abstract Syntax Tree cannot be found in a single file but only exist as a collection of Tree objects referencing each other (implemented in obscure JCTree objects), the traversal of the AST is done in a rather sophisticated way that I found hard to figure out. It starts with 
 
 
 
