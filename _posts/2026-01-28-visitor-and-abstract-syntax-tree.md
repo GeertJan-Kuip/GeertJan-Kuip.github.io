@@ -143,9 +143,27 @@ And now the code to run the Visitor (assuming a Car object with all the parts ha
 
 ```
 car.traverse(new FirstCarVisitor());
+
+# sample output:
+Power: 97
+Weight: 145.8
+Color: green
+Kind of door: left front door
 ```
 
-Upon running this, every CarPart in the Car object will have its acccept method being called with FirstCarVisitor as argument. Because FirstCarVisitor has a dedicated visit method for every CarPart, every CarPart will be affected in an appropriate way.
+Upon running this, every CarPart in the Car object will have its acccept method being called with FirstCarVisitor as argument. Because FirstCarVisitor has a dedicated visit method for every CarPart, every CarPart will be affected in an appropriate way. To have other visit methods applied, just create another implementation of the Visitor interface and create a new set of visit methods.
+
+### Variations
+
+You can do things slightly differently, for example by not giving every visit method in FirstCarVisitor a different name. You can call them all just visit, the overloading will make sure that every CarPart will have the right overload selected, because the argument of every visit method tells which CarPart it should be applied on. That is the magic that happens because of 'this' in `visitor.visit(this).`
+
+What you can also do is provide empty default implementations for every visit method in the Visitor interface. When you want to create a Visitor implementation but are only interested in applying visit methods on a subset of the CarPart elements (only the doors but not the engine for example), you only have to write a visitDoor method and you won't have to bother about the visitEngine method.
+
+## Visitor and Abstract Syntax Tree
+
+As mentioned, an important target for the Visitor pattern in Java is the Abstract Syntax Tree. The visitor implementation  used for this is slightly more complex than the example discussed before. 
+
+What makes the AST special is that it is not stored in a single object like Car. The AST in Java is a collection of Tree objects that contain references to parent nodes and child nodes. Traversal of the tree structure is not stored in some method, but is done with a recursive process. 
 
 
 
