@@ -8,11 +8,11 @@ _Design Patterns_ describes the following objective of the Visitor pattern:
 
 _"Represents an operation to be performed on the elements of an object structure. Visitor lets you define a new operation without changing the classes of the elements on which it operates."_
 
-The book immediately uses the example of AST's to clarify the concept, meaning that the two are sort of naturally connected. In Java, Abstract syntax trees are collections of Java  objects that implement the Tree interface, directly or indirectly. There are [many subinterfaces](https://docs.oracle.com/javase/8/docs/jdk/api/javac/tree/com/sun/source/tree/Tree.html) but in the end, every element in the AST can be of type Tree. 
+The book uses the example of AST's to clarify the concept, meaning that the two are sort of naturally connected. In Java, Abstract syntax trees are collections of Java  objects that implement the Tree interface, directly or indirectly. There are [many subinterfaces](https://docs.oracle.com/javase/8/docs/jdk/api/javac/tree/com/sun/source/tree/Tree.html) but in the end, every element in the AST can be of type Tree. 
 
 ## Single dispatch, @Override and method overloading
 
-Java needs the Visitor pattern because it is a single dispatch language. The word 'dispatch' is about the question how and when Java decides which method should be applied to an object whose runtime type differs from its reference type. For example, when I have the following declaration:
+Java needs the Visitor pattern because it is a single dispatch language. The word 'dispatch' is about how and when Java decides which method should be applied to an object whose runtime type differs from its reference type. For example, when I have the following declaration:
 
 ```
 Animal cat = new Cat();
@@ -48,13 +48,71 @@ The Visitor pattern is sort of complex and would not be necessary if Java would 
 
 For Visitor to work in Java the following ingredients must be available:
 
-- An object structure consisting of elements that have different runtime types but can all be accessed by the same reference type (interface, superclass)
-- Some sort of method(s) that can traverse all these methods
-- A separate Visitor class that contains 
+- An object structure consisting of elements that have different runtime types but can all be accessed by the same reference type (interface, superclass).
+- An `accept(Visitor visitor)` method that is inherited and implemented by the elements of the object structure.
+- Some process that traverses the object structure, calling the `accept` method on any of the elements.
+- A separate Visitor class that contains overloaded `.visit(Element e)` methods for all the different runtime types in the object structure.
 
+### A basic implementation
 
-
+A basic implementation of the Visitor pattern can look like this. To clarify our intentions, we create two interfaces, one for the type of element that forms the basis of the aggregate object, and one for the visitor:
 
 ```
-List<String> myList = new ArrayList<>();
+public interface CarPart{
+    public void accept(Visitor visitor);
+}
+
+interface Visitor{
+    public visitEngine(CarEngine carEngine);
+    public visitDoor(CarDoor carDoor);
+}
 ```
+
+Next we provide the implementations for the CarPart elements. For brevity I limit myself to two different implementations:
+
+```
+public class CarEngine implements CarPart{
+
+    int horsePower;
+    double weight;
+    
+    public void accept(Visitor visitor){
+         visitor.visitEngine(this);
+    }
+}
+
+public class CarDoor implements CarPart{
+
+    String color;
+    DoorKind doorKind;
+    
+    public void accept(Visitor visitor){
+         visitor.visitDoor(this);
+    }
+}
+```
+
+In these classes I have omitted the constructor and the getters and setters but by adding some instance field I hope to make clear that the different CarPart implementations are really different and need to be treated as such.
+
+The next thing is the Visitor class, which implements the Visitor interface. 
+
+```
+public class CarVisitor implements Visitor{
+
+    @Override
+    public visitEngine(CarEngine engine){
+
+        System.out.println("Power: " + engine.horsepower);
+        System.out.println("Weight: " + engine.weight);
+    }
+
+    @Override
+    public visitDoor(CarDoor door){
+
+        System.out.println("Color: " + door.color);
+        System.out.println("Kind of door: " + door.doorKind);
+    }
+}
+```
+
+The essential thing is that 
