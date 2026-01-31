@@ -259,31 +259,64 @@ As you can see, `reduce` is public, indicating that you can call or overwrite it
 ```
 
 But as the code will iterate over all the StatementTrees in the BlockTree object, there will be aggregation anyhow, it only happens deeper in the nested structure.
- 
-
 
 Calling it makes no sense but if you (1) make sure your 'visit' and/or 'scan' implementation(s) have a return value and (2) your reduce method aggregates two values of that type and (3) you expect the aggregate return value from the 'scan' method and (4) you set the correct type as generic method parameter in the 
 
 If we go back to the implementation of the visit and scan methods, we see that they have their own Tree type as argument, plus a generic type P as second argument. This second argument can be discarded by setting it to `Void` (note the capital). The generic P allows you to add an extra 'context' argument to spice up your process
 
+### Program flow during traversal
 
+To get a feel of how recursion of the Java AST works, let's see how it jumps from method to method. We are not going to use a custom Visitor, so the default visit methods from TreeScanner will be used. No side effects will occur. 
 
-    @Override
-    public R visitNewClass(NewClassTree node, P p) {
-        R r = scan(node.getEnclosingExpression(), p);
-        r = scanAndReduce(node.getIdentifier(), p, r);
-        r = scanAndReduce(node.getTypeArguments(), p, r);
-        r = scanAndReduce(node.getArguments(), p, r);
-        r = scanAndReduce(node.getClassBody(), p, r);
-        return r;
-    }
+```
+# my code
+CompilationUnitTree cuTree;   // let's assume we have this root tree object 
+new TreeScanner().scan(cuTree,  null);
 
+# TreeScanner
+public R scan(Tree tree, P p) {
+    return (tree == null) ? null : tree.accept(this, p);
+}
 
+# JCTree.JCCompilationUnit
+public <R,D> R accept(TreeVisitor<R,D> v, D d) {
+    return v.visitCompilationUnit(this, d);
+}
 
-What the accept method returns depends on the Visitor implementation you provide. If you do not override 
+# TreeScanner
+public R visitCompilationUnit(CompilationUnitTree node, P p) {
+    R r = scan(node.getPackage(), p);
+    r = scanAndReduce(node.getImports(), p, r);
+    r = scanAndReduce(node.getTypeDecls(), p, r);
+    r = scanAndReduce(node.getModule(), p, r);
+    return r;
+}
 
+# JCTree.JCCompilationUnit
+public JCPackageDecl getPackage() {
+    // PackageDecl must be the first entry if it exists
+    if (!defs.isEmpty() && defs.head.hasTag(PACKAGEDEF))
+        return (JCPackageDecl)defs.head;
+    return null;
+}
 
-get methods that 
+# TreeScanner. Scans JCPackageDecl tree type
+public R scan(Tree tree, P p) {
+    return (tree == null) ? null : tree.accept(this, p);
+}
 
+# JCTree.JCPackageDecl
+public <R,D> R accept(TreeVisitor<R,D> v, D d) {
+    return v.visitPackage(this, d);
+}
+
+# TreeScanner
+public R visitPackage(PackageTree node, P p) {
+    R r = scan(node.getAnnotations(), p);
+    r = scanAndReduce(node.getPackageName(), p, r);
+    return r;
+}
+
+```
 
 
