@@ -161,15 +161,15 @@ What you can also do is provide empty default implementations for every visit me
 
 ## Visitor and Abstract Syntax Tree
 
-As mentioned, an important target for the Visitor pattern in Java is the Abstract Syntax Tree. The visitor implementation  used for this is more complex than the example discussed before. 
+As mentioned, an important target for the Visitor pattern in Java is the Abstract Syntax Tree. The visitor implementation  used for this is more complex than the example discussed above. 
 
-What makes the AST special is that it is not stored in a single object like Car. The AST in Java is a collection of Tree objects that contain references to parent nodes and child nodes. Traversal of the tree structure is not stored in some method, but is done with a recursive process. The code jumps from the root branch (CompilationUnitTree is the highest node in the hierarchy but you can start at a lower level), calls its accept method, then calls the methods that provide the references to the different types of children, calls their accept methods, calls the methods that provide the references to their children, calls their accept methods etcetera. 
+What makes the AST special is that it is not stored in a single object like Car. The AST in Java is a collection of Tree objects that contain references to child nodes. Downward traversal of the tree structure is not stored in some method, but is done with a recursive process. The code jumps from the root branch (CompilationUnitTree is the highest node in the hierarchy but you can start at a lower level), calls its accept method, then calls the methods that provide the references to the different types of children, calls their accept methods, calls the methods that provide the references to their children, calls their accept methods etcetera. 
 
 This means that the traversal of the AST happens in a structured way. The nodes of the Tree are of a great number of subtypes and subsubtypes, and every type has its own defined set of children. 
 
 ### Tree objects and their JC-implemenations
 
-The implementation of this is rather extensive. There is a hierarchy of Tree interfaces, which are conveniently accessible, and behind these interfaces you can find classes that contain the under-the-hood implementations. These classes live in the 3500-line JCTree class (com.sun.tools.javac.tree) as static inner classes and have names like JCCompilationUnit, JCVariableDecl, JCClassDecl, JCBlock etc. The JCTree class is not meant for normal use, this is the disclaimer in the Javadoc comment:
+The implementation of this is rather extensive. There is a hierarchy of Tree interfaces, which are conveniently accessible, and behind these interfaces you can find classes that contain the under-the-hood implementations. These classes live in the 3500-line JCTree class (com.sun.tools.javac.tree) as static inner classes and have names like JCCompilationUnit, JCVariableDecl, JCClassDecl, JCBlock etc. The JCTree class is not meant for regular use, this is the disclaimer in the Javadoc comment:
 
 _This is NOT part of any supported API. If you write code that depends on this, you do so at your own risk. This code and its internal interfaces are subject to change or deletion without notice._
 
@@ -178,6 +178,8 @@ To be able to access is you need an --add-export flag when you run or compile th
 ### Traversal of the AST
 
 As the Java Abstract Syntax Tree cannot be found in a single file but only exist as a collection of Tree objects referencing each other (implemented in obscure JCTree objects), the traversal of the AST is done in a rather sophisticated way that I found hard to figure out. Traversal lives in the Visitor class, which in Java is called TreeScanner. TreeScanner implements TreeVisitor, an interface that contains all abstract Visit methods with signatures like `R visitUnary(UnaryTree node, P p);`. I counted more than 60 methods, each for a specific Tree subtype.
+
+#### Default implementations of Visitor
 
 The implementations of the TreeVisitor methods live in TreeScanner, and look like this:
 
@@ -200,6 +202,8 @@ The implementations of the TreeVisitor methods live in TreeScanner, and look lik
     }
 ```
 
+#### The _scan_ methods
+
 As you see, every method body contains the methods 'scan' and 'scanAndReduce'. The scan method has two overloads, one for a single Tree and one for an iterable of Trees. In both cases, the accept method is called on the Tree:
 
 ```
@@ -220,6 +224,8 @@ As you see, every method body contains the methods 'scan' and 'scanAndReduce'. T
     }
 ```
 
+#### The _scanAndReduce_ methods
+
 While the scan method is used for the first child of a Tree node, the scanAndReduce method is used for subsequent Tree nodes. Reduction can be used to aggragate the return values of the scan method, and that return value is the value that is returned when calling the accept method on a Tree. These are the overloads of scanAndReduce:
 
 ```
@@ -232,7 +238,11 @@ While the scan method is used for the first child of a Tree node, the scanAndRed
     }
 ```
 
-As you see both methods are private. Contrary to the scan method, you will not call these methods from the outside. The first scanAndReduce is used for a single Tree node, the second for an iterable of Tree nodes. Both implementations are a combi of the scan and the reduce method. The reduce method, the last method that doesn't have visit in the name, is this:
+As you see both methods are private. Contrary to the scan method, you will not call these methods from the outside. The first scanAndReduce is used for a single Tree node, the second for an iterable of Tree nodes. Both implementations are a combi of the scan and the reduce method. 
+
+#### The _reduce_ method
+
+The reduce method, the last method that doesn't have visit in the name, has this default implementation:
 
 ```
     public R reduce(R r1, R r2) {
@@ -240,7 +250,21 @@ As you see both methods are private. Contrary to the scan method, you will not c
     }
 ```
 
-If we go back to the implementation of the visit methods, we see that they have their own Tree type as argument, plus a generic type P as second argument. This second 
+As you can see, `reduce` is public, indicating that you can call or overwrite it. As we have seen before, It is called from the scanAndReduce methods, meaning that it is always called except in a case where a visit method does only one 'scan' call, like here:
+
+```
+    public R visitBlock(BlockTree node, P p) {
+        return scan(node.getStatements(), p);
+    }
+```
+
+But as the code will iterate over all the StatementTrees in the BlockTree object, there will be aggregation anyhow, it only happens deeper in the nested structure.
+ 
+
+
+Calling it makes no sense but if you (1) make sure your 'visit' and/or 'scan' implementation(s) have a return value and (2) your reduce method aggregates two values of that type and (3) you expect the aggregate return value from the 'scan' method and (4) you set the correct type as generic method parameter in the 
+
+If we go back to the implementation of the visit and scan methods, we see that they have their own Tree type as argument, plus a generic type P as second argument. This second argument can be discarded by setting it to `Void` (note the capital). The generic P allows you to add an extra 'context' argument to spice up your process
 
 
 
