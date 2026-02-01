@@ -269,8 +269,8 @@ If we go back to the implementation of the visit and scan methods, we see that t
 To get a feel of how recursion of the Java AST works, let's see how it jumps from method to method. We are not going to use a custom Visitor, so the default visit methods from TreeScanner will be used. No side effects will occur. 
 
 ```
-# my code
 CompilationUnitTree cuTree;   // let's assume we have this root tree object 
+
 new TreeScanner().scan(cuTree,  null);
 
 # TreeScanner
@@ -317,6 +317,38 @@ public R visitPackage(PackageTree node, P p) {
     return r;
 }
 
+# JCTree.JCPackageDecl
+public List<JCAnnotation> getAnnotations() {
+    return annotations;
+}
+
+# TreeScanner
+public R scan(Iterable<? extends Tree> nodes, P p) {
+    R r = null;
+    if (nodes != null) {
+        boolean first = true;
+        for (Tree node : nodes) {
+            r = (first ? scan(node, p) : scanAndReduce(node, p, r));
+            first = false;
+        }
+   }
+   return r;
+}
+
+# etcetera
 ```
 
+As you see above, the code oscilates between TreeScanner and the static inner classes of JCTree. In TreeScanner the code alternates between 'visit..' and 'scan..' methods. In JCTree it alternates between 'accept' and 'get..' methods. I find it incredibly smart and still hard to grasp intuitively, but it works.
+
+#### Hitting the bottom of the tree
+
+The flow pattern above does not end up at a last leaf in the tree. But it is interesting to see what happens when a bottom node is reached. This is the code of visitIdentifier, a tree without subtrees:
+
+```
+public R visitIdentifier(IdentifierTree node, P p) {
+    return null;
+}
+```
+
+The `return null;` line means that a value is returned, which means that the `accept` method which called it will also return null to the `scan` method that called it. Or, if instead of the `scan` method the `scanAndReduce` method did the `accept` call, the R value might be returned because of the 'reduce' process. In any case, the `scan` or `scanAndReduce` method in the `visit` body will return something, and as soon as this happens, the code jumps to a next line.
 
