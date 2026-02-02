@@ -340,6 +340,14 @@ public R scan(Iterable<? extends Tree> nodes, P p) {
 
 As you see above, the code oscilates between TreeScanner and the static inner classes of JCTree. In TreeScanner the code alternates between 'visit..' and 'scan..' methods. In JCTree it alternates between 'accept' and 'get..' methods. I find it incredibly smart and still hard to grasp intuitively, but it works.
 
+```
+scan -> accept -> visit -> get -> ...
+
+or
+
+scan(Tree) -> accept(Visitor) -> visit(Tree) -> get()
+```
+
 #### Hitting the bottom of the tree
 
 The flow pattern above does not end up at a last leaf in the tree. But it is interesting to see what happens when a bottom node is reached. This is the code of visitIdentifier, a tree without subtrees:
@@ -351,4 +359,12 @@ public R visitIdentifier(IdentifierTree node, P p) {
 ```
 
 The `return null;` line means that a value is returned, which means that the `accept` method which called it will also return null to the `scan` method that called it. Or, if instead of the `scan` method the `scanAndReduce` method did the `accept` call, the R value might be returned because of the 'reduce' process. In any case, the `scan` or `scanAndReduce` method in the `visit` body will return something, and as soon as this happens, the code jumps to a next line.
+
+In terms of the previous paragraph, this is the flow:
+
+```
+scan(Tree) -> accept(Visitor) -> visit(Tree) -> return null -> scanAndReduce(Tree) -> accept(Visitor) -> ...
+```
+
+This is it for now, I'll be writing more on this and related topics.
 
