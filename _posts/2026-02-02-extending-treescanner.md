@@ -61,7 +61,7 @@ public class MyCustomScanner extends TreeScanner<Void,Void> {
 }
 ```
 
-### Overriding a visit method
+## Overriding a visit method
 
 TreeScanner contains many visit methods and you can override one or more of them to insert custom code. This is a very basic example:
 
@@ -77,7 +77,7 @@ The interesting thing is the return statement. In the previous blog post we saw 
 
 Other remarkable elements in this overridden method are the return type (`Void`) and the second argument, `Void p`. We will get back to that later.
 
-### Overriding the scan method
+## Overriding the scan method
 
 Below is an overridden scan method. Like the overridden visit method, it has a return statement with 'super.scan' in it, which is just meant to not interrupt the traversal process. The `getKind` method is one of two methods found in interface Tree, the other being `accept`. These are the methods applicable to any Tree, while child interfaces have extra methods fitting their specific role and characteristics.
 
@@ -91,7 +91,7 @@ Below is an overridden scan method. Like the overridden visit method, it has a r
     }
 ```
 
-### Overriding the reduce method
+## Overriding the reduce method
 
 The reduce method can as well be overridden. The default is this, it does not reduce anything as r2 is not used:
 
@@ -121,4 +121,133 @@ If you override, you must account for the fact that any of the two arguments can
 This implicates that the return value of reduce is only null if both r1 and r2 are null. It also means that no matter how many of the scan and scanAndReduce methods return null, it is still possible to get a non-null aggragate result.
 
 To get a non-null result, it is required to tell Java what the return type must be, ie provide a specific type for the generic type parameter R. Furthermore it is required to provide code in the overridden reduce method that combines r1 and r2. Lastly, at least one of the visit methods must return a non-null value and have a signature with a type equivalent to the return type of the reduce method.
+
+### Example
+
+The code below shows an example of an ScanC class that extends TreeScanner and manages to collect an aggregate result. This aggregate result has the form of a list of Strings, whereby the strings are the names of the methods in the CompilationUnitTree that is being traversed. 
+
+```
+public class ScannerC extends TreeScanner<List<String>,Void> {
+
+    @Override
+    public List<String> reduce(List<String> r1, List<String> r2){
+
+        if (r1 == null) return r2;
+        if (r2 == null) return r1;
+
+        r1.addAll(r2);
+        return r1;
+    }
+
+    @Override
+    public List<String> visitMethod(MethodTree node, Void p){
+
+        super.visitMethod(node, p);  // to keep traversal going
+        return new ArrayList<>(Arrays.asList(node.getName().toString()));
+    }
+}
+```
+
+Be aware that `List<String>` must be the first type parameter, as the first type parameter is R. Note that this is the signature of TreeScanner:
+
+```
+public class TreeScanner<R,P> implements TreeVisitor<R,P> {
+```
+
+`List<String>` must as well be chosen as type for the return value and the two arguments of reduce, and as return method of the visit method that you overwrite.
+
+## Collecting data: R or side-effect
+
+There are two ways to retrieve data from a parse tree. You can collect it with the generic R parameter, using reduce similarly to the example given above. An easier way is to not override the reduce method, keep the return values of scan and/or visit Void, and add lines in either the scan or visit method(s) that mutate an instance variable in your custom subclass that extends TreeScanner.
+
+Below is an example where information retrieved by the scan method is added to an instance field of type `List<Tree.Kind>`:
+
+```
+public class ScannerA extends TreeScanner<Void,Void> {
+
+    List<Tree.Kind> collectedTreeKinds = new ArrayList<>();
+
+    @Override
+    public Void scan(Tree tree, Void p) {
+        if (tree != null) {
+
+            collectedTreeKinds.add(tree.getKind());
+        }
+        return super.scan(tree, p); // walk children
+    }
+}
+
+# result for a single tiny .java file:
+[COMPILATION_UNIT, PACKAGE, MEMBER_SELECT, MEMBER_SELECT, IDENTIFIER, INTERFACE, MODIFIERS, METHOD, MODIFIERS, PRIMITIVE_TYPE]
+```
+
+The collection of values is not done via R but as a side effect of the visit method. The code that starts the process looks like this:
+
+```
+    ScannerA scannerA = new ScannerA();
+    scannerA.scan(cu, null);
+    System.out.println(scannerA.collectedTreeKinds);
+```
+
+Another possibility is to overwrite one or more visit methods:
+
+```
+public class ScannerC extends TreeScanner<Void,Void> {
+
+    List<String> collectedValues = new ArrayList<>();
+
+    @Override
+    public Void visitMethod(MethodTree node, Void p){
+
+        String returnType = "void";
+
+        String methodName = node.getName().toString();
+        if (node.getReturnType() != null){
+            returnType=node.getReturnType().toString();
+        };
+        collectedValues.add(methodName + ": returns " + returnType);
+
+        return super.visitMethod(node, p);
+    }
+}
+
+# result for small class:
+[<init>: returns void, getSomeString: returns String, greet: returns void]
+```
+
+ChatGPT told me that collecting values using side effect is more common than working with R, and I understand why. You do not have to bother about the reduce method, about setting the generic types correctly and you can collect as many items of as many types as you want. 
+
+## The generic P parameter
+
+Not only is there a generic R that can be used to collect aggragate values, there is also a generic P that can be used to provide context. This P is found everywhere:
+
+```
+# The TreeScanner class declaration
+public class TreeScanner<R,P> implements TreeVisitor<R,P> 
+
+# scan method
+    public R scan(Tree tree, P p) {
+        return (tree == null) ? null : tree.accept(this, p);
+    }
+
+# scanAndReduce
+    private R scanAndReduce(Tree node, P p, R r) {
+        return reduce(scan(node, p), r);
+    }
+
+# all visit methods
+    @Override
+    public R visitCompilationUnit(CompilationUnitTree node, P p) {
+        R r = scan(node.getPackage(), p);
+        r = scanAndReduce(node.getImports(), p, r);
+        r = scanAndReduce(node.getTypeDecls(), p, r);
+        r = scanAndReduce(node.getModule(), p, r);
+        return r;
+    }
+```
+
+The only method not having the P generic type parameter is the reduce method.
+
+
+
 
