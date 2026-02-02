@@ -52,8 +52,45 @@ If you only want to work with the parsed tree, and are not interested in Symbol 
 
 TreeScanner is the class that orchestrates the traversal of the AST's. If you create an instance of it and call `scan` on it with the CompilationUnitTree object of your file as first argument, all Tree nodes will be visited. As the visit methods do not do anything with the Trees, it does not give you any result. If you do want a result, ie  extraact information from the AST, you need to create a subclass of TreeScanner and overwrite its methods. The candidate methods to overwrite are scan, visit and reduce.
 
-## Overriding visit
+This is how an override looks like:
 
+```
+public class MyCustomScanner extends TreeScanner<Void,Void> {
+    
+    // insert overrides here
+}
+```
 
+### Overriding a visit method
+
+TreeScanner contains many visit methods and you can override one or more of them to insert custom code. This is a very basic example:
+
+```
+    @Override
+    public Void visitClass(ClassTree node, Void p) {
+        System.out.println("Class: " + node.getSimpleName());
+        return super.visitClass(node, p);
+    }
+```
+
+The interesting thing is the return statement. In the previous blog post we saw that traversal of the tree required that the visit methods contained 'get' methods to provide new child trees to scan. If you simply override a visit method without keeping this get methods intact, the traversal will stop which is probably not what you want. The return statement calls the implementation of the parent method in TreeScanner, and as that parent method has all the get methods, traversal will proceed as normal. Basically the only thing that is added to the traversal process is the line `System.out.println("Class: " + node.getSimpleName());`.
+
+Other remarkable elements in this overridden method are the return type (`Void`) and the second argument, `Void p`. We will get back to that later.
+
+### Overridng the scan method
+
+Below is an overridden scan method. Like the overridden visit method, it has a return statement with 'super.scan' in it, which is just meant to not interrupt the traversal process. The `getKind` method is one of two methods found in interface Tree, the other being `accept`. These are the methods applicable to any Tree, while child interfaces have extra methods fitting their specific role and characteristics.
+
+```
+    @Override
+    public Void scan(Tree tree, Void p) {
+        if (tree != null) {
+            System.out.println(tree.getKind() + ":" + tree.getClass().toString());
+        }
+        return super.scan(tree, p);
+    }
+```
+
+### Overriding the reduce method
 
 
