@@ -77,7 +77,7 @@ The interesting thing is the return statement. In the previous blog post we saw 
 
 Other remarkable elements in this overridden method are the return type (`Void`) and the second argument, `Void p`. We will get back to that later.
 
-### Overridng the scan method
+### Overriding the scan method
 
 Below is an overridden scan method. Like the overridden visit method, it has a return statement with 'super.scan' in it, which is just meant to not interrupt the traversal process. The `getKind` method is one of two methods found in interface Tree, the other being `accept`. These are the methods applicable to any Tree, while child interfaces have extra methods fitting their specific role and characteristics.
 
@@ -93,4 +93,32 @@ Below is an overridden scan method. Like the overridden visit method, it has a r
 
 ### Overriding the reduce method
 
+The reduce method can as well be overridden. The default is this, it does not reduce anything as r2 is not used:
+
+```
+    public R reduce(R r1, R r2) {
+        return r1;
+    }
+```
+
+To understand what the role is of the reduce method, let's look at the scanAndReduce method for single Tree objects:
+
+```
+    private R scanAndReduce(Iterable<? extends Tree> nodes, P p, R r) {
+        return reduce(scan(nodes, p), r);
+    }
+```
+
+The second value is the aggregated value of previous scans, while the first is the value returned by the current scan.
+
+If you override, you must account for the fact that any of the two arguments can be null. ChatGPT advised me to start any override of reduce like this:
+
+```
+    if (r1 == null) return r2;
+    if (r2 == null) return r1;
+```
+
+This implicates that the return value of reduce is only null if both r1 and r2 are null. It also means that no matter how many of the scan and scanAndReduce methods return null, it is still possible to get a non-null aggragate result.
+
+To get a non-null result, it is required to tell Java what the return type must be, ie provide a specific type for the generic type parameter R. Furthermore it is required to provide code in the overridden reduce method that combines r1 and r2. Lastly, at least one of the visit methods must return a non-null value and have a signature with a type equivalent to the return type of the reduce method.
 
