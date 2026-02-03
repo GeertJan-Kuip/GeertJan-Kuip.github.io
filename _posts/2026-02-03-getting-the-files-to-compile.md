@@ -34,3 +34,133 @@ public interface JavaFileObject extends FileObject {
 )
 ```
 
+JavaFileObject extends interface FileObject, that also lives in package javax.tools. This is the compact version of FileObject:
+
+```
+public interface FileObject {
+
+    URI toUri();
+    String getName();
+    InputStream openInputStream() throws IOException;
+    OutputStream openOutputStream() throws IOException;
+    Reader openReader(boolean ignoreEncodingErrors) throws IOException;
+    CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException;
+    Writer openWriter() throws IOException;
+    long getLastModified();
+    boolean delete();
+}
+```
+
+None of these two interfaces provides any implementation, but then we have SimpleJavaFileObject, which lives in javax.tools as well:
+
+```
+public class SimpleJavaFileObject implements JavaFileObject {
+
+    protected final URI uri;
+    protected final Kind kind;
+
+    protected SimpleJavaFileObject(URI uri, Kind kind) {
+        Objects.requireNonNull(uri);
+        Objects.requireNonNull(kind);
+        if (uri.getPath() == null)
+            throw new IllegalArgumentException("URI must have a path: " + uri);
+        this.uri = uri;
+        this.kind = kind;
+    }
+
+    @Override
+    public URI toUri() {
+        return uri;
+    }
+
+    @Override
+    public String getName() {
+        return toUri().getPath();
+    }
+
+    @Override
+    public InputStream openInputStream() throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public OutputStream openOutputStream() throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Reader openReader(boolean ignoreEncodingErrors) throws IOException {
+        CharSequence charContent = getCharContent(ignoreEncodingErrors);
+        if (charContent == null)
+            throw new UnsupportedOperationException();
+        if (charContent instanceof CharBuffer buffer && buffer.hasArray()) {
+            return new CharArrayReader(buffer.array());
+        }
+        return new StringReader(charContent.toString());
+    }
+
+    @Override
+    public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+
+    @Override
+    public Writer openWriter() throws IOException {
+        return new OutputStreamWriter(openOutputStream());
+    }
+
+    @Override
+    public long getLastModified() {
+        return 0L;
+    }
+
+    @Override
+    public boolean delete() {
+        return false;
+    }
+
+    @Override
+    public Kind getKind() {
+        return kind;
+    }
+
+    @Override
+    public boolean isNameCompatible(String simpleName, Kind kind) {
+        String baseName = simpleName + kind.extension;
+        return kind.equals(getKind())
+            && (baseName.equals(toUri().getPath())
+                || toUri().getPath().endsWith("/" + baseName));
+    }
+
+    @Override
+    public NestingKind getNestingKind() { return null; }
+
+    @Override
+    public Modifier getAccessLevel()  { return null; }
+
+    @Override
+    public String toString() {
+        return getClass().getName() + "[" + toUri() + "]";
+    }
+}
+```
+
+The relevant part is the protected constructer, that allows for extending this class. The two instance variables 'uri' and 'kind' are set by the arguments of the constructor and cannot be null. The URI variable must have a path. Both uri and path can be accessed with a getter. Most other methods do not have a workable implementation, except for getName, openReader, openWriter and toString. 
+
+### What the JavaCompiler needs
+
+The JavaCompiler interface, also in javax.tools, has a method that returns a CompilationTask object. This method is needed if you want to compile things, we have encountered it in the previous blog post. This is its source code:
+
+```
+    CompilationTask getTask(Writer out,
+                            JavaFileManager fileManager,
+                            DiagnosticListener<? super JavaFileObject> diagnosticListener,
+                            Iterable<String> options,
+                            Iterable<String> classes,
+                            Iterable<? extends JavaFileObject> compilationUnits);
+```
+
+As you see, the last argument is `Iterable<? extends JavaFileObject>` which means that we either need to create JavaFileObjects from our .java or .class files, or files that descend from JavaFileObject. To create these objects, we need an implementation of it, and that is what we use SimpleJavaFileObject for. We can extend this SimpleJavaFileObject to get more or improved implementation, or we can just work with SimpleJavaFileObject. 
+
+In the code I used 
+
