@@ -160,7 +160,53 @@ The JavaCompiler interface, also in javax.tools, has a method that returns a Com
                             Iterable<? extends JavaFileObject> compilationUnits);
 ```
 
-As you see, the last argument is `Iterable<? extends JavaFileObject>` which means that we either need to create JavaFileObjects from our .java or .class files, or files that descend from JavaFileObject. To create these objects, we need an implementation of it, and that is what we use SimpleJavaFileObject for. We can extend this SimpleJavaFileObject to get more or improved implementation, or we can just work with SimpleJavaFileObject. 
+As you see, the last argument is `Iterable<? extends JavaFileObject>` which means that we either need to create JavaFileObjects from our .java or .class files, or files that descend from JavaFileObject. To create these objects, we need an implementation of it, and that is what we use SimpleJavaFileObject for. 
 
-In the code I used 
+### Using SimpleJavaFileObject
+
+SimpleJavaFileObject is designed in such a way that when you implement it, you will create a type that contains exactly the fields and methods that are required to have it work well as input to the getTask(..) method. Once you extend SimpleJavaFileObject, you need to provide a constructor that calls the parent constructor (via super). This is because SimpleJavaFileObject lacks a no-argument constructor. 
+
+Furthermore you need to implement one method, which is really being used by the getTask method. It is this one:
+
+```
+CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException;
+```
+
+SimpleJavaFileObject has an implementation of this method but it does only throw an error, which means code will fail at runtime:
+
+```
+    @Override
+    public CharSequence getCharContent(boolean ignoreEncodingErrors) throws IOException {
+        throw new UnsupportedOperationException();
+    }
+```
+
+The implementation I used in my experiments looks like this:
+
+```
+public class StringTypeJavaFileObject extends SimpleJavaFileObject {
+
+    // The parent object has two private instance variables, namely URI and Kind
+
+    private final String code;
+
+    public StringTypeJavaFileObject(String className, String code) {
+        super(URI.create("string:///" + className.replace('.', '/') +
+                        JavaFileObject.Kind.SOURCE.extension),
+                Kind.SOURCE);
+        this.code = code;
+    }
+
+    @Override
+    public CharSequence getCharContent(boolean ignoreEncodingErrors) {
+        return code;
+    }
+}
+```
+
+Here you see that, to make the constructor work, the two-argument parent constructor is being called and it sets the inherited instance variables `protected final URI uri` and `protected final Kind kind`. An extra instance field `private final String code` is added and used as return value for the getCharContent(..) method. 
+
+#### `URI.create("string:///" + className.replace('.', '/')`
+
+I had question sabut this first argument in the super constructor. ChatGPT told me that the generated URI is not being used as a real location but as a sort of valid name. The first part, `string://`, has no specific meaning in URI-land and the last part is a path that in this case does not have to point to something real.
 
