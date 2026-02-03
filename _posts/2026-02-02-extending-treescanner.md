@@ -1,18 +1,20 @@
 # Extending TreeScanner
 
-If you want to analyze Java source code, you can get access to them by parsing the .java files and then extending TreeScanner to walk the parse tree. TreeScanner is a class in com.sun.source.util and as this is an exported package, you can work with it without problems. Extending TreeScanner allows you to provide override methods for the scan method, the reduce method and all the visit methods. 
+If you want to analyze Java source code, you can get access to them by first parsing the .java files and then extending the TreeScanner class to walk the parse tree. TreeScanner is a class in com.sun.source.util and as this is an exported package, you can work with the public classes in it without problems. 
+
+Extending TreeScanner allows you to provide override methods for the scan method, the reduce method and all the visit methods, and that is exactly what you need to retrieve useful information from Java's abstract syntax trees.
 
 ## Traversal of the Abstract Syntax Tree
 
-In the previous blog post we saw how the parse tree is being traversed. The flow oscillates between TreeScanner and the static subclasses of JCTree, summarized as this, whereby scan and visit are found in TreeScanner and accept and get in the JCTree subclass:
+In the previous blog post we saw how the parse tree is being traversed. The flow oscillates between TreeScanner and the static subclasses of JCTree, summarized in the line written below, whereby scan and visit are found in TreeScanner and accept and get in the JCTree subclass:
 
 ```
 scan(Tree) -> accept(Visitor) -> visit(Tree) -> node.get() -> ...
 ```
 
-In Java's implementation, the scan method has two overloads, one being used if the first argument is of type `Tree` and one being used if the first argument is Iterable<? extends Tree>. This is required because node.get... can return a single Tree or an iterable of Trees.
+In Java's implementation, the `scan` method has two overloads, one being used if the first argument is of type `Tree` and one being used if the first argument is of type `Iterable<? extends Tree>`. This overload is required because the typical 'get' methods of the different Tree types either return a single Tree object or an iterable of Tree objects.
 
-Furthermore there is a scanAndReduce method, which exist in parallel variants and is being used because the Java implementation allows for the generation of a return value of scan that aggragates the return values of all trees being visited. This scanAndReduce value is a wrapper around the scan method and has the reduce method in it as well. I will get back to this.
+Furthermore there is a `scanAndReduce method`, which also exist in two variants, one for a single Tree object and one for an iterable of Tree objects. The `scanAndReduce` is being introduced because the Java implementation allows for the generation of a return value of scan that aggragates the return values of all trees being visited. This `scanAndReduc`e method is a wrapper around the `scan` method and has the `reduce` method in it as well. I will get back to this.
 
 ## Parsing files
 
@@ -46,11 +48,11 @@ If you want to extract information from a parse tree, you first need to parse th
   this.trees = Trees.instance(task);
 ```
 
-If you only want to work with the parsed tree, and are not interested in Symbol and Type objects, the result that you need from the code above is only the iterable of CompilationUnitTree (Iterable<? extends CompilationUnitTree>). You can omit `task.analyze` and `this.trees = Trees.instance(task);`.
+If you only want to work with the parsed tree, and are not interested in Symbol and Type objects, the result that you need from the code above is only the iterable of CompilationUnitTree (Iterable<? extends CompilationUnitTree>). You can omit `task.analyze` and `this.trees = Trees.instance(task);`. We will discuss them in upcoming blog posts.
 
 ## Extending TreeScanner
 
-TreeScanner is the class that orchestrates the traversal of the AST's. If you create an instance of it and call `scan` on it with the CompilationUnitTree object of your file as first argument, all Tree nodes will be visited. As the visit methods do not do anything with the Trees, it does not give you any result. If you do want a result, ie  extraact information from the AST, you need to create a subclass of TreeScanner and overwrite its methods. The candidate methods to overwrite are scan, visit and reduce.
+TreeScanner is the class that orchestrates the traversal of the AST's. If you create an instance of it and call `scan` on it with the CompilationUnitTree object of your file as first argument, all Tree nodes will be visited. As the visit methods do not do anything with the Trees, it does not give you any result. If you do want a result, ie  extraact information from the AST, you need to create a subclass of TreeScanner and overwrite its methods. The candidate methods to overwrite are `scan`, `visit` and `reduce`.
 
 This is how an override looks like:
 
@@ -73,9 +75,21 @@ TreeScanner contains many visit methods and you can override one or more of them
     }
 ```
 
-The interesting thing is the return statement. In the previous blog post we saw that traversal of the tree required that the visit methods contained 'get' methods to provide new child trees to scan. If you simply override a visit method without keeping this get methods intact, the traversal will stop which is probably not what you want. The return statement calls the implementation of the parent method in TreeScanner, and as that parent method has all the get methods, traversal will proceed as normal. Basically the only thing that is added to the traversal process is the line `System.out.println("Class: " + node.getSimpleName());`.
+The interesting thing is the return statement. In the previous blog post we saw that traversal of the tree required that the visit methods contained 'get' methods to provide new child trees to scan. If you simply override a visit method without keeping this get methods intact, the traversal will not get any deeper into the child nodes which is often not what you want. The return statement calls the implementation of the parent method in TreeScanner, and as that parent method has all the get methods, traversal will proceed as normal. Basically the only thing that is added to the traversal process is the line `System.out.println("Class: " + node.getSimpleName());`.
 
-Other remarkable elements in this overridden method are the return type (`Void`) and the second argument, `Void p`. We will get back to that later.
+### Void
+
+A remarkable element in this overridden method is the return type (`Void`) and the second argument, `Void p`. `Void` indicates that the method will return `null`, which is not the same as returning nothing at all (`void` in lowercase). This use of `Void` is a design choice, and aligns with the fact that bottom leafs (Tree objects without children) have a visit method that returns null, like these ones:
+
+```
+    public R visitIdentifier(IdentifierTree node, P p) {
+        return null;
+    }
+
+    public R visitEmptyStatement(EmptyStatementTree node, P p) {
+        return null;
+    }
+```
 
 ## Overriding the scan method
 
@@ -219,7 +233,7 @@ ChatGPT told me that collecting values using side effect is more common than wor
 
 ## The generic P parameter
 
-Not only is there a generic R that can be used to collect aggragate values, there is also a generic P that can be used to provide context. This P is found everywhere:
+Not only is there a generic R that can be used to collect aggragate values, there is also a generic P that can be used to provide context. This P is found all around, except in the reduce method:
 
 ```
 # The TreeScanner class declaration
@@ -246,8 +260,84 @@ public class TreeScanner<R,P> implements TreeVisitor<R,P>
     }
 ```
 
-The only method not having the P generic type parameter is the reduce method. sakjfhasj
+### Use of P
 
+When retrieving information from the AST, you might want to differentiate the interpretation of information based on some contextual factor. For example, you want to count the number of all method invocations, excluding those that are part of lambda expressions. Or you want to have a list of field names that are declared but not initialized. 
 
+Below I have created an example, not great but it illustrates a bit. Actually I do not have good ideas about how and where I would use this P parameter but at least this works as intended:
 
+```
+enum Context { NORMAL, SPECIAL }
+```
+
+```
+public class ScannerD extends TreeScanner<Void,Context>{
+
+    @Override
+    public Void visitCompilationUnit(CompilationUnitTree node, Context context) {
+
+        context =  Context.NORMAL;
+        return super.visitCompilationUnit(node, context);
+    }
+
+    @Override
+    public Void visitBlock(BlockTree node, Context context) {
+
+        System.out.println("Entering a block");
+        return super.visitBlock(node, Context.SPECIAL);
+    }
+
+    public Void visitIdentifier(IdentifierTree node, Context ctx){
+
+        System.out.println("  " + node.getName().toString() + ": " + ctx);
+        return null;
+    }
+}
+```
+
+What this code does is that identifiers in blocks (method bodies, initializers) are treated differently from identifiers not in blocks. This is the output for a simple class:
+
+```
+  com: NORMAL
+  java: NORMAL
+  java: NORMAL
+  com: NORMAL
+  Greeting: NORMAL
+  String: NORMAL
+  Integer: NORMAL
+  KustomClass: NORMAL
+  String: NORMAL
+  Integer: NORMAL
+  KustomClass: NORMAL
+Entering a block
+  super: SPECIAL
+  this: SPECIAL
+  argument1: SPECIAL
+  this: SPECIAL
+  argument2: SPECIAL
+  this: SPECIAL
+  myVar: SPECIAL
+  String: NORMAL
+Entering a block
+  String: SPECIAL
+  String: SPECIAL
+  String: SPECIAL
+  justSomeString: SPECIAL
+  justAnotherString: SPECIAL
+  someString: SPECIAL
+  String: NORMAL
+Entering a block
+  List: SPECIAL
+  Integer: SPECIAL
+  ArrayList: SPECIAL
+  Integer: SPECIAL
+  myList: SPECIAL
+  x: SPECIAL
+  System: SPECIAL
+  greeting: SPECIAL
+```
+
+I have not figured out how to insert the line 'Exiting a block', I might need to work with R for that. Anyhow, it gives a bit of an idea of what to use P for.
+
+Next topics will be Symbols and Types.
 
