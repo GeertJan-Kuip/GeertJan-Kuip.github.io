@@ -1,0 +1,9 @@
+# Getting the files to compile
+
+In my experiments in using javac (parse, analyze) I have been relying on .java files that were not really java files. I created String variables representing the contents of simple Java files and converted them to something the compiler could work with, relying on some translation method ChatGPT provided. 
+
+As I just stumbled upon [this article](https://dzone.com/articles/jsr-199-compiler-api), I want to write a bit here on two dedicated interfaces, namely [JavaFileObject](https://docs.oracle.com/en/java/javase/21/docs/api/java.compiler/javax/tools/JavaFileObject.html) and [JavaFileManager](https://docs.oracle.com/en/java/javase/21/docs/api/java.compiler/javax/tools/JavaFileManager.html). Both live in package [javax.tools](https://docs.oracle.com/en/java/javase/21/docs/api/java.compiler/javax/tools/package-summary.html) with other relevant classes and interfaces (more interfaces than classes actually). 
+
+The javax.tools package is part of the [java.compiler](https://docs.oracle.com/en/java/javase/21/docs/api/java.compiler/module-summary.html) module. It is to be noticed that two of its exported packages, namely `com.sun.source.tree` and `com.sun.source.util`, are not listed. I asked ChatGPT about it and it told that those two are listed in the jdk.compiler module, even if they are not located there.
+
+Generally, the java.compiler module contains the accessible things, while the jdk.compiler module contains non-exported implementation stuff. The two modules mentioned have a sort of inbetween status, them being listed in the less accessible module (from which they are exported) because they are not part of what is called the 'standard API surface'.
