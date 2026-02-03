@@ -208,5 +208,36 @@ Here you see that, to make the constructor work, the two-argument parent constru
 
 #### `URI.create("string:///" + className.replace('.', '/')`
 
-I had question sabut this first argument in the super constructor. ChatGPT told me that the generated URI is not being used as a real location but as a sort of valid name. The first part, `string://`, has no specific meaning in URI-land and the last part is a path that in this case does not have to point to something real.
+I had question about this first argument in the super constructor. ChatGPT told me that the generated URI is not being used as a real location but as a sort of valid name. The first part, `string://`, has no specific meaning in URI-land and the last part is a path that in this case does not have to point to something real.
+
+### Why JavaFileObject is so extensive
+
+ChatGPT explained that JavaFilObject, with all abstract methods inherited from FileObject, is a class that serves in multiple roles, thus not only in the role I use it for in this context. Depending on the role you need to provide implementations for other methods, methods that now simply return exceptions (UnsupportedOperationException) or values that make no sense (0L in getLastModified()). 
+
+For now, we simply must create JavaFileObjects that can provide the values of Kind kind, URI uri and CharSequence filecontent. Everything else can be done without.
+
+## JavaFileManager
+
+If we get back to this method from JavaCompiler:
+
+```
+    CompilationTask getTask(Writer out,
+                            JavaFileManager fileManager,
+                            DiagnosticListener<? super JavaFileObject> diagnosticListener,
+                            Iterable<String> options,
+                            Iterable<String> classes,
+                            Iterable<? extends JavaFileObject> compilationUnits);
+```
+
+We see that the first argument is of interface type JavaFileManager. You can provide null as argument, in that case a default under-the-hood implementation will be used, namely JavacFileManager. This class lives in package `com.sun.tools.javac.file` and is not exported. It has a ton of methods.
+
+In my experiment I have set the value to null, meaning I do not have any reference variable pointing to the JavaFileManager object in use. This means I cannot:
+
+- compile without touching disk
+- collect class files in memory
+- control module resolution
+- isolate compilation from the system classpath
+- support non-file-backed sources and outputs
+
+This is not a problem for now but for more advanced use it is. The Java(c)FileManager resolves all th ings related to the classpath, the modulepath, the files, and who can see what filewise. It is a deep topic and I will dive deeper in it in the future. For now this is it.
 
