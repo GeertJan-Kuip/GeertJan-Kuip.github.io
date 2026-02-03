@@ -206,6 +206,8 @@ public class StringTypeJavaFileObject extends SimpleJavaFileObject {
 
 Here you see that, to make the constructor work, the two-argument parent constructor is being called and it sets the inherited instance variables `protected final URI uri` and `protected final Kind kind`. An extra instance field `private final String code` is added and used as return value for the getCharContent(..) method. 
 
+Note that it is very similar to [this](https://dzone.com/articles/jsr-199-compiler-api).
+
 #### `URI.create("string:///" + className.replace('.', '/')`
 
 I had question about this first argument in the super constructor. ChatGPT told me that the generated URI is not being used as a real location but as a sort of valid name. The first part, `string://`, has no specific meaning in URI-land and the last part is a path that in this case does not have to point to something real.
