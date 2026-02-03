@@ -6,4 +6,31 @@ As I just stumbled upon [this article](https://dzone.com/articles/jsr-199-compil
 
 The javax.tools package is part of the [java.compiler](https://docs.oracle.com/en/java/javase/21/docs/api/java.compiler/module-summary.html) module. It is to be noticed that two of its exported packages, namely `com.sun.source.tree` and `com.sun.source.util`, are not listed. I asked ChatGPT about it and it told that those two are listed in the jdk.compiler module, even if they are not located there.
 
-Generally, the java.compiler module contains the accessible things, while the jdk.compiler module contains non-exported implementation stuff. The two modules mentioned have a sort of inbetween status, them being listed in the less accessible module (from which they are exported) because they are not part of what is called the 'standard API surface'.
+Generally, the java.compiler module contains the accessible things, while the jdk.compiler module contains non-exported implementation stuff. The two modules mentioned have a sort of inbetween status, them being listed in the less accessible module (from which they are exported) is _because they are not part of what is called the 'standard API surface'._ At least that is what ChatGPT tells, it sounds reasonable.
+
+## JavaFileObject and SimpleJavaFileObject
+
+JavaFileObject is an interface with four abstract methods and an inner enum named 'Kind'. This is its contents, stripped from comments:
+
+```
+public interface JavaFileObject extends FileObject {
+
+    enum Kind {
+        SOURCE(".java"),
+        CLASS(".class"),
+        HTML(".html"),
+        OTHER("");
+	
+        public final String extension;
+        Kind(String extension) {
+            this.extension = Objects.requireNonNull(extension);
+        }
+    }
+
+    Kind getKind();
+    boolean isNameCompatible(String simpleName, Kind kind);
+    NestingKind getNestingKind();
+    Modifier getAccessLevel();
+)
+```
+
