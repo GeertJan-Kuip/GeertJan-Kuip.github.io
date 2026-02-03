@@ -2,7 +2,7 @@
 
 While working on experiments with parsing I got encouraged by ChatGPT to use certain classes and packages that live in the jdk.compiler module. These packages are not exported or they are only exported to some specific other modules. In the JPMS (Java Platform Module System) with its strong encapsulation this means that you cannot import/use these classes in your own code.
 
-Fortunately there is a workaround. Java needs to be backwards compatible and as these 'forbidden' classes once were accessible without restraints, you can still get access to them by adding `add-exports` flags to your `java` and `javac` commands. Modules in the JDK have the module-info.java file in their root in which you tell Java, among others, which packages can be used by what other module(s).  
+Fortunately there is a workaround. Java needs to be backward compatible and as these 'forbidden' classes once were accessible without restraint, you can still get access to them by adding `add-exports` flags to your `java` and `javac` commands. Modules in the JDK have the module-info.java file in their root in which you tell Java, among others, which packages can be used by what other module(s).  
 
 The `--add-exports` is described [here](https://docs.oracle.com/en/java/javase/11/migrate/index.html#GUID-2F61F3A9-0979-46A4-8B49-325BA0EE8B66) and [here](https://dev.java/learn/modules/add-exports-opens/) and [here](https://docs.oracle.com/en/java/javase/17/migrate/migrating-jdk-8-later-jdk-releases.html#GUID-2F61F3A9-0979-46A4-8B49-325BA0EE8B66). There is also an `--add-opens` flag, this one is used for reflection purposes.
 
@@ -12,7 +12,7 @@ It is important to note that the flag is required for both running your program 
 
 ### Obscure behavior in Intellij
 
-Misunderstandings can occur when working in Intellij, as Intellij has its own ways to deal with this problem. When you introduce forbidden imports in your code Intellij first doesn't seem to understand and then asks you whether you want the appropriate flags added, and if you confirm these flags will be added somewhere you cannot really see them. Now you can compile the code and you can run tests, but running the program still won't work.
+Misunderstandings can occur when working in Intellij, as Intellij has its own ways to deal with this problem. When you introduce forbidden imports in your code Intellij first doesn't seem to understand and then asks you whether you want the appropriate flags added. If you confirm, these flags will be added somewhere you cannot really see them. Now you can compile the code and you can run tests, but running the program still won't work.
 
 ### Maven is more transparent
 
@@ -23,7 +23,7 @@ What I did to be able to compile, test and run the program without errors, was t
 
 ### Run/Debug configuration in Intellij for Maven setup
 
-The Run/Debug configuration is to be set in the window that pops up when clicking 'Edit configurations'. Click the + sign to add a configuration and select 'Maven' as its type. Then type `exec:exec` in the field where you can 'insert Maven commands'. Once you have this set, you can run the program with this configuration using the play button, but not before you have compiled the code using the Maven compiler in the maven menu on the right hand side of the screen.
+The Run/Debug configuration is to be set in the window that pops up when clicking 'Edit configurations'. Click the + sign to add a configuration and select 'Maven' as its type. Then type `exec:exec` in the field where you can 'insert Maven commands'. Once you have this set, you can run the program with this configuration using the play button, but not before you have compiled the code using the Maven compiler in the Maven menu on the right hand side of the screen.
 
 ### The pom.xml
 
