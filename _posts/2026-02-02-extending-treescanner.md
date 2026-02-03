@@ -233,7 +233,7 @@ ChatGPT told me that collecting values using side effect is more common than wor
 
 ## The generic P parameter
 
-Not only is there a generic R that can be used to collect aggragate values, there is also a generic P that can be used to provide context. This P is found all around, except in the reduce method:
+Not only is there a generic R that can be used to collect aggragate values, there is also a generic P that can be used to provide context. This P is found all around, except for the reduce method:
 
 ```
 # The TreeScanner class declaration
@@ -290,7 +290,7 @@ public class ScannerD extends TreeScanner<Void,Context>{
     public Void visitIdentifier(IdentifierTree node, Context ctx){
 
         System.out.println("  " + node.getName().toString() + ": " + ctx);
-        return null;
+        return null;  // this is the default for bottom leaf
     }
 }
 ```
