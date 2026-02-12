@@ -67,3 +67,13 @@ There are more phases, namely:
 - Desugar (further simplification)
 - Generate (create bytecode)
 - Write (writing class files to disk)
+
+## Big directories
+
+Another way of structuring can be to explicitly describe those directories that contain the most packages:
+
+|Package|Short description|Detailed description|
+|----|----|----|
+|javax.lang.model|Element and TypeMirror|Interfaces for elements/symbols, types, visitors and scanners for elements and types|
+|com.sun.source|Tree and DocTree|Tree and DocTree interfaces, scanners, visitors, abstract classes Trees, JavacTask|
+|com.sun.tools.javac|Hardcore implementations|14 packages, everything required under the hood up until bytecode generation|
