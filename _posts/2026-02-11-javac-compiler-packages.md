@@ -8,7 +8,7 @@ In this blog post I'll discuss the contents of both modules, not exhaustive but 
 
 The java.compiler module is completely open, meaning that every package is exported. Using them as imports in your code will not force you to compile and/or run the 
 
-### The module-info.java file, declaring services
+### module-info
 
 This is the contents of the module-info.java file. All packages are exported.
 
@@ -42,9 +42,53 @@ The implementation of JavaCompiler lives in jdk.compiler, which has this line in
 
 These matching declarations, `uses` and `provides,` connect the open java.compiler module to the mostly closed jdk.compiler and jdk.javadoc modules where the implementations live.
 
-### What is in java.compiler
+### Contents of java.compiler
 
+The java.compiler module has only six packages, they are all listed with an exports clause in module-info. They can be recognized by the 'javax' element with which the package name starts. Easy rule of thumb: packages starting with 'javax' belong in java.compiler, all other packages belong to jdk.compiler.
 
+Here follow short descriptions of these packages. The italic text is form the official javadoc:
+
+#### javax.annotation.processing
+
+_Facilities for declaring annotation processors and for allowing annotation processors to communicate with an annotation processing tool environment._
+
+I do not go into depth into this one. Thirteen files, mostly interfaces, one abstract class, one utility class, one exception class.
+
+#### javax.lang.model
+
+Base package, there are three nested packages within this folder. Nothing important in it, just three files. Interface AnnotatedConstruct, parent of Element, lives here. 
+
+#### javax.lang.model.element
+
+_Interfaces used to model elements of the Java programming language._
+
+Here the Element interface, which is implemented by Symbol, is found. There are mainly child interfaces of Element like ExecutableElement, ModuleElement and Parameterizable in it. 
+
+Furthermore this package has interface Name, which is an interface for the different classes implementing Name. Name exists because javac has a rather sophisticated way of storing and looking up the names of Symbols.
+
+Another one is ElementVisitor, interface for all sorts of scan- and visit classes that can be found in javax.lang.model.util.
+
+#### javax.lang.model.type
+
+_Interfaces used to model Java programming language types._
+
+Here we find, for example, the TypeMirror interface. TypeMirror is the returntype for the asType() method in Element. You use it to get the type of a symbol. TypeMirror is implemented by Type, which is in jdk.compiler.
+
+Another one is TypeVisitor, an interface similar to ElementVisitor. It is the interface for all sorts of scan- and visitor implementations found in javax.lang.model.util.
+
+#### javax.lang.util
+
+_javax.lang.model.util._
+
+Package full of implementation classes of TypeVisitor and ElementVisitor. These scan- and visit classes are use for traversing types and symbols, similarly to implementations used for traversing the Tree objects of the AST.
+
+#### javax.tools
+
+_Provides interfaces for tools which can be invoked from a program, for example, compilers._
+
+This package contains interfaces DocumentationTool and JavaCompiler. These interfaces have their implementations in jdk.compiler. The class ToolProvider has method `getSystemJavaCompiler()`, which I use when I want my app to compile files.
+
+Another relevant one is SimpleJavaFileObject, a class that you can extend and use to represent files (.java, .class, .html or 'other') in a way that javac can work with them. I wrote about them in [this blog post](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2026-02-03-getting-the-files-to-compile.md).
 
 
 
