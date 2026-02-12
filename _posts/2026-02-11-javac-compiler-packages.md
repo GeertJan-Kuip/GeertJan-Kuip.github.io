@@ -217,17 +217,17 @@ These classes are often implementations and extensions of classes found in com.s
 A list with short descriptions:
 
 ```
-BasicJavacTask			extends com.sun.source.util.JavacTask
-ClientCodeWrapper		no extends/implements. Wrap objects to enable unchecked exceptions to be caught and handled.
-DiagnosticFormatter		interface, extends javax.tools.Diagnostic<S>
-Entity				class, table of entities defined in HTML 5.2. HashMap with many preset html terms.
-Formattable			interface, about formatting, Locale, toString, for javac classes that have non-trivial formatting needs
-JavacScope			implements com.sun.source.tree.Scope
-JavacTaskImpl			extends BasicJavacTask, see first item
-JavacTaskPool			class. Pool of reusable JavacTasks. Might make compiling more efficient.
-JavacTool			Implementation of javax.tools.JavaCompiler.
-JavacTrees			Implementation of com.sun.source.util.Trees, which is an abstract class. Via DocTrees, which is abstract extension of Trees.
-Messages			Interface for com.sun.tools.javac.util.JavacMessages.
-MultiTaskListener		Implements com.sun.source.util.TaskListener.
-WrappingJavaFileManager		Wraps all calls to a given file manager. Extends ForwardingJavaFileManager from javax.tools, which implements JavaFileManager form javax.tools.
+BasicJavacTask              extends com.sun.source.util.JavacTask
+ClientCodeWrapper           no extends/implements. Wrap objects to enable unchecked exceptions to be caught and handled.
+DiagnosticFormatter         interface, extends javax.tools.Diagnostic<S>
+Entity                      class, table of entities defined in HTML 5.2. HashMap with many preset html terms.
+Formattable                 interface, about formatting, Locale, toString, for javac classes that have non-trivial formatting needs
+JavacScope                  implements com.sun.source.tree.Scope
+JavacTaskImpl               extends BasicJavacTask, see first item
+JavacTaskPool               class. Pool of reusable JavacTasks. Might make compiling more efficient.
+JavacTool                   Implementation of javax.tools.JavaCompiler.
+JavacTrees                  Implementation of com.sun.source.util.Trees, which is an abstract class. Via DocTrees, which is abstract extension of Trees.
+Messages                    Interface for com.sun.tools.javac.util.JavacMessages.
+MultiTaskListener           Implements com.sun.source.util.TaskListener.
+WrappingJavaFileManager     Wraps all calls to a given file manager. Extends ForwardingJavaFileManager from javax.tools, which implements JavaFileManager form javax.tools.
 ```
