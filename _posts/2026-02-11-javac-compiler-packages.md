@@ -297,7 +297,49 @@ All these classes have long lists with all sorts of messages in them, stores in 
 
 #### com.sun.tools.javac.tree
 
-Here the JCTree class is found, very important for my purposes. 
+Here the JCTree class is found, very important for my purposes. DCTree, representing the parallel structure for Javadoc, is also present.
+
+What surprised me was the TreeScanner class found here. TreeScanner exists in com.sun.source.util as well and that is actually the class that I use (or its extension TreePathScanner). ChatGPT explained to me that this TreeScanner is an internal one that operates not on Tree objects but on the specific implementations, which makes it more efficient.
+
+On my question if it would benefit me to use this 'internal' TreeScanner ChatGPT answered that it wouldn't, it is mainly used if you write 'deeper' applications. 
+
+Note that when I use the public TreeScanner (or TreePathScanner) I can still get to the internals of the compiler. When I want to have a Symbol type instead of the more superficial Tree type, I just cast it. The line below is from a overridden VisitClass I created:
+
+```
+Symbol.ClassSymbol currentClass =  (ClassSymbol) trees.getElement(getCurrentPath());
+```
+
+This works well for me so no need to use the internal TreeScanner. Btw this internal package also includes a TreeMaker class, which is expected given that this is what a compiler must do.
+
+One more thing: the package contains TreeInfo, a utility class with a ton of 'is' methods that help to understand the character of a specific Tree. I might want to use that in the future.
+
+#### com.sun.tools.javac.util
+
+Many utility classes plus some Exception classes. They do some fundamental operations. I recognized the Name class (very often used, important because javac deals with Symbol names in an advanced way), the Names class (access to the name table), a Position class (dealing with LineMap, line and column etc).
+
+I also see a List class, a specific implementation of AbstractCollection and java.util.List. This class represents a specific sort of linked list. As the javadoc says: _List is the main container class in GJC._ There is also a class named Pair, _a generic class for pairs._
+
+Summary: here all sorts of basic building blocks live, and most often they are not implementations of classes or interfaces living elsewhere in java.compiler or jdk.compiler. This means that they are mainly for internal use.
+
+### jdk.internal.shellsupport
+
+#### jdk.internal.shellsupport.doc
+
+Only two classes. Described as _A javadoc to plain text formatter_ and _Helper to find javadoc and resolve @inheritDoc._
+
+#### jdk.internal.shellsupport.doc.resources
+
+Only one tiny final class named javadocFormatter (note the lower case, I don't know why). It is an extension of java.util.ListResourceBundle.
+
+### sun.tools.serialver
+
+#### sun.tools.serialver
+
+Two small classes: _Supporting class for the serialver tool_ and _Utility for integrating with serialver and for localization. Handle Resources. Access to error and warning counts. Message formatting._ They live in the same file. Don't know what they are used for.
+
+#### sun.tools.serialver.resources
+
+Four classes containing data/warnings in different languages, unmimportant. 
 
 
 
