@@ -1,12 +1,12 @@
 # Javac compiler packages
 
-Working with compiler internals means working with two modules, namely platform module java.compiler and JDK implementation module jdk.compiler. The former, according to the javadoc of its module-info file, _defines the Language Model, Annotation Processing, and Java Compiler API's_. The latter _defines the implementation of the system Java compiler and its command line equivalent, javac._
+Working with compiler internals means working with two modules, namely platform module *java.compiler* and JDK implementation module *jdk.compiler*. The former, according to the javadoc of its module-info file, _defines the Language Model, Annotation Processing, and Java Compiler API's_. The latter _defines the implementation of the system Java compiler and its command line equivalent, javac._
 
-In this blog post I'll discuss the contents of both modules, not exhaustive but enough to get some idea what jpackages are in it and how these packages can be utilized.
+In this blog post I'll discuss the contents of both modules, not exhaustive but enough to get some idea what packages are in it and how these packages can be utilized.
 
 ## The java.compiler module
 
-The java.compiler module is completely open, meaning that every package is exported. Using them as imports in your code will not force you to compile and/or run the 
+The java.compiler module is completely open, meaning that every package is exported. Using them as imports in your code will not force you to compile and/or run the application with --add-exports flags.
 
 ### module-info
 
@@ -26,7 +26,7 @@ module java.compiler {
 }
 ```
 
-The 'uses' lines mean that the module relies on two services, these services live in another module and are implementations of its own DocumentationTool and JavaCompiler interfaces. The implementation tool lives in the jdk.javadoc module, whose module-info file has corresponding declarations:
+The 'uses' lines mean that the module relies on two services, these services live in another module and are implementations of the DocumentationTool and JavaCompiler interfaces. The implementation of DocumentationTool lives in the jdk.javadoc module, whose module-info file has corresponding declarations:
 
 ```
     provides javax.tools.DocumentationTool with
@@ -42,11 +42,11 @@ The implementation of JavaCompiler lives in jdk.compiler, which has this line in
 
 These matching declarations, `uses` and `provides,` connect the open java.compiler module to the mostly closed jdk.compiler and jdk.javadoc modules where the implementations live.
 
-### Contents of java.compiler
+### Packages in java.compiler
 
 The java.compiler module has only six packages, they are all listed with an exports clause in module-info. They can be recognized by the 'javax' element with which the package name starts. Easy rule of thumb: packages starting with 'javax' belong in java.compiler, all other packages belong to jdk.compiler.
 
-Here follow short descriptions of these packages. The italic text is form the official javadoc:
+Here follow short descriptions of these packages. The italic text is from the official javadoc:
 
 #### javax.annotation.processing
 
@@ -90,6 +90,122 @@ This package contains interfaces DocumentationTool and JavaCompiler. These inter
 
 Another relevant one is SimpleJavaFileObject, a class that you can extend and use to represent files (.java, .class, .html or 'other') in a way that javac can work with them. I wrote about them in [this blog post](https://github.com/GeertJan-Kuip/GeertJan-Kuip.github.io/blob/main/_posts/2026-02-03-getting-the-files-to-compile.md).
 
+## The jdk.compiler module
 
+Here the implementation of the compiler is found. On the [javadoc page](https://docs.oracle.com/en/java/javase/21/docs/api/jdk.compiler/module-summary.html) we find the documentation, limited to the exported packages. 
+
+### module-info
+
+This line is on top of the module javadoc page:
+
+_The com.sun.source.* packages provide the Compiler Tree API: an API for accessing the abstract trees (ASTs) representing Java source code and documentation comments, used by javac, javadoc and related tools._
+
+There is more than the com.sun.source packages in the module but, unlilke many other packages, these ones are exported. Non-exported packages are not documented on the javadoc webpage.The only other package that is exported without restriction is com.sun.tools.javac.
+
+This is what module-info looks like. It is more extensive than the module-info of java.compiler. 
+
+```
+module jdk.compiler {
+    requires transitive java.compiler;
+    requires jdk.internal.opt;
+    requires jdk.zipfs;
+
+    exports com.sun.source.doctree;
+    exports com.sun.source.tree;
+    exports com.sun.source.util;
+    exports com.sun.tools.javac;
+
+    exports com.sun.tools.doclint to
+        jdk.javadoc;
+    exports com.sun.tools.javac.api to
+        jdk.javadoc,
+        jdk.jshell;
+    exports com.sun.tools.javac.resources to
+        jdk.jshell;
+    exports com.sun.tools.javac.code to
+        jdk.javadoc,
+        jdk.jshell;
+    exports com.sun.tools.javac.comp to
+        jdk.javadoc,
+        jdk.jshell;
+    exports com.sun.tools.javac.file to
+        jdk.jdeps,
+        jdk.javadoc;
+    exports com.sun.tools.javac.jvm to
+        jdk.javadoc;
+    exports com.sun.tools.javac.main to
+        jdk.javadoc,
+        jdk.jshell;
+    exports com.sun.tools.javac.model to
+        jdk.javadoc;
+    exports com.sun.tools.javac.parser to
+        jdk.jshell;
+    exports com.sun.tools.javac.platform to
+        jdk.jdeps,
+        jdk.javadoc;
+    exports com.sun.tools.javac.tree to
+        jdk.javadoc,
+        jdk.jshell;
+    exports com.sun.tools.javac.util to
+        jdk.jdeps,
+        jdk.javadoc,
+        jdk.jshell;
+    exports jdk.internal.shellsupport.doc to
+        jdk.jshell;
+
+    uses javax.annotation.processing.Processor;
+    uses com.sun.source.util.Plugin;
+    uses com.sun.tools.doclint.DocLint;
+    uses com.sun.tools.javac.platform.PlatformProvider;
+
+    provides java.util.spi.ToolProvider with
+        com.sun.tools.javac.main.JavacToolProvider;
+
+    provides com.sun.tools.javac.platform.PlatformProvider with
+        com.sun.tools.javac.platform.JDKPlatformProvider;
+
+    provides javax.tools.JavaCompiler with
+        com.sun.tools.javac.api.JavacTool;
+
+    provides javax.tools.Tool with
+        com.sun.tools.javac.api.JavacTool;
+}
+```
+
+Note that there is a long list of restricted exports to other jdk modules. Most of them have a name starting with com.sun.tools.javac. The only package with this prefix is package com.sun.tools.javac itself.
+
+### Packages in jdk.compiler
+
+#### com.sun.source.doctree
+
+_Provides interfaces to represent documentation comments as abstract syntax trees (AST)._
+
+The package has only interfaces, of which the root one is DocTree. Although I have not familiarized myself with 'comments as abstract syntax trees', I notice that DocTree is an interface for all sorts of DCTree objects that live in the com.sun.tools.javac.tree.DCtree class. DCTree is a large class with static inner classes representing all sorts of derivative classes. It is very similar to JCTree.
+
+Btw JCTree also lives in com.sun.tools.javac.tree, as com.sun.tools.javac.tree.JCTree.
+
+#### com.sun.source.tree 
+
+Equivalent of the previous package. many interfaces, one for each type of AST node. Tree is the central interface from which others are derived. 
+
+An interesting one is Scope, which is an interface for com.sun.tools.javac.api.JavaScope. Scopes are used in combination with Symbols and help to resolve them. Scope know what symbol declarations are in them and they know their enclosing scope. If they cannot find the symbol declaration of a symbol being used, javac will traverse up the scope hierarchy until it finds the declaration. 
+
+#### com.sun.source.util
+
+Here we find more classes than interfaces, a lot of them important for my purposes. These ones I use:
+
+```
+JavacTask
+TaskEvent
+TreeScanner
+TreePathScanner
+TreePath
+Trees
+SimpleTreeVisitor (non-recursive, visiting of single Tree objects)
+```
+
+Furthermore there are equivalent classes for JavaDoc work. Think of DocTreeScanner, DocTreePathScanner and DocTrees.
+
+####
 
 
