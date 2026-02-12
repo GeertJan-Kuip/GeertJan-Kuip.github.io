@@ -174,7 +174,7 @@ module jdk.compiler {
 
 Note that there is a long list of restricted exports to other jdk modules. Most of them have a name starting with com.sun.tools.javac. The only package with this prefix is package com.sun.tools.javac itself.
 
-### Packages in jdk.compiler
+### Packages in jdk.compiler/com.sun.source
 
 #### com.sun.source.doctree
 
@@ -192,7 +192,7 @@ An interesting one is Scope, which is an interface for com.sun.tools.javac.api.J
 
 #### com.sun.source.util
 
-Here we find more classes than interfaces, a lot of them important for my purposes. These ones I use:
+Here we find more classes than interfaces, a lot of them important for my purposes. They are basic for starting the compilation process, for managing compilation tasks and for working with AST's (visiting, access to JCTree implementations). These are the ones I use:
 
 ```
 JavacTask
@@ -206,6 +206,28 @@ SimpleTreeVisitor (non-recursive, visiting of single Tree objects)
 
 Furthermore there are equivalent classes for JavaDoc work. Think of DocTreeScanner, DocTreePathScanner and DocTrees.
 
-####
+### Packages in jdk.compiler/com.sun.tools.javac
 
+This branch has 14 packages in it. It is a package in itself as well, as it contains a class named Main. com.sun.tools has another package in it, namely com.sun.tools.doclint, of which I do not know the function.
 
+#### com.sun.tools.javac.api
+
+These classes are often implementations and extensions of classes found in com.source.util. It contains JavacTool, which is the implementation of JavaCompiler, an interface in java.compiler/javax.tools. You create a JavaCompiler at the start of compilation and you need to generate a JavacTask from it. JavacTool is being provided in the module-info file and is the implementation of JavaCompiler, which is the interface that is declared as 'uses' in the module-info file of java.compiler.
+
+A list with short descriptions:
+
+```
+BasicJavacTask			extends com.sun.source.util.JavacTask
+ClientCodeWrapper		no extends/implements. Wrap objects to enable unchecked exceptions to be caught and handled.
+DiagnosticFormatter		interface, extends javax.tools.Diagnostic<S>
+Entity				class, table of entities defined in HTML 5.2. HashMap with many preset html terms.
+Formattable			interface, about formatting, Locale, toString, for javac classes that have non-trivial formatting needs
+JavacScope			implements com.sun.source.tree.Scope
+JavacTaskImpl			extends BasicJavacTask, see first item
+JavacTaskPool			class. Pool of reusable JavacTasks. Might make compiling more efficient.
+JavacTool			Implementation of javax.tools.JavaCompiler.
+JavacTrees			Implementation of com.sun.source.util.Trees, which is an abstract class. Via DocTrees, which is abstract extension of Trees.
+Messages			Interface for com.sun.tools.javac.util.JavacMessages.
+MultiTaskListener		Implements com.sun.source.util.TaskListener.
+WrappingJavaFileManager		Wraps all calls to a given file manager. Extends ForwardingJavaFileManager from javax.tools, which implements JavaFileManager form javax.tools.
+```
