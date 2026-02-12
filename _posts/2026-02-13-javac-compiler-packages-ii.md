@@ -87,4 +87,38 @@ An interesting question is what the options are when you rely solely on java.com
 
 ### Running the compilation process
 
-Using javax.tools you can use the static method getSystemJavaCompiler() from the ToolProvider class to get an object with reference type JavaCompiler
+To start compiling you need to be in javax.tools. Below I have written down the relevant public classes and interfaces with their public methods:
+
+```
+public class ToolProvider
+	public static JavaCompiler getSystemJavaCompiler(){}
+	public static DocumentationTool getSystemDocumentationTool(){}
+
+public interface JavaCompiler
+	CompilationTask getTask(Writer out,
+			JavaFileManager fileManager,
+			DiagnosticListener<? super JavaFileObject> diagnosticListener,
+			Iterable<String> options,
+			Iterable<String> classes,
+			Iterable<? extends JavaFileObject> compilationUnits);
+	StandardJavaFileManager getStandardFileManager(
+			DiagnosticListener<? super JavaFileObject> diagnosticListener,
+			Locale locale,
+			Charset charset);
+
+public final class DiagnosticCollector<S> implements DiagnosticListener<S>
+	public DiagnosticCollector() {}
+	@Override
+	public void report(Diagnostic<? extends S> diagnostic) {
+		Objects.requireNonNull(diagnostic);
+		diagnostics.add(diagnostic);
+	}
+	public List<Diagnostic<? extends S>> getDiagnostics() {
+		return Collections.unmodifiableList(diagnostics);
+	}
+
+public interface DiagnosticListener<S>
+	void report(Diagnostic<? extends S> diagnostic);
+
+```
+
