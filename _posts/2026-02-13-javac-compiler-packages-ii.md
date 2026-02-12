@@ -74,6 +74,7 @@ Another way of structuring can be to explicitly describe those directories that 
 
 |Package|Short description|Detailed description|
 |----|----|----|
+|javax.tools|COmpilation process|Interfaces for JavaFileManager, JavaCompiler, JavaFileObject, Tool|
 |javax.lang.model|Element and TypeMirror|Interfaces for elements/symbols, types, visitors and scanners for elements and types|
 |com.sun.source|Tree and DocTree|Tree and DocTree interfaces, scanners, visitors, abstract classes Trees, JavacTask|
 |com.sun.tools.javac|Hardcore implementations|14 packages, everything required under the hood up until bytecode generation|
