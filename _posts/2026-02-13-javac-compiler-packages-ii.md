@@ -74,7 +74,17 @@ Another way of structuring can be to explicitly describe those directories that 
 
 |Package|Short description|Detailed description|
 |----|----|----|
-|javax.tools|COmpilation process|Interfaces for JavaFileManager, JavaCompiler, JavaFileObject, Tool|
+|javax.tools|Compilation process|Interfaces for JavaFileManager, JavaCompiler, JavaFileObject, Tool|
 |javax.lang.model|Element and TypeMirror|Interfaces for elements/symbols, types, visitors and scanners for elements and types|
 |com.sun.source|Tree and DocTree|Tree and DocTree interfaces, scanners, visitors, abstract classes Trees, JavacTask|
 |com.sun.tools.javac|Hardcore implementations|14 packages, everything required under the hood up until bytecode generation|
+
+## What if only java.compiler is available
+
+The jdk.compiler package is way more extensive than the java.compiler package. The former does all the implementation, the latter provides stable interfaces for developers who want to do code analysis. 
+
+An interesting question is what the options are when you rely solely on java.compiler. What methods are available in the provided interfaces and abstract classes and how limiting is this?
+
+### Running the compilation process
+
+Using javax.tools you can use the static method getSystemJavaCompiler() from the ToolProvider class to get an object with reference type JavaCompiler
