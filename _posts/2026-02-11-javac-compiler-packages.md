@@ -341,5 +341,11 @@ Two small classes: _Supporting class for the serialver tool_ and _Utility for in
 
 Four classes containing data/warnings in different languages, unmimportant. 
 
+## Conclusion
+
+There is a lot of stuff in the Java compiler but it is finite. I'm getting a better view of it, although there are plenty of areas that I am not familiar with yet. Annotations and JavaDocs, both seem to play a substantial role in javac, are two of these.
+
+In the next blog I will try to summarize the info I have collected. I need a simplified but accurate mental model of the contents of the two modules so that I will have the freedom to work with all the available tools in an effective and creative way.
+
 
 
