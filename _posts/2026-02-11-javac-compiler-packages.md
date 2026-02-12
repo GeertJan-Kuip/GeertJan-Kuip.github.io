@@ -231,3 +231,73 @@ Messages                    Interface for com.sun.tools.javac.util.JavacMessages
 MultiTaskListener           Implements com.sun.source.util.TaskListener.
 WrappingJavaFileManager     Wraps all calls to a given file manager. Extends ForwardingJavaFileManager from javax.tools, which implements JavaFileManager form javax.tools.
 ```
+
+#### com.sun.tools.javac.code
+
+I Have a hard time figuring out what the classes in this package have in common. I was surprised to find a Scope class, which seems to be the class defining what a scope is or at least what I think it is. This Scope class does not implement any interface, nor does it extend any class. It is an abstract class which is extended by its static inner classes, that have names like ErrorScope, ImportScope and WritableScope.
+
+NOTE: I asked ChatGPT who explained that JavaScope is a bridge between Scope interface (com.sun.source.tree.Scope) and com.sun.tools.javac.code.Scope. The three types are connected, they work on the same problem. I found references in JavacScope to specofic static inner classes in com.sun.tools.javac.code.Scope.
+
+ChatGPT remarked that there is not a uniform implementation of Scope, just as there isn't for Tree. This explains the static inner classes in the implemented abstract Scope class.
+
+Apart from Scope, this package has two important classes, namely Symbol and Type. Both are abstract with implementations of themselves in inner static subclasses. 
+
+Furthermore there is SymTab class, _defining all predefined constants and operators as well as special classes such as java.lang.Object, which need to be known to the compiler._ There is Types, a static utility class for working with Type objects. There are also classes related to annotations (like SymbolMetaData) and classes like Flags and Kinds, defining all sorts of constants and enums.
+
+Generally, this package is about working with individual Scopes, Types, Symbols and Annotations.
+
+#### com.sun.tools.javac.comp
+
+Every class, or most classes, seem to represent a compilation pass. Names are strongly suggestive of this, sparse javadoc comments as well. Think of class names like Attr, Enter, LambdaToMethod and MemberEnter.
+
+#### com.sun.tools.javac.file
+
+Here we find implementation classes related to the file management. Think of BaseFileManager and JavacFileManager. 
+
+There are 8 classes in total, other names ar eLocations, PathFileObject and RelativePath.
+
+#### com.sun.tools.javac.jvm
+
+Classes having to do with bytecode, classfiles and the JVM. At a certain point the .class files must be generated and I think the tooling lives here.
+
+#### com.sun.tools.javac.launcher
+
+Contains a single class named Main. Javadoc says: _Compiles a source file, and executes the main method it contains._
+
+#### com.sun.tools.javac.main
+
+Plays a role when compiling via the command line, at least I think so. Has an Arguments class and a Main class. Seven files, one being an enum.
+
+#### com.sun.tools.javac.model
+
+I am triggered by this one, it has four classes, three of them utility classes that operate on Types and Elements. The names of the classes with their descriptions are:
+
+```
+AnnotationProxyMaker     A generator of dynamic proxy implementations of java.lang.annotation.Annotation.
+FilteredMemberList       Utility to construct a view of a symbol's members, filtering out unwanted elements such as synthetic ones.
+JavacElements            Utility methods for operating on program elements. Implements javax.lang.model.util.Elements.
+JavacTypes               Utility methods for operating on types. Implements javax.lang.model.util.Types.
+```
+
+#### com.sun.tools.javac.parser
+
+Claases about parser- and token things. Names like JavacParser, JavacTokenizer, Scanner and Tokens.
+
+#### com.sun.tools.javac.platform
+
+Dealing with versions of the JDK platform I think. Only four files in it, two of them being interfaces implemented by one of the two classes, JDKPlatformProvider.
+
+#### com.sun.tools.javac.processing
+
+Implementations of interfaces found in javax.annotation.processing. This has to do with annotation processing. Only seven files inside.
+
+#### com.sun.tools.javac.resources
+
+All these classes have long lists with all sorts of messages in them, stores in multidimensional arrays, for different languages.
+
+#### com.sun.tools.javac.tree
+
+Here the JCTree class is found, very important for my purposes. 
+
+
+
