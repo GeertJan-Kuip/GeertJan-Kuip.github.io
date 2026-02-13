@@ -170,7 +170,74 @@ This is the init method in Arguments:
     }
 ```
 
-The list of JavaFileObjects is converted to a set, guaranteeing uniqueness, and stored as field. 
+The list of JavaFileObjects is converted to a set, guaranteeing uniqueness, and stored as field in the Arguments object. To get it, you need to call this method in Arguments:
+
+```
+    public Set<JavaFileObject> getFileObjects() {
+        if (fileObjects == null) {
+            fileObjects = new LinkedHashSet<>();
+        }
+        if (files != null) {
+            JavacFileManager jfm = (JavacFileManager) getFileManager();
+            for (JavaFileObject fo: jfm.getJavaFileObjectsFromPaths(files))
+                fileObjects.add(fo);
+        }
+        return fileObjects;
+    }
+```
+
+So up until now we have DiagnosticListener, Log, JavaFileManager and Arguments. Additional type instances are added in the constructor of JavaCompiler:
+
+```
+        names = Names.instance(context);
+        log = Log.instance(context);
+        diagFactory = JCDiagnostic.Factory.instance(context);
+        finder = ClassFinder.instance(context);
+        reader = ClassReader.instance(context);
+        make = TreeMaker.instance(context);
+        writer = ClassWriter.instance(context);
+        jniWriter = JNIWriter.instance(context);
+        enter = Enter.instance(context);
+        todo = Todo.instance(context);
+
+        fileManager = context.get(JavaFileManager.class);  // already in context
+        parserFactory = ParserFactory.instance(context);
+        compileStates = CompileStates.instance(context);
+
+        try {
+            // catch completion problems with predefineds
+            syms = Symtab.instance(context);
+        } catch (CompletionFailure ex) {
+            // inlined Check.completionError as it is not initialized yet
+            log.error(Errors.CantAccess(ex.sym, ex.getDetailValue()));
+        }
+        source = Source.instance(context);
+        preview = Preview.instance(context);
+        attr = Attr.instance(context);
+        analyzer = Analyzer.instance(context);
+        chk = Check.instance(context);
+        gen = Gen.instance(context);
+        flow = Flow.instance(context);
+        transTypes = TransTypes.instance(context);
+        lower = Lower.instance(context);
+        annotate = Annotate.instance(context);
+        types = Types.instance(context);
+        taskListener = MultiTaskListener.instance(context);
+        modules = Modules.instance(context);
+        moduleFinder = ModuleFinder.instance(context);
+        diags = Factory.instance(context);
+        dcfh = DeferredCompletionFailureHandler.instance(context);
+
+        finder.sourceCompleter = sourceCompleter;  // no addition to context
+        modules.findPackageInFile = this::findPackageInFile;  // no addition to context
+        moduleFinder.moduleNameFromSourceReader = this::readModuleName;  // no addition to context
+
+        options = Options.instance(context);
+```
+
+Everywhere you see the static instance(context) method being used, a class instance is added to the context. I count 30, plus the 4 items added earlier makes 34.
+
+
 
 
 
