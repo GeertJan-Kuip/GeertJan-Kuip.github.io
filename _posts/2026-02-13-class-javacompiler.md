@@ -1,6 +1,6 @@
 # Class JavaCompiler
 
-In the jdk.compiler module there is package com.sun.tools.javac.main which contains JavaCompiler. In this blog post I will discuss its contents, encouraged by ChatGPT who told me that this class gives good insight in the difffernt phases of compilation.
+In the jdk.compiler module there is package com.sun.tools.javac.main which contains JavaCompiler. In this blog post I will discuss its contents, encouraged by ChatGPT who told me that this class gives good insight in the different phases of compilation.
 
 Having said that, I know that I will encounter a lot of mechanisms within classes directly related to JavaCompiler. I am going to dive in these rabbit holes without reservations, hoping to learn a lot more about advanced Java programming.
 
@@ -52,7 +52,7 @@ The essential thing here is that Context has a field `protected final Map<Key<?>
     }
 ```
 
-Every instance being used for the compilation process generates a Key object upon creation, like in the first line of JavaCompiler. This Key object is unique by definition, as it is a refernce object (and not a String).
+Every instance being used for the compilation process generates a Key object upon creation, like in the first line of JavaCompiler. This Key object is unique by definition, as it is a reference object (and not a String).
 
 The constructor of each of these classes is protected and will not be called directly. To instantiate a class, an instance method must be called. This is the instance method for JavaCompiler, all other classes participating in this construction have the same instance method:
 
@@ -71,7 +71,7 @@ This method checks if the instance is already added to Context context. If not, 
     context.put(compilerKey, this);
 ```
 
-So basically it adds itself to the map in Context where all the instances of the various classes live. The `put` method in COntext is quite sophisticated:
+So basically it adds itself to the map in Context where all the instances of the various classes live. The `put` method in Context is quite sophisticated:
 
 ```
     public <T> void put(Key<T> key, T data) {
@@ -108,10 +108,72 @@ And if we need that object, we just use Context's get method:
          */
         return Context.uncheckedCast(o);
     }
+
+    private static <T> T uncheckedCast(Object o) {
+        return (T)o;   
+    }
 ```
 
-There are some nested methods in it but in the end it is guaranteed to work.
+There are some nested methods in it but in the end it is guaranteed to work. Btw the uncheckedCast method at the end has a TODO comment that says _TODO: This method should be removed and Context should be made type safe. This can be accomplished by using class literals as type tokens._
+
+### Contents of Context
+
+Now that we know what Context is and how it guarantees uniqueness of its contents, it is interesting to know what is in Context. Basically you can put everything in it but when compiling there is a specific collection of types that are present. Context is injected into JavaCompiler via the constructor. Let's look  at the first part of the constructor:
+
+```
+    public JavaCompiler(Context context) {
+        this.context = context;
+        context.put(compilerKey, this);
+
+        // if fileManager not already set, register the JavacFileManager to be used
+        if (context.get(JavaFileManager.class) == null)
+            JavacFileManager.preRegister(context);
+```
+
+As can be seen, the JavaCompiler instance itself is added to the injected Context object. The lines about JavaFileManager probably have to do with the question whether a JavaFileManager is provided as argument when creating a JavacTask. If you set that argument to null, a default implementation is added to the context here.
+
+This probably means that the injected Context object already contains a `List<JavaFileObject>`, as this is a required argument in the getTask method of JavacTool. Let's see what JavacTool puts in context. I only copied the lines from JavacTool that added stuff to Context:
+
+```
+context.put(DiagnosticListener.class, ccw.wrap(diagnosticListener));
+
+context.put(Log.errKey, new PrintWriter(System.err, true));
+
+context.put(JavaFileManager.class, fileManager);
+```
+
+Interestingly Context has an overload for the put method that allows you to add an entry to the basic map without having to create a Key object yourself. Anyhow, what is still missing is the `List<JavaFileObject>`. This list is finding its way into Context via the Arguments object. 
+
+This is code in JavacTool:
+
+```
+            Arguments args = Arguments.instance(context);  // adding args to Context
+            args.init("javac", options, classes, compilationUnits);
+```
+
+This is the init method in Arguments:
+
+```
+    public void init(String ownName,
+            Iterable<String> options,
+            Iterable<String> classNames,
+            Iterable<? extends JavaFileObject> files) {
+        this.ownName = ownName;
+        this.classNames = toSet(classNames);
+        this.fileObjects = toSet(files);
+        this.files = null;
+        errorMode = ErrorMode.ILLEGAL_ARGUMENT;
+        if (options != null) {
+            processArgs(toList(options), Option.getJavacToolOptions(), apiHelper, false, true);
+        }
+        errorMode = ErrorMode.ILLEGAL_STATE;
+    }
+```
+
+The list of JavaFileObjects is converted to a set, guaranteeing uniqueness, and stored as field. 
 
 
 
-    
+
+
+
