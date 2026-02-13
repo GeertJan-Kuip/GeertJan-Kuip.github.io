@@ -237,6 +237,116 @@ So up until now we have DiagnosticListener, Log, JavaFileManager and Arguments. 
 
 Everywhere you see the static instance(context) method being used, a class instance is added to the context. I count 30, plus the 4 items added earlier makes 34.
 
+### The compile function
+
+JavaCompiler is the central class for compiling but there is a difference between compiling from the command line and compiling fromout an application, using task.parse() and task.analyze(). 
+
+#### Compiling with command line
+
+In the first case all compilation is done at once by the compile method, but it starts at `com.sun.tools.javac.main.Main`. This Main class has its own compile method, this method is extensive and has this signature:
+
+```
+	public Result compile(String[] argv, Context context)
+```
+
+As you see it takes command line arguments and Context as parameters. It fills the context and then you find these calls:
+
+```
+	JavaCompiler comp = JavaCompiler.instance(context);
+
+	comp.compile(args.getFileObjects(), args.getClassNames(), null, List.nil());
+```
+
+So from there on JavaCompiler goes to work.
+
+### Compiling fromout application
+
+When you compile programmatically as I do, there is a central role for `com.sun.tools.javac.api.JavacTaskImpl`. ChatGPT calls JavacTaskImpl a 'controlled facade over JavaCompiler'. It allows for doing the compilation process in small steps instead of doing all at once. 
+
+JavacTaskImpl holds a reference to JavaCompiler as it gets Context injected in its constructor (and JavaCompiler is in Context). JavaTaskImpl is now able to call the different methods in JavaCompiler that start specific phases of the compilation process. It has these methods:
+
+```
+// parsing, this method is called by other method 'parse'. 
+    private Iterable<? extends CompilationUnitTree> parseInternal() {
+        try {
+            prepareCompiler(true);
+            List<JCCompilationUnit> units = compiler.parseFiles(args.getFileObjects());
+            for (JCCompilationUnit unit: units) {
+                JavaFileObject file = unit.getSourceFile();
+                if (notYetEntered.containsKey(file))
+                    notYetEntered.put(file, unit);
+            }
+            return units;
+        }
+        finally {
+            parsed = true;
+            if (compiler != null && compiler.log != null)
+                compiler.log.flush();
+        }
+    }
+
+// Enter phase, I give signature only:
+public Iterable<? extends Element> enter(Iterable<? extends CompilationUnitTree> trees)
+
+// Analyze (as in task.analyze()
+    public Iterable<? extends Element> analyze(Iterable<? extends Element> classes) {
+        enter(null);  // ensure all classes have been entered
+
+        final ListBuffer<Element> results = new ListBuffer<>();
+        try {
+            if (classes == null) {
+                handleFlowResults(compiler.flow(compiler.attribute(compiler.todo)), results);
+            } else {
+                Filter f = new Filter() {
+                    @Override
+                    public void process(Env<AttrContext> env) {
+                        handleFlowResults(compiler.flow(compiler.attribute(env)), results);
+                    }
+                };
+                f.run(compiler.todo, classes);
+            }
+        } finally {
+            compiler.log.flush();
+        }
+        return results;
+    }
+
+// Generate (bytecode I think)
+    public Iterable<? extends JavaFileObject> generate(Iterable<? extends Element> classes) {
+        final ListBuffer<JavaFileObject> results = new ListBuffer<>();
+        try {
+            analyze(null);  // ensure all classes have been parsed, entered, and analyzed
+
+            if (classes == null) {
+                compiler.generate(compiler.desugar(genList), results);
+                genList.clear();
+            }
+            else {
+                Filter f = new Filter() {
+                        @Override
+                        public void process(Env<AttrContext> env) {
+                            compiler.generate(compiler.desugar(ListBuffer.of(env)), results);
+                        }
+                    };
+                f.run(genList, classes);
+            }
+            if (genList.isEmpty()) {
+                compiler.reportDeferredDiagnostics();
+                cleanup();
+            }
+        }
+        finally {
+            if (compiler != null)
+                compiler.log.flush();
+        }
+        return results;
+    }
+```
+
+So basically, JavacTaskImpl is able to call the methods of JavaCompiler individually, making it a good tool for programmatic compilation.
+
+
+
 
 
 
