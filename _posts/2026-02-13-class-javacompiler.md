@@ -382,7 +382,7 @@ JavaCompiler has multiple overloaded parse() methods that in the end all call th
     }
 ```
 
-The line `Parser parser = parserFactory.newParser(..)` creates a new Parser. Note that parserFactory is in Context, so with Context you can always create a Parser instance. The line `tree = parser.parseCompilationUnit();` gives a JCCompilationUnit object, which is the top of the AST. This is exactly what you want.
+The line `Parser parser = parserFactory.newParser(..)` creates a new Parser of runtime type JavacParser. Note that parserFactory is in Context, so with Context you can always create a Parser instance. The line `tree = parser.parseCompilationUnit();` gives a JCCompilationUnit object, which is the top of the AST. This is exactly what you want.
 
 
 
