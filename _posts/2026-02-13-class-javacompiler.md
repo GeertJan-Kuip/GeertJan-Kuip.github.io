@@ -34,7 +34,7 @@ method compile(...)  // this is the main method
 lots of other methods and stuff
 ```
 
-### Context
+## Context
 
 The first line of JavaCompiler is this:
 
@@ -116,7 +116,7 @@ And if we need that object, we just use Context's get method:
 
 There are some nested methods in it but in the end it is guaranteed to work. Btw the uncheckedCast method at the end has a TODO comment that says _TODO: This method should be removed and Context should be made type safe. This can be accomplished by using class literals as type tokens._
 
-### Contents of Context
+## Contents of Context
 
 Now that we know what Context is and how it guarantees uniqueness of its contents, it is interesting to know what is in Context. Basically you can put everything in it but when compiling there is a specific collection of types that are present. Context is injected into JavaCompiler via the constructor. Let's look  at the first part of the constructor:
 
@@ -237,11 +237,11 @@ So up until now we have DiagnosticListener, Log, JavaFileManager and Arguments. 
 
 Everywhere you see the static instance(context) method being used, a class instance is added to the context. I count 30, plus the 4 items added earlier makes 34.
 
-### The compile function
+## The compile function
 
 JavaCompiler is the central class for compiling but there is a difference between compiling from the command line and compiling fromout an application, using task.parse() and task.analyze(). 
 
-#### Compiling with command line
+### Compiling with command line
 
 In the first case all compilation is done at once by the compile method, but it starts at `com.sun.tools.javac.main.Main`. This Main class has its own compile method, this method is extensive and has this signature:
 
@@ -343,8 +343,46 @@ public Iterable<? extends Element> enter(Iterable<? extends CompilationUnitTree>
     }
 ```
 
-So basically, JavacTaskImpl is able to call the methods of JavaCompiler individually, making it a good tool for programmatic compilation.
+So basically, JavacTaskImpl is able to call the methods of JavaCompiler individually, making it a good tool for programmatic compilation. JavaCompiler is the class where the methods live that start the different phases, and these methods are either called from its own compile method or form the parse(), analyze(), enter() and generate() methods of JavacTaskImpl.
 
+## How parsing is activated
+
+JavaCompiler has multiple overloaded parse() methods that in the end all call this one:
+
+```
+    private JCCompilationUnit parse(JavaFileObject filename, CharSequence content, boolean silent) {
+        long msec = now();
+        JCCompilationUnit tree = make.TopLevel(List.nil());
+        if (content != null) {
+            if (verbose) {
+                log.printVerbose("parsing.started", filename);
+            }
+            if (!taskListener.isEmpty() && !silent) {
+                TaskEvent e = new TaskEvent(TaskEvent.Kind.PARSE, filename);
+                taskListener.started(e);
+                keepComments = true;
+                genEndPos = true;
+            }
+            Parser parser = parserFactory.newParser(content, keepComments(), genEndPos,
+                                lineDebugInfo, filename.isNameCompatible("module-info", Kind.SOURCE));
+            tree = parser.parseCompilationUnit();
+            if (verbose) {
+                log.printVerbose("parsing.done", Long.toString(elapsed(msec)));
+            }
+        }
+
+        tree.sourcefile = filename;
+
+        if (content != null && !taskListener.isEmpty() && !silent) {
+            TaskEvent e = new TaskEvent(TaskEvent.Kind.PARSE, tree);
+            taskListener.finished(e);
+        }
+
+        return tree;
+    }
+```
+
+The line `Parser parser = parserFactory.newParser(..)` creates a new Parser. Note that parserFactory is in Context, so with Context you can always create a Parser instance. The line `tree = parser.parseCompilationUnit();` gives a JCCompilationUnit object, which is the top of the AST. This is exactly what you want.
 
 
 
