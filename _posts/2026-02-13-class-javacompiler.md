@@ -52,7 +52,7 @@ The essential thing here is that Context has a field `protected final Map<Key<?>
     }
 ```
 
-Every instance being used for the compilation process generates a Key object upon creation, like in the first line of JavaCompiler. This Key object is unique by definition, as it is a reference object (and not a String).
+Every class being used for the compilation process generates a Key object as a static final field upon class initialization, like in the first line of JavaCompiler. This Key object is unique by definition, as it is a reference object (and not a String).
 
 The constructor of each of these classes is protected and will not be called directly. To instantiate a class, an instance method must be called. This is the instance method for JavaCompiler, all other classes participating in this construction have the same instance method:
 
