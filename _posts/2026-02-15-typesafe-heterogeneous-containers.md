@@ -119,8 +119,54 @@ My first thought on these two ways of creating and using typesafe heterogeneous 
 
 - Context is internal and knows for sure that `Key<T>` has a value of type T
 - Bloch's container is meant for public use and cannot rely on proper setting of key-value pairs
+- The cast method is from the Java Reflection API but doesn't take much overhead
 
-The method 
+### Reifiable and non-reifiable
+
+Furthermore, context can differentiate between `List<String>` and `List<Integer>`, while Bloch's container can't. This is because `Class<T>` is fundamentally different from `Key<T>`. `List<Integer>` is a so-called non-reifiable type, meaning that its compile type differs from its runtime type (type erasure cause List<Integer> to become List). Context's container supports non-reifiable types, Bloch's container doesn't. 
+
+This means that if you want to be able to store the same type in the container, only with a different generic parameter, you can only do so with th eContext container. Furthermore, if you want multiple keys with the same type, you can also do that with the Context container, but then you need to make the Key field non-static. As it is now, with a static field for Key, each class will only have one key, no matter how many instance of that class are generated.
+
+## Interesting javadoc comment
+
+Context contains this 'get' class:
+
+```
+    public <T> T get(Key<T> key) {
+        checkState(ht);
+        Object o = ht.get(key);
+        if (o instanceof Factory<?> fac) {
+            o = fac.make(this);
+            if (o instanceof Factory<?>)
+                throw new AssertionError("T extends Context.Factory");
+            Assert.check(ht.get(key) == o);
+        }
+
+        /* The following cast can't fail unless there was
+         * cheating elsewhere, because of the invariant on ht.
+         * Since we found a key of type Key<T>, the value must
+         * be of type T.
+         */
+        return Context.uncheckedCast(o);
+    }
+```
+
+Notice the 'uncheckedCast' method at the end. The comment says it cannot fail, which is true because upon insertion in the map, a compile-time check was done that ensured that the type parameter of the key matched the type of the value. Below is the 'uncheckedCast' method, and look what its javadoc comment says:
+
+```
+    /**
+     * TODO: This method should be removed and Context should be made type safe.
+     * This can be accomplished by using class literals as type tokens.
+     */
+    @SuppressWarnings("unchecked")
+    private static <T> T uncheckedCast(Object o) {
+        return (T)o;
+    }
+```
+
+ChatGPT told me that he thinks that the makers are aware of the lack of runtime safety and therefore, to make the code even more fail-safe, want to move to a method that is more robust, more like Bloch's implementation. The cast `(T)o` can throw an exception but this exception is suppressed by the annotation. Even though the Java compiler will never fail because of this, there is still some notion that risks should be minimized even more.
+
+
 
 
 
