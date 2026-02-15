@@ -65,7 +65,7 @@ Line 5 is overwritten by line 4, only one Integer.type is in the resulting map.
 
 ## Context
 
-Context, or `com.sun.tools.javac.util.Context`, contains a typesafe heterogeneous container with is initialized like this:
+Context, or `com.sun.tools.javac.util.Context`, contains a typesafe heterogeneous container which is initialized like this:
 
 ```
     protected final Map<Key<?>, Object> ht = new HashMap<>();
@@ -95,6 +95,19 @@ To put a Key with a class instance in the ht map, this put method is being used:
 
 ```
 context.put(symtabKey, this);
+```
+
+Below is the implementation. It is the type parameter T that ensures that the type of key matches the type of data.
+
+```
+    public <T> void put(Key<T> key, T data) {
+        if (data instanceof Factory<?>)
+            throw new AssertionError("T extends Context.Factory");
+        checkState(ht);
+        Object old = ht.put(key, data);
+        if (old != null && !(old instanceof Factory<?>) && old != data && data != null)
+            throw new AssertionError("duplicate context value");
+    }
 ```
 
 As the key is a static final variable, it is only created once and never modified. So every class has just one Context.Key with its own type as generic type parameter. The way that such a class generates an instance of itself is via two methods. Instance creation is done with the instance method, which looks into the Context ht container to see if its key (of which there is only one per type) is in it. If not, it calls the constructor and puts itself in it:
