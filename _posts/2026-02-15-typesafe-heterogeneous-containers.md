@@ -113,6 +113,28 @@ As the key is a static final variable, it is only created once and never modifie
     }
 ```
 
+### What you can do with Key as key
+
+As Key is a reference type, nothing will hold you back from using multiple instances of Key with the same type parameter in the same map. Keys must be unique, but if each Key is a different reference object, it is not a problem if they are identical in their type parameter. In the follwing snippet I have illustrated that it is perfectly possible to create very identical keys that nevertheless can co-exist as keys in a hashmap.
+
+```
+class Key<T>{}
+
+Key<String> k1 = new Key<>();
+Key<String> k2 = new Key<>();
+
+System.out.println(k1==k2);  // false. Although same type param, identity differs
+
+Map<Key<?>, Object> myMap = new HashMap<>();
+
+myMap.put(k1, "Hello");
+myMap.put(k2, "Bye");
+
+System.out.println(myMap); // {REPL.$JShell$2$Key@3b94d659=Hello, REPL.$JShell$2$Key@1f021e6c=Bye}
+```
+
+In Context, no Key objects with the same type parameter will coexist in the hashmap because the Key field in the various classes is static and thus the Key is the same for all instances. But if you would make the Key field non-static, you could perfectly use similar Key objects as keys in the hashmap.
+
 ## A comparison
 
 My first thought on these two ways of creating and using typesafe heterogeneous containers was that the javac variant (Context) was superior because it doesn't rely on reflection. But ChatGPT has another take namely this:
