@@ -47,7 +47,7 @@ The `associatedInterface` variable is of type `Class<? extends Tree>`, which mea
 
 The way to get the Kind value of a specific Tree instance is done with the abstract 'getKind` method:
 
-`` 
+``` 
     Kind getKind();
 ```
 
