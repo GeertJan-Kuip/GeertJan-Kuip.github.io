@@ -158,9 +158,9 @@ My first thought on these two ways of creating and using typesafe heterogeneous 
 
 ### Reifiable and non-reifiable
 
-Furthermore, context can differentiate between `List<String>` and `List<Integer>`, while Bloch's container can't. This is because `Class<T>` is fundamentally different from `Key<T>`. `List<Integer>` is a so-called non-reifiable type, meaning that its compile type differs from its runtime type (type erasure cause List<Integer> to become List). Context's container supports non-reifiable types, Bloch's container doesn't. 
+Furthermore, context can differentiate between `List<String>` and `List<Integer>`, while Bloch's container can't. This is because `Class<T>` is fundamentally different from `Key<T>`. `List<Integer>` is a so-called non-reifiable type, meaning that its compile type differs from its runtime type (type erasure cause `List<Integer>` to become `List`). Context's container supports non-reifiable types, Bloch's container doesn't. 
 
-This means that if you want to be able to store the same type in the container, only with a different generic parameter, you can only do so with th eContext container. Furthermore, if you want multiple keys with the same type, you can also do that with the Context container, but then you need to make the Key field non-static. As it is now, with a static field for Key, each class will only have one key, no matter how many instance of that class are generated.
+This means that if you want to be able to store the same type in the container, only with a different generic parameter, you can only do so with the Context container. Furthermore, if you want multiple keys with the same type, you can also do that with the Context container, but then you need to make the Key field non-static. As it is now, with a static field for Key, each class will only have one key, no matter how many instances of that class are generated.
 
 ## Interesting javadoc comment
 
