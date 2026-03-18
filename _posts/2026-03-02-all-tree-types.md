@@ -12,9 +12,18 @@ VARIABLE(VariableTree.class),
 WHILE_LOOP(WhileLoopTree.class),
 ```
 
-As expected, enum values can have the same interface type as associated value:
+As expected, enum values can have the same interface type as associated value. The Tree types that have this one to many mapping are UnaryTree, BinaryTree, WildcardTree, CompoundAssignMentTree, ClassTree, AnnotationTree and LiteralTree:
 
 ```
+ANNOTATION(AnnotationTree.class),
+TYPE_ANNOTATION(AnnotationTree.class),
+
+CLASS(ClassTree.class),
+INTERFACE(ClassTree.class),
+ENUM(ClassTree.class),
+ANNOTATION_TYPE(ClassTree.class),
+RECORD(ClassTree.class),
+
 POSTFIX_INCREMENT(UnaryTree.class),
 POSTFIX_DECREMENT(UnaryTree.class),
 PREFIX_INCREMENT(UnaryTree.class),
@@ -24,9 +33,50 @@ UNARY_MINUS(UnaryTree.class),
 BITWISE_COMPLEMENT(UnaryTree.class),
 LOGICAL_COMPLEMENT(UnaryTree.class),
 
+MULTIPLY(BinaryTree.class),
+DIVIDE(BinaryTree.class),
+REMAINDER(BinaryTree.class),
+PLUS(BinaryTree.class),
+MINUS(BinaryTree.class),
+LEFT_SHIFT(BinaryTree.class),
+RIGHT_SHIFT(BinaryTree.class),
+UNSIGNED_RIGHT_SHIFT(BinaryTree.class),
+LESS_THAN(BinaryTree.class),
+GREATER_THAN(BinaryTree.class),
+LESS_THAN_EQUAL(BinaryTree.class),
+GREATER_THAN_EQUAL(BinaryTree.class),
+EQUAL_TO(BinaryTree.class),
+NOT_EQUAL_TO(BinaryTree.class),
+AND(BinaryTree.class),
+XOR(BinaryTree.class),
+OR(BinaryTree.class),
+CONDITIONAL_AND(BinaryTree.class),
+CONDITIONAL_OR(BinaryTree.class),
+
+MULTIPLY_ASSIGNMENT(CompoundAssignmentTree.class),
+DIVIDE_ASSIGNMENT(CompoundAssignmentTree.class),
+REMAINDER_ASSIGNMENT(CompoundAssignmentTree.class),
+PLUS_ASSIGNMENT(CompoundAssignmentTree.class),
+MINUS_ASSIGNMENT(CompoundAssignmentTree.class),
+LEFT_SHIFT_ASSIGNMENT(CompoundAssignmentTree.class),
+RIGHT_SHIFT_ASSIGNMENT(CompoundAssignmentTree.class),
+UNSIGNED_RIGHT_SHIFT_ASSIGNMENT(CompoundAssignmentTree.class),
+AND_ASSIGNMENT(CompoundAssignmentTree.class),
+XOR_ASSIGNMENT(CompoundAssignmentTree.class),
+OR_ASSIGNMENT(CompoundAssignmentTree.class),
+
 UNBOUNDED_WILDCARD(WildcardTree.class),
 EXTENDS_WILDCARD(WildcardTree.class),
 SUPER_WILDCARD(WildcardTree.class),
+
+INT_LITERAL(LiteralTree.class),
+LONG_LITERAL(LiteralTree.class),
+FLOAT_LITERAL(LiteralTree.class),
+DOUBLE_LITERAL(LiteralTree.class),
+BOOLEAN_LITERAL(LiteralTree.class),
+CHAR_LITERAL(LiteralTree.class),
+STRING_LITERAL(LiteralTree.class),
+NULL_LITERAL(LiteralTree.class),
 ```
 
 If we look further in the internal enum, we see this:
@@ -160,6 +210,35 @@ These Kind values exist in the Kind enum:
         CONDITIONAL_OR(BinaryTree.class),
 ```
 
+### StatementTree
+
+Like ExpressionTree, StatementTree is a marker interface. It is the parent of the following 20 Tree types:
+
+```
+AssertTree
+BlockTree
+BreakTree
+ClassTree
+ContinueTree
+DoWhileLoopTree
+EmptyStatementTree
+EnhancedForLoopTree
+ExpressionStatementTree
+ForLoopTree
+IfTree
+LabeledStatementTree
+ReturnTree
+SwitchTree
+SynchronizedTree
+ThrowTree
+TryTree
+VariableTree
+WhileLoopTree
+YieldTree
+```
+
+
+
 ### Leafs
 
 Some Tree types are so called 'leafs', meaning they do not have any more Tree objects beneath them. An example is LiteralTree:
@@ -192,12 +271,11 @@ There are more Tree types that function as leaf, this is a table showing their n
 
 |Name|Typical value(s)|method (if applicable)|
 |----|----|----|
-|LiteralTree|42, "hello", true, null|Object getValue();|
-|IdentifierTree(x, myVariable, System|Name getName();|
-|PrimitiveTypeTree|int, boolean, double|TypeKind getPrimitiveTypeKind();|
+|LiteralTree|42, "hello", true, null|`Object getValue();`|
+|IdentifierTree|x, myVariable, System|`Name getName();`|
+|PrimitiveTypeTree|int, boolean, double|`TypeKind getPrimitiveTypeKind();`|
 |EmptyStatementTree|;|none|
-|BreakTree|break;, break label;|Name getLabel();|
-|ContinueTree|continue;, continue label;|Name getLabel();|
+|BreakTree|break;, break label;|`Name getLabel();`|
+|ContinueTree|continue;, continue label;|`Name getLabel();`|
 
-### StatementTree
 
