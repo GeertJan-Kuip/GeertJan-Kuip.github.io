@@ -175,7 +175,7 @@ public interface LiteralTree extends ExpressionTree {
 }
 ```
 
-The Javaddoc comment says: _A tree node for a literal expression. Use getKind to determine the kind of literal._ These are the Kind values related to LiteralTree (all are primitives except String and null):
+The Javadoc comment says: _A tree node for a literal expression. Use getKind to determine the kind of literal._ These are the Kind values related to LiteralTree (all are primitives except String and null):
 
 ```
         INT_LITERAL(LiteralTree.class),
@@ -187,6 +187,17 @@ The Javaddoc comment says: _A tree node for a literal expression. Use getKind to
         STRING_LITERAL(LiteralTree.class),
         NULL_LITERAL(LiteralTree.class),
 ```
+
+There are more Tree types that function as leaf, this is a table showing their name, their typical value and the abstract method they provide:
+
+|Name|Typical value(s)|method (if applicable)|
+|----|----|----|
+|LiteralTree|42, "hello", true, null|Object getValue();|
+|IdentifierTree(x, myVariable, System|Name getName();|
+|PrimitiveTypeTree|int, boolean, double|TypeKind getPrimitiveTypeKind();|
+|EmptyStatementTree|;|none|
+|BreakTree|break;, break label;|Name getLabel();|
+|ContinueTree|continue;, continue label;|Name getLabel();|
 
 ### StatementTree
 
