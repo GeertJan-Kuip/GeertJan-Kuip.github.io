@@ -87,7 +87,78 @@ param.type.tsym
 
 My initial thougt was that instead of retrieving the type of the symbol and then the symbol of that type, you could just use the symbol itself (`param`). This is wrong, as `param.type.tsym` is actually something different. Let's say you have `String s` as argument in your method signature. The Symbol here is s, but that is not what you are interested in. You are interested in `String`, in the form of a Symbol. Therefore you must go via Type. This pattern, retrieving the Symbol of the Type, is required when you want to get the uml dependencies.
 
-##
+Btw instead of accessing the `type` field directly you can also use `asType()`. This method is declared in the Element interface and returns a TypeMirror object (or a Type object in the implementation of Symbol). Btw TypeMirror is a non-secret interface implemented by Type.
+
+## Dependencies within method bodies
+
+I'm interested in following execution trails that start in methods. This is a step further than my initial ambition, namely the generation of UML data. The chapter below is code that gets uml data from method bodies, after that I'll go deeper into the problem of the 'trails'.
+
+### What I got from ChatGPT about UML data
+
+To get into the bodies of methods you cannot directly call methods on ClassSymbol. Instead, you need to get hold of the current MethodSymbol and work from there:
+
+```
+@Override
+public Void visitMethod(MethodTree node, Void p) {
+    currentMethod = (MethodSymbol) trees.getElement(getCurrentPath());
+    return super.visitMethod(node, p);
+}
+```
+
+Having the currentMethod variable lets you do things like below, to extract the Symbols that represent the type of variables, of new object instances, :
+
+```
+@Override
+public Void visitVariable(VariableTree node, Void p) {
+    VarSymbol var = (VarSymbol) trees.getElement(getCurrentPath());
+
+    if (var.owner == currentMethod) {
+        addDependency(
+            currentClass,
+            var.type.tsym,
+            LOCAL_VARIABLE
+        );
+    }
+    return super.visitVariable(node, p);
+}
+
+@Override
+public Void visitNewClass(NewClassTree node, Void p) {
+    Type type = (Type) trees.getTypeMirror(getCurrentPath());
+    addDependency(currentClass, type.tsym, OBJECT_CREATION);
+    return super.visitNewClass(node, p);
+}
+
+@Override
+public Void visitMethodInvocation(MethodInvocationTree node, Void p) {
+    MethodSymbol called =
+        (MethodSymbol) trees.getElement(getCurrentPath());
+
+    addDependency(
+        currentClass,
+        called.owner,
+        METHOD_CALL
+    );
+    return super.visitMethodInvocation(node, p);
+}
+
+@Override
+public Void visitMemberSelect(MemberSelectTree node, Void p) {
+    Symbol sym = (Symbol) trees.getElement(getCurrentPath());
+
+    if (sym != null && sym.owner instanceof ClassSymbol cs) {
+        addDependency(currentClass, cs, STATIC_ACCESS);
+    }
+    return super.visitMemberSelect(node, p);
+}
+```
+
+My analysis is that you might be able to do without the `var.owner == currentMethod` condition. The AST is walked depth-first, which means that after any method tree is visited, every tree that is under that method (including all code in the block) is being visited and only then a next method is being visited. The code provided to me by ChatGPT was explicitly meant to retrieve dependencies of a class as used in UML, not to ascribe those dependencies to specific methods.
+
+### Working with MethodTree
+
+I think what I should do is to extract the MethodTree objects within the CompilationUnit object and use visit/scan on each of them to get the startpoints trails that lead to other parts of the code. 
+
 
 
 
