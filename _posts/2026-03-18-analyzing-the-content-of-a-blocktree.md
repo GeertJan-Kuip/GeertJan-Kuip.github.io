@@ -157,7 +157,27 @@ My analysis is that you might be able to do without the `var.owner == currentMet
 
 ### Working with MethodTree
 
-I think what I should do is to extract the MethodTree objects within the CompilationUnit object and use visit/scan on each of them to get the startpoints trails that lead to other parts of the code. 
+I think what I should do is to extract the MethodTree objects within the CompilationUnit object and use visit/scan on each of them to get the startpoints of trails that lead to other parts of the code. The way to do this is to collect the relevant symbols in the method body, with code as in the previous paragraph, and then use this method to find the relevant Tree objects:
+
+```
+JCTree tree = (JCTree) trees.getTree(sym);
+or 
+Tree methodTree = trees.getTree(sym);
+or
+JCTree.JCMethodDecl decl = (JCTree.JCMethodDecl) trees.getTree(sym);
+```
+
+The latter is most versatile. Now that the Tree of the method is obtained, this can be done:
+
+```
+JCBlock body = decl.body;
+or 
+BlockTree body = decl.getBody();
+```
+
+The latter of this methods returns a non-forbidden interface object. In both cases you immediately have the correct tree, namely the body of the method, which is a startpoint for a next round of finding symbols. 
+
+ChatGPT warned me for a few scenario's, namely one in which trees.getTree(sym) returns null (happens if the .java file is not available) and one in which the call stack is cyclic. For the latter, I was advised to store the calls and to end the process once a duplicate call emerged.
 
 
 
