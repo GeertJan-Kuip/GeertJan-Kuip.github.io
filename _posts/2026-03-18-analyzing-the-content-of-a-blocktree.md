@@ -177,9 +177,6 @@ BlockTree body = decl.getBody();
 
 The latter of this methods returns a non-forbidden interface object. In both cases you immediately have the correct tree, namely the body of the method, which is a startpoint for a next round of finding symbols. 
 
-ChatGPT warned me for a few scenario's, namely one in which trees.getTree(sym) returns null (happens if the .java file is not available) and one in which the call stack is cyclic. For the latter, I was advised to store the calls and to end the process once a duplicate call emerged.
+ChatGPT warned me for a few scenario's, namely one in which trees.getTree(sym) returns null (happens if the .java file is not available) and one in which the call stack is cyclic. For the latter, I was advised to store the calls and to end the process once a duplicate call emerged. 
 
-
-
-
-
+Another caveat is that you might get the compile time type instead of the runtime type of a method because of polymorphism. This is a harder problem to solve, it is something I'll hope to get back to later. 
