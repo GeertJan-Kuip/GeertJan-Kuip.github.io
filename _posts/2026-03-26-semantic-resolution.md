@@ -9,7 +9,8 @@ There are multiple classes, some abstract, and an interface, that require discus
 - com.sun.tools.javac.code.Scope
 - com.sun.tools.javac.comp.Env
 - com.sun.tools.javac.comp.AttrContext
- 
+- com.sun.source.tree.Scope
+- com.sun.tools.javac.api.JavacScope
 
 I was confused about the name Scope being reused, ChatGPT explained me how and why this happened. For the compiler to work, it uses `Scope` objects (the first in the list above) and `Env<AttrContext>` objects. The hierarchy in them is as follows:
 
@@ -57,17 +58,17 @@ public interface Scope {
 
 ## Why there are three objects for one job
 
-If we discard com.sun.source.tree.Scope and com.sun.tools.javac.api.JavacScope, which serve as a sort of api for external use, it is remarkable why there are multiple classes involved in the same process of symbol and type resolution. Instead of wrapping Scope in AttrContext and AttrContext in Env, you could simply put everything in Env.
+If we discard com.sun.source.tree.Scope and com.sun.tools.javac.api.JavacScope, which serve as a sort of api for external use, it is remarkable that there are multiple classes involved in the same process of symbol and type resolution. Instead of wrapping Scope in AttrContext and AttrContext in Env, you could simply put everything in Env.
 
 Generally, it doesn't matter a lot, as you would end up with the same amount of code lines and problems to solve, so it is not a big deal. But what we can do is try to find out what, generally speaking, the strength of each of this classes is.
 
-### Scope
+## Scope
 
 I start with the one that is wrapped the most. It is also the largest class in terms of lines, namely 1145. Env stops at 154 and AttrContext at 181. Scope is a sophisticated class designed for performance. This is what the javadoc comment on top says:
 
 _A scope represents an area of visibility in a Java program. The Scope class is a container for symbols which provides efficient access to symbols given their names. Scopes are implemented as hash tables with "open addressing" and "double hashing". Scopes can be nested. Nested scopes can share their hash tables._
 
-#### Structure
+### Structure
 
 The Scope class has all sorts of nested static classes with a lot of inheritance relationships. No static inner class is nested more than one level deep, but inheritance relationships do run deeper. This is the inheritance tree:
 
@@ -109,4 +110,44 @@ ScopeListenerList - public static class
 
 All together there are 15 subitems, of which one (MemberScope) lives somewhere else.
 
-####  
+### Fields and methods
+
+#### Top level (Scope)
+
+The Scope top class has three field of which 'owner' is the most important:
+
+```
+public final Symbol owner;
+
+// two other fields
+private static final Predicate<Symbol> noFilter = null;
+ScopeListenerList listeners = new ScopeListenerList();
+```
+
+The method list is all about retrieving symbols, eventually based on some specific condition, or checking if certain symbols exist somewhere in the current or the outer scope, or checking whether the current scope contains any symbols at all. I only wrote down the signatures for brevity.
+
+```
+    public final Iterable<Symbol> getSymbols();
+    public final Iterable<Symbol> getSymbols(Predicate<Symbol> sf);
+    public final Iterable<Symbol> getSymbols(LookupKind lookupKind);
+    public abstract Iterable<Symbol> getSymbols(Predicate<Symbol> sf, LookupKind lookupKind);
+    public final Iterable<Symbol> getSymbolsByName(Name name);
+    public final Iterable<Symbol> getSymbolsByName(final Name name, final Predicate<Symbol> sf);
+    public final Iterable<Symbol> getSymbolsByName(Name name, LookupKind lookupKind);
+    public abstract Iterable<Symbol> getSymbolsByName(final Name name, final Predicate<Symbol> sf, final LookupKind lookupKind);
+    public final Symbol findFirst(Name name);
+    public Symbol findFirst(Name name, Predicate<Symbol> sf);
+    public boolean anyMatch(Predicate<Symbol> filter);
+    public boolean includes(final Symbol sym);
+    public boolean includes(final Symbol sym, LookupKind lookupKind);
+    public boolean isEmpty();
+    public abstract Scope getOrigin(Symbol byName);
+    public abstract boolean isStaticallyImported(Symbol byName);
+```
+
+
+
+
+
+
+  
