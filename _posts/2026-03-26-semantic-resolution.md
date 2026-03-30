@@ -295,7 +295,7 @@ There are just a few methods, no setters and getters are required as all fields 
 
 ## Env
 
-An important fact is that while Scope is related to a namespace (block, method body, class body etc), Env is related to a specific AST Tree (node). Env provides all the relevant semantic context for that specific Tree, while Scope gives access to all the available symbols in the namespace in which that Tree lives.
+An important fact is that while Scope is related to a namespace (block, method body, class body etc), Env is related to a specific AST Tree ('node'). Env provides all the relevant semantic context for that specific Tree, while Scope gives access to all the available symbols in the namespace in which that Tree lives.
 
 You can think of a situation where, somewhere in a method body, a specific variable (Symbol) is declared halfway, while the code analysis has not reached that point yet. In the logic of Env, it is relevant where in the body you are, while for Scope, it doesn't matter. If the code analysis progresses, new Env objects are being created (using a lot of smart reuse of already gathered data). But while the analysis progresses, the Scope object will remain the same, as long as you do not exit the namespace.
 
@@ -304,6 +304,8 @@ This is what ChatGPT told me:
 _Scopes can be reused across multiple Env objects because many AST nodes live in the same lexical scope, but each node may still need its own Env (its own semantic context)._
 
 There are all sorts of 'dup' methods that smartly copy elements/fields of Env when a new Env needs to be created that can reuse a lot of the material of the previous Env object.
+
+### Fields
 
 These are the fields of Env:
 
@@ -334,6 +336,8 @@ These are the fields of Env:
 ```
 
 As you see the specific relevant Tree objects are included as fields, and there are references to the Env objects belonging to the current class and to the next enclosing environment.
+
+### Methods
 
 If you look at the methods, I found this an interesting one:
 
