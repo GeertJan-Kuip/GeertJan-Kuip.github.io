@@ -1,6 +1,6 @@
 # How to understand code fast
 
-The app that generates uml schema's from java source files (.java) is meant to understand Java code easier. Instead of displaying all information on the code, as Intellij or any other IDE does, it should be very selective and only display three (plus or minus two) pieces of information at the same time. 
+The app that generates uml schema's from source files (.java) is meant to understand Java code easier. Instead of displaying all information on the code, as Intellij or any other IDE does, it should be very selective and only display three (plus or minus two) pieces of information at the same time. 
 
 Those pieces of information should be highly effective in increasing your understanding of dependencies, module- and package design, the character and role of individual classes, inheritance relationships, program flow, instance creation etc. 
 
