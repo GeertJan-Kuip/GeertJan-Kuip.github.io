@@ -12,7 +12,7 @@ The second prerequisite in finding these patterns is creating unambiguous defini
 
 I divide this section in three. The first is about concepts derived from 'Clean Architecture,' the second from 'Design Patterns' and the third from myself.
 
-### Concepts from Clean Architecture
+### Concepts from Clean Architecture - 1
 
 'Clean Architecture: A Craftsman's Guide to Software Structure and Design' is a well known book on OOP software architecture. Three key terms are 'boundaries', 'dependencies' and 'decoupling.' It defines a 'Dependency Rule' that says that _source code dependencies must point only inward, toward higher-level policies._ It advises you to define the most essential part of your application, or the part where 'inputs are converted to outputs,' and make this component independent. 
 
@@ -54,16 +54,68 @@ An exception can be made for very stable classes, like String in Java. It is saf
 
 Applying the principle leads, for example, to the creation of Abstract Factories that hide concrete implementations. Of course it is not possible to not mention the name of concrete classes, but this should be done in a separate part of the code, which can be the main function or some 'composition root'. 
 
+### Concepts from Clean Architecture - 2
+
+The concepts below have 'Component Cohesion' as overarching theme. The author discusses how you should decide which classes belong to the same component, whereby component is defined as a unit that can be independently deployed. It can be an application or a library, and I would say that you can define it as a set of classes that when you compile them, no symbol definitions will be missing.
+
+#### The Reuse/Release Equivalence Principle
+
+Classes and modules that are grouped together into a component should be releasable together. They share the same version number and use the same release documentation.
+
+#### The Common Closure Principle
+
+This is the defintion in the book:
+
+_Gather into components those classes that change for the same reasons and at the same times. Separate into different components those classes that change at different times and for different reasons._
+
+Note how similar this is with the previously discussed Single Responsibility Principle.
+
+#### The Common Reuse Principle
+
+_Don't force users of a component to depend on things they don't need_, is what the book definition says. Note how this aligns with the Interface Segregation Principle. If a component is only used partially by its clients, one should consider to split it up.
 
 
-- Interface Segregation Principle
-- Dependency Inversion Principle
+### Concepts from Clean Architecture - 3
 
-- Acyclic Dependencies
-- Stable Dependencies Principle
-- Stable Abstractions Principle
+The following three principles deal with the relationships between components.
 
+#### Acyclic Dependencies
 
+This principle states that there should be no cycles in the dejpendency graph. If A depends on B, B should not depend on A, neither directly or indirectly. When there are multiple points of contact, all arrows between the components must point in the same direction.
+
+A direct problem of cyclic dependencies on the level of components is that you cannot build the application anymore. Normally you start with the independent module and then follow the graph, but this becomes impossible when cyclic dependencies exist.
+
+Note: on the lower level of classes and packages cyclic dependencies are not a problem in a technical sense, although you should consider if you can do without. In the jdk.compiler library classes Symbol and Type have each other as dependency which is okay.
+
+Note: to break a cycle, you can use dependency inversion.
+
+#### Stable Dependencies Principle
+
+This is actually a very interesting principle. It distinguishes between stable and unstable components, saying that any component must only have dependencies more stable than itself. 
+
+Stability (or actualy Instability) of a component can be calculated useing the following procedure:
+
+- Count the number of classes outside this component that depend on classes within this component (Fan-in)
+- Count the number of classes inside this component that depend on classes outside this component (Fan-out)
+- Instability now is Fan-out / (Fan-in + Fan-out)
+
+This metric is interesting (I object to the fact that transitive dependencies are not inncluded) and for example tells you that String is hyperstable and the composition root in your application, where the program starts, has maximum instability as nothing depends on it.
+
+Author notes that once you see that some component depends on a component less stable than itself, you should consider using dependency inversion.
+
+#### Stable Abstractions Principle
+
+If, according to all principles discussed, the most important part of you code ('policy') resides in the most stable component, you might note that it becomes impossible to change the code within this policy component because all other components will break if you do so.
+
+The solution is the Stable Abstractions Principle, that says that you should hide the implementation of you high-level policy behind abstractions, within the same class. This can be deduced from earlier principles as well. 
+
+To measure the abstractness of a component, author provides a new 'A' metric:
+
+- Nc: the number of classes in a component
+- Na: the number of abstract classes and interfaces in a component
+- A: Abstractness A = Na/Nc
+
+Components with high abstractness (A) should be stable (low I) and vice versa. The book shows a twodimensional diagram with A and I on the axes and states that component should reside near the line A+I=1. 
 
 
 
