@@ -115,7 +115,9 @@ To measure the abstractness of a component, author provides a new 'A' metric:
 - Na: the number of abstract classes and interfaces in a component
 - A: Abstractness A = Na/Nc
 
-Components with high abstractness (A) should be stable (low I) and vice versa. The book shows a twodimensional diagram with A and I on the axes and states that component should reside near the line A+I=1. 
+Components with high abstractness (A) should be stable (low I) and vice versa. The book shows a twodimensional diagram with A and I on the axes and states that component should reside near the line A+I=1. Author calls this line the _Main Sequence_. It is worth reading this specific subchapter of the book, as it combines two specific metrics to create a new sort of information about a component.
+
+If I must summarize it, it says that a stable component should be abstract, while an unstable component (having many dependencies without being a dependency for other components) should not be abstract (meaning it has no need for interfaces and abstract classes to communicate with the other components).
 
 
 
