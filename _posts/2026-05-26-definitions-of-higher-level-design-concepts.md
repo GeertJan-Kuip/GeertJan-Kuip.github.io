@@ -1,18 +1,14 @@
-# Definitions of higher level design concepts
+# Clean Architecture
 
 I want to make tooling to analyze code. This brings me to the realm of what you might call 'higher-level' or 'abstract' design concepts (or patterns). Examples if it are 'dependency inversion,' 'static factory,' 'composition root,' 'domain object,' 'clear boundary' or 'interface segregation principle.' I want tooling that helps me to find these patterns in existing codebases.
 
-## Prerequisites
+In this post I want to summarize the principles I studied in ['Clean Architecture: A Craftsman's Guide to Software Structure and Design' by Robert C. Martin](https://www.amazon.com/dp/B075LRM681). In subsequent blogs I want to discuss how these principles can be properly defined, so that I can write algorithms that help me to detect them.
 
-The first prerequisite is creating a list of concepts/patterns that I want to be able to detect. The literature on software architecture can be helpful here but might not be exhaustive. I read just a limited number of books on architecture and design patterns, the most important being ['Design Patterns' by the Gang of Four](https://www.amazon.com/Design-Patterns-Object-Oriented-Addison-Wesley-Professional-ebook/dp/B000SEIBB8), the other one being ['Clean Architecture' by Robert C. Martin](https://www.amazon.com/dp/B075LRM681). Apart from what I found here, I have some things to add.
+## Concepts from 'Clean Architecture'
 
-The second prerequisite in finding these patterns is creating unambiguous definitions, which is actually a difficult thing to do. For example, do the methods in a utility class (a concept) need to be abstract? Can a utility class have state, other than final constants? Must all methods be purely functional? Can a class that can be instantiated multiple times still be a utility class? If you create an interface and fill it with public static 'utility' methods, should you then call it a utility class?
+The book discusses software at different levels. It looks at the level of classes, packages and modules, at the level of components and at the level of 'architecture'. Here I summarize about what I found on the first two levels.
 
-## A list of concepts and patterns
-
-I divide this section in three. The first is about concepts derived from 'Clean Architecture,' the second from 'Design Patterns' and the third from myself.
-
-### Concepts from Clean Architecture - 1
+### Concepts from Clean Architecture - Modules, Packages, Classes
 
 'Clean Architecture: A Craftsman's Guide to Software Structure and Design' is a well known book on OOP software architecture. Three key terms are 'boundaries', 'dependencies' and 'decoupling.' It defines a 'Dependency Rule' that says that _source code dependencies must point only inward, toward higher-level policies._ It advises you to define the most essential part of your application, or the part where 'inputs are converted to outputs,' and make this component independent. 
 
@@ -54,7 +50,7 @@ An exception can be made for very stable classes, like String in Java. It is saf
 
 Applying the principle leads, for example, to the creation of Abstract Factories that hide concrete implementations. Of course it is not possible to not mention the name of concrete classes, but this should be done in a separate part of the code, which can be the main function or some 'composition root'. 
 
-### Concepts from Clean Architecture - 2
+### Concepts from Clean Architecture - Component Cohesion
 
 The concepts below have 'Component Cohesion' as overarching theme. The author discusses how you should decide which classes belong to the same component, whereby component is defined as a unit that can be independently deployed. It can be an application or a library, and I would say that you can define it as a set of classes that when you compile them, no symbol definitions will be missing.
 
@@ -74,8 +70,7 @@ Note how similar this is with the previously discussed Single Responsibility Pri
 
 _Don't force users of a component to depend on things they don't need_, is what the book definition says. Note how this aligns with the Interface Segregation Principle. If a component is only used partially by its clients, one should consider to split it up.
 
-
-### Concepts from Clean Architecture - 3
+### Concepts from Clean Architecture - Component Relations
 
 The following three principles deal with the relationships between components.
 
