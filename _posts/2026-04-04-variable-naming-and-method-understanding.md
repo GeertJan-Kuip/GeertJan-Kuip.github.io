@@ -6,7 +6,7 @@ This is just a short blog post, I was thinking about ways to easier understand m
 
 If you look at a random method you see a bunch of variable names. Those names often try to tell you what they represent but that does not mean that you will grasp things immediately. Hoovering over an identifier gives you information about its type and with Ctrl-Click you can see its source file.
 
-## The idea
+## Idea no. 1
 
 Would it be handy if variable names are just the type they represent? It means you can more easily see which identifier represents which type and therefore you can easier grasp eventual methods or field access called on the variable. Let's have two pieces of code, one in 'normal' style and one in this new, somewhat exagarated style (I'm using capitals):
 
@@ -57,6 +57,30 @@ Would it be handy if variable names are just the type they represent? It means y
 
     }
 ```
+
+## Idea no. 2
+
+In the example above I tried to stress the types of the variables. I can even try to omit everything that is not 
+
+```
+        protected <A extends Annotation> Attribute.Compound getAttribute(final Class<A> annoType) {
+
+            Attribute.Compound attrib = super.getAttribute(annoType);
+
+            boolean inherited = annoType.isAnnotationPresent(Inherited.class);
+            if (attrib != null || !inherited)
+                return attrib;
+
+            // Search supertypes
+            ClassSymbol superType = getSuperClassToSearchForAnnotations();
+            return superType == null ? null
+                                     : superType.getAttribute(annoType);
+        }
+```
+
+```
+Class<A> -> Attribute.Compound (boolean - Inherited - ClassSymbol)
+
 
 
 
