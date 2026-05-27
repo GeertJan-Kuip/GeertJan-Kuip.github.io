@@ -6,15 +6,13 @@ In this post I want to summarize the principles I studied in ['Clean Architectur
 
 ## Concepts from 'Clean Architecture'
 
-The book discusses software at different levels. It looks at the level of classes, packages and modules, at the level of components and at the level of 'architecture'. Here I summarize about what I found on the first two levels.
-
-### Concepts from Clean Architecture - Modules, Packages, Classes
-
 'Clean Architecture: A Craftsman's Guide to Software Structure and Design' is a well known book on OOP software architecture. Three key terms are 'boundaries', 'dependencies' and 'decoupling.' It defines a 'Dependency Rule' that says that _source code dependencies must point only inward, toward higher-level policies._ It advises you to define the most essential part of your application, or the part where 'inputs are converted to outputs,' and make this component independent. 
 
 To achieve this, you should use dependency inversion, which practically means that the independent component should own the interface that is implemented by the class that is part of the component that is dependent on the higher-level-policy containing class. Being the owner of an interface that must be implemented by others makes you, literally, independent.
 
-The book uses a range of acronyms to describe good practices. I summarize them below:
+### Concepts from Clean Architecture - Modules, Packages, Classes
+
+The first part of the book describes five principles that should be followed when you organize classes, packages and modules:
 
 #### Single Responsibility Principle
 
