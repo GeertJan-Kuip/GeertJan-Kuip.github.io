@@ -17,8 +17,6 @@ Dependencies can have several forms. They can be direct or they can be transitiv
 
 To read code well I want to have a list of properties of dependencies that help me qualify the relationship between a class and a dependency. Below I discuss some aspects that might be relevant. In the end I want some algorithm that provides brief information on a dependency, in a way that I can understand the relationship between class and dependency in a glance.
 
-
-
 ### Abstract or not
 
 If the dependency is an abstract class or an interface, there are a few things to investigate:
@@ -64,6 +62,15 @@ Method bodies might call methods that belong to dependencies. Of these method ca
 - What is the type of the arguments?
 - Are there return values?
 - How are these return values being used?
+
+### Character of the dependency
+
+Dependencies can be differentiated by the following aspects:
+
+- Does it have transitive dependencies?
+- How stable is this dependency (see the bog post 'Clean Architecture')
+- Who else has this type of dependency?
+- Who else has this specific instance of the dependency?
 
 
 
