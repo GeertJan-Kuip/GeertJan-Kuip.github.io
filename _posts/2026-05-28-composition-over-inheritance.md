@@ -26,7 +26,7 @@ I wondered what the definition of composition was, and in fact it includes every
 
 Having said that, there are multiple levels of intensity. The most extreme forms require the two classes to know of each other and the request handling is done by intensive coöperation. The most extreme is probably found in the Visitor pattern. Because of the use of keyword 'this', the process initiated in Visitor bounces between the two classes, one being Visitor and the other being the object that knows how to traverse some object tree.
 
-A less extreme form of delegation is found in the Strategy pattern, where you have a field in your delegator holding a reference to an instance type that has one or more specific methods that are required to handle incoming requests. Instead of hardcoding the variants of this method(s) in the delegator itself, you delegate them to the delegate. As this delegate is referred to by its type/interface, you can decide which implementation to use. You can even swap the implementation for another implementation using a setter. It is great for dependency inversion (delegator is not dependent on delegate because it is accessed by an interface that can be owned by the core of your application) and it is great with regards to the open-closed principle. You can extend your options by creating extra implementations in the outer layer of your program, without touching the business logic inside.
+A less extreme form of delegation is found in the Strategy pattern, where you have a field in your delegator holding a reference to an interface/abstract type that has one or more specific methods that are required to handle incoming requests. Instead of hardcoding the variants of this method(s) in the delegator itself, you delegate them to the delegate. As this delegate is referred to by its type/interface, you can decide which implementation to use. You can even swap the implementation for another implementation using a setter during runtime. Note how superior this is to inheritance, which cannot be altered during runtime. It is great for dependency inversion (delegator is not dependent on delegate because it is accessed by an interface that can be owned by the core of your application) and it is great with regards to the open-closed principle. You can extend your options by creating extra implementations of delegate in the outer layer of your program, without touching the business logic inside.
 
 This strategy pattern forms a sort of middle ground, because the delegate still needs to know about the operations that delegator needs to perform. They are somewhat entangled.
 
@@ -34,28 +34,11 @@ The least extreme form is where delegator calls methods on delegate but where de
 
 Summarized: extreme delegation differs from mild delegation in the way that delegator and delegate must know about each other. If 'this' is being used, we have an extreme form of delegation that is probably hard to understand (see Visitor pattern).
 
+## Patterns using composition
 
+Most patterns in 'Design Patterns' use some form of composition. There are two that do not:
 
-```
-interface Behavior{
-    
-    String greet(String personsName); 
-}
+- Template Method Pattern
+- Factory Method Pattern
 
-class RudeBehavior{
-    String greet(String name){
-        System.out.println("Hi " + name + ". You are a dickhead!");
-    }
-}
-
-class PoliteBehavior{
-    String greet(String name){
-        System.out.println("Hello " + name ", nice to meet you!");
-    }
-}
-
-class Person{
-
-
-Design Patterns: Elements of Reusable Object-Oriented Software
-
+Both rely on subclassing/inheritance. Furthermore one variant of Adaptor (Class Adaptor) uses multiple inheritance, not composition.
