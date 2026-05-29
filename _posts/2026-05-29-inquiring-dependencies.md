@@ -72,5 +72,11 @@ Dependencies can be differentiated by the following aspects:
 - Who else has this type of dependency?
 - Who else has this specific instance of the dependency?
 
+## How to use this
+
+Ideally I want to have a tool that detects all sorts of patterns and relationships, faster than AI and more extensive than an IDE. But before I can create the appropriate algorithms, I need to have an idea what I am looking for.
+
+Btw I'm planning to create two layers for analysis: layer 1 contains basics methods (findTransitiveDependencies, listMethodsCallingThisMethod etc). The other one, layer 2, creates more complex requests build from the basic methods in layer 1. The Command Pattern will help with this, I want to be able to create new analyses simply as subclasses of some AbstractAnalysis class (open-closed principle).
+
 
 
