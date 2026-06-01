@@ -58,3 +58,29 @@ This has to do with the 'lazy' aspect of compilation. When a Symbol or its Type 
 #### Type erasure_field 
 
 Documentation says: "A cache for the type erasure of this symbol."
+
+### Methods
+
+There are 57 methods (Java 21) so I have to be selective in what I discuss here. Only methods relevant for MethodSymbol are included. I put them in a table for brevity.
+
+|Method|Use|
+|---|---|
+|isStatic()||
+|isPrivate()||
+|isPublic()||
+|isFinal()||
+|isAnonymous()||
+|isConstructor()||
+|enclClass()|Returns owner|
+|outermostClass()|Recurses upwards to get ClassSymbol of non-nested class|
+|packge()|Returns enclosing PackageSymbol|
+|isMemberOf(TypeSymbol, Types)|Can this class (first argument) see/use this member (MethodSymbol in our case) as one of its members?|
+|isAccessibleIn(Symbol, Types)|First argument must be subclass of Symbol's owner! Checks if subclass can use this MethodSymbol.|
+|getEnclosingElement()|returns owner|
+|getKind()|returns ElementKind, simple enum value. Choose from CONSTRUCTOR, METHOD, STATIC_INIT_INSTANCE_INIT|
+|getModifiers()|returns a `Set<Modifier>`. Modifier is an enum in javax.lang.model.element|
+
+
+
+
+
