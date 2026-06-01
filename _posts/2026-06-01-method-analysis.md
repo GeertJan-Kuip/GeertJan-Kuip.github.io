@@ -80,6 +80,38 @@ There are 57 methods (Java 21) so I have to be selective in what I discuss here.
 |getKind()|returns ElementKind, simple enum value. Choose from CONSTRUCTOR, METHOD, STATIC_INIT_INSTANCE_INIT|
 |getModifiers()|returns a `Set<Modifier>`. Modifier is an enum in javax.lang.model.element|
 
+The most difficult methods are those who check the Symbol at hand against inheritance trees. These methods (there are a few more but `isMemberOf` and `isAccessibleIn` are rather typical) will help with resolving overrides.
+
+## MethodSymbol - fields and methods
+
+The previous fields and methods were generic methods from Symbol. MethodSymbol has a few more specific ones.
+
+### Fields
+
+The only relevant field is `params`, which is of type `List<VarSymbol>`. The field `Code code` doesn not contain source code, it has technical content related to the transition to bytecode.
+
+### Methods
+
+I make a distinction between methods related to inheritance and polymorphism and methods that just tell about the method as found in the code. I start with the latter category:
+
+|Method|return type|Use|
+|---|---|---|
+|getModifiers()|`Set<Modifier>`|All modifiers in the form of enum values|
+|isLambdaMethod()|boolean|True if flag LAMBDA_METHOD is 1|
+|getParameters()|List<VarSymbol>|Calls 'params()'|
+|params()|List<VarSymbol>|Returns list of VarSymbols|
+|getKind()|ElementKind|Returns METHOD, STATIC_INIT, INSTANCE_INIT or CONSTRUCTOR|
+|isStaticOrInstanceInit()|boolean|True if ElementKind is STATIC_INIT or INSTANCE_INIT|
+|isVarArgs()|boolean|Returns true if flag VARARGS is 1|
+|isDefault()|boolean|returns true if method is default method in interface|
+|getReturnType()|Type|Returns return type|
+|getThrownTypes()|List<Type>|Returns the thrown types from method signature|
+
+
+implemented(TypeSymbol c, Types types)
+
+
+
 
 
 
