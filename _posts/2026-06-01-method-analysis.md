@@ -27,7 +27,7 @@ This is the interesting one. Every symbol has a 64 bit long attached to it and e
 |Bit|Name|Description|
 |---|---|---|
 |1-11|PUBLIC, PRIVATE, FINAL etc|standard Java/modifier flags|
-|33|PARAMETER|Flag for VarSymbol that is method parameter|
+|33|PARAMETER|Flag for VarSymbol that is a method parameter|
 |34|VARARGS|Flag that marks method having varargs parameter|
 |43|DEFAULT|Marks a default method or an interface containing default methods|
 |51|MODULE|Flag to indicate class symbol is for module-info|
@@ -41,10 +41,20 @@ Note: there is an enum ElementKind in the accessible api (javax.lang.model.eleme
 
 #### Name name
 
+The name of the Symbol stored as a Name object. Name has a more efficiënt way of storing char sequences than String. It basically creates one long char array, adding every new name at the end and returning the start and end position of it.
+
 #### Type type
+
+Every Symbol object has a corresponding Type object and vice-versa. This is not completely true, a Symbol object can have zero or more associated types. PackageSymbol has no associated Type for example, while Name can have multiple Type associated with, for example because `Name` and `Name[]` are stored as different Type objects.
 
 #### Symbol owner
 
+The parent of this symbol. If you want to know in which class the symbol lives, use method `enclClass()` or (for inner classes) `outermostClass()`. These methods recurse upward until they meet a non-nested ClassSymbol.
+
 #### Completer completer
 
+This has to do with the 'lazy' aspect of compilation. When a Symbol or its Type has not fully been resolved, the `complete()` method on its Completer can be called (at least I think so). 
+
 #### Type erasure_field 
+
+Documentation says: "A cache for the type erasure of this symbol."
