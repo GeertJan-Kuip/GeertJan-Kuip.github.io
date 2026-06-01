@@ -98,14 +98,14 @@ I make a distinction between methods related to inheritance and polymorphism and
 |---|---|---|
 |getModifiers()|`Set<Modifier>`|All modifiers in the form of enum values|
 |isLambdaMethod()|boolean|True if flag LAMBDA_METHOD is 1|
-|getParameters()|List<VarSymbol>|Calls 'params()'|
-|params()|List<VarSymbol>|Returns list of VarSymbols|
+|getParameters()|`List<VarSymbol>`|Calls 'params()'|
+|params()|`List<VarSymbol>`|Returns list of VarSymbols|
 |getKind()|ElementKind|Returns METHOD, STATIC_INIT, INSTANCE_INIT or CONSTRUCTOR|
 |isStaticOrInstanceInit()|boolean|True if ElementKind is STATIC_INIT or INSTANCE_INIT|
 |isVarArgs()|boolean|Returns true if flag VARARGS is 1|
 |isDefault()|boolean|returns true if method is default method in interface|
 |getReturnType()|Type|Returns return type|
-|getThrownTypes()|List<Type>|Returns the thrown types from method signature|
+|getThrownTypes()|`List<Type>`|Returns the thrown types from method signature|
 
 
 implemented(TypeSymbol c, Types types)
