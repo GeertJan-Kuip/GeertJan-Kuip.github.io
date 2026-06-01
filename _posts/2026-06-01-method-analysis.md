@@ -14,7 +14,7 @@ Symbol has only seven fields which makes it comprehensible. Those fields are:
 
 #### Kind kind
 
-Kind is an enum from the same package as Symbol. It lives in the Kinds class, the Kinds class being a sort of wrapper in which another enum (KindName) and a stat ic inner class (KindSelector) live as well.
+Kind is an enum from the same package as Symbol. It lives in the Kinds class, the Kinds class being a sort of wrapper in which another enum (KindName) and a static inner class (KindSelector) live as well.
 
 Kind tells you what sort of Symbol you are dealing with, note that because superclass Symbol itself is abstract it cannot be a runtime type itself. Furthermore it has values that probably have to do with the compilation process, in which intermediate states might require special symbols or in which errors are being found.
 
@@ -35,7 +35,7 @@ This is the interesting one. Every symbol has a 64 bit long attached to it and e
 |17|BODY_ONLY_FINALIZE|Flag that marks finalize block as body-only|
 |61|RECORD|Class is a record|
 
-Note: to many of these flags there is a method that returns whether the flag, or multiple flags, are set. If there is an appropriate method available, you do not have to access the flags_field field yourself.
+Note: for many of these flags there exists a method that returns whether the flag, or multiple flags, are set. If there is an appropriate method available, you do not have to access the flags_field field directly.
 
 Note: there is an enum ElementKind in the accessible api (javax.lang.model.element.ElementKind). This enum value can be requested using all sorts of `getKind()` methods. ElementKind does not go as deep into compiler processes as Flags but tells you correctly what sort of Symbol you are dealing with, including the differences between different ClassSymbols (CLASS, RECORD, INTERFACE, ENUM) or between different VarSymbols (FIELD, LOCAL_VARIABLE, PARAMETER etc).
 
