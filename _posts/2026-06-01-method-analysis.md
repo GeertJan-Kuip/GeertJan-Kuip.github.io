@@ -124,7 +124,7 @@ These are methods related to inheritance, overriding etc. I omitted the last col
 
 ## Methods that I need
 
-To be able to analyze code, need a few collections where I can store method relations. Furthermore I need some methods that tell me more about the character of the method. Unlike javac's methods, I will heavily involve the contents of the method body.
+To be able to analyze code, need a few collections where I can store method relations. Furthermore I need some methods that tell me more about the character of the method. The methods I propose are strongly related to the contents of the method body.
 
 ### Call graph, forward and reverse
 
@@ -136,7 +136,7 @@ In another map 'subtypes' of type `Map<Class, Set<Class>>` I store each class's 
 
 I will do one pass through all CompilationUnitTrees, especially the method bodies, to create a lot of `Set<MethodSymbol>` that help me to do a lookup. I want, for example, to be able to see which methods are involved in the linking of concrete implementations to abstract superclasses.
 
-#### hasIterationWithoutMethodCalls
+#### hasIterationWithoutMethodCalls()
 
 A method is included in the set if some sort of loop is to be found. It can be some for loop, something with iterate, a while loop or a do-while loop. Also included are methods where the functional programming stream() api is at work.
 
@@ -197,8 +197,6 @@ Important. All birth sites of new instances must be known. From every class I wa
 #### mainMethod()
 
 I need to know where all main classes are right from the start. If there is a pom.xml and/or a MANIFEST.MF file, I want to know to what main method they point.
-
-
 
 
 
