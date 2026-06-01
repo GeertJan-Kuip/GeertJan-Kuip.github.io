@@ -107,10 +107,20 @@ I make a distinction between methods related to inheritance and polymorphism and
 |getReturnType()|Type|Returns return type|
 |getThrownTypes()|`List<Type>`|Returns the thrown types from method signature|
 
+These are methods related to inheritance, overriding etc. I omitted the last column ('Use') because I don't know what these methods exactly do:
 
-implemented(TypeSymbol c, Types types)
-
-
+|Method|return type|
+|---|---|
+|implemented(TypeSymbol c, Types types)|Symbol|
+|implementedIn(TypeSymbol c, Types types)|Symbol|
+|binaryOverrides(Symbol _other, TypeSymbol origin, Types types)|boolean|
+|binaryImplementation(ClassSymbol origin, Types types)|MethodSymbol|
+|overrides(Symbol _other, TypeSymbol origin, Types types, boolean checkResult)|boolean|
+|overrides(Symbol _other, TypeSymbol origin, Types types, boolean checkResult, boolean requireConcreteIfInherited)|boolean|
+|isOverridableIn(TypeSymbol origin)|boolean|
+|isInheritedIn(Symbol clazz, Types types)|boolean|
+|implementation(TypeSymbol origin, Types types, boolean checkResult)|MethodSymbol|
+|implementation(TypeSymbol origin, Types types, boolean checkResult, Predicate<Symbol> implFilter)|MethodSymbol|
 
 
 
