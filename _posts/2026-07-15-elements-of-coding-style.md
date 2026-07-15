@@ -74,7 +74,7 @@ public abstract class Node {
 }
 ```
 
-The benefit of this is that by using `super` in the constructor of the subclasses I prevent duplication of code. Things beocme easier to maintain. And of course I can now use abstract type `Node` on all occassions where it does not matter whether the Node is a ClassNode, a PackageNode or a ModuleNode.
+The benefit of this is that by using `super` in the constructor of the subclasses I prevent duplication of code. Things are easier to maintain. And of course I can now use abstract type `Node` on all occassions where it does not matter whether the Node is a ClassNode, a PackageNode or a ModuleNode.
 
 ## Generics
 
@@ -108,7 +108,7 @@ It is very convenient that I can work with any kind of Node or Symbol now withou
 
 ## Failing fast
 
-Using `Objects.requireNonNull(Obejct o)` at the start of a method to check for null input is really helpfull, as it immediately shows you where an illegal null argument was found in the error stack trace. I used it in this method constructor for example:
+Using `Objects.requireNonNull(Obejct o)` at the start of a method to check for null input is really helpfull, as it immediately shows you where an illegal null argument was found. I used it in this method constructor for example:
 
 ```
     public JGraphTComputations(SymbolRegistry registry, Set<? extends Symbol> relevantSymbols, Set<Pair> relevantPairs, List<Edge> edges, List<? extends Node> nodes) {
