@@ -50,8 +50,6 @@ Furthermore we need to do more then just detect whether or not our Tree is below
 ```
 private TreePath findAssignment(TreePath path){
 
-    TreePath location = null;
-
     while (path!=null){
 
         if (path.getLeaf() instanceof JCTree.JCAssign) break;
@@ -64,6 +62,30 @@ private TreePath findAssignment(TreePath path){
 }
 ```
 
+Once the TreePath of the AssignmentTree is available, it can be used to find out whether the MemberSelectTree items have been read or have been written to. While I first thought this would require going down in the structure (not using TreePath) I ended up using TreePath anyway. The reason is that going down requires consideration of what Tree type you encounter, with all sorts of partentheses, expressions etc. When going up you encounter just one type, namely TreePath itself.
 
+```
+private boolean isLeftAssignment(TreePath path, TreePath assignment){
+
+    if (assignment.getLeaf().getKind()!= Tree.Kind.ASSIGNMENT) {
+        throw new RuntimeException("Second parameter is not linked to an AssignmentTree.");}
+
+    AssignmentTree assignmentTree = (AssignmentTree) assignment.getLeaf();
+
+    while (path!=null && path.getParentPath()!=null){
+
+        Tree up = path.getLeaf();
+        Tree up2 = path.getParentPath().getLeaf();
+        if (up2==assignmentTree){
+
+            if (assignmentTree.getVariable() == up) {
+                return true;
+            } else return false;
+        }
+        path = path.getParentPath();
+    }
+    return false;
+}
+```
 
 
