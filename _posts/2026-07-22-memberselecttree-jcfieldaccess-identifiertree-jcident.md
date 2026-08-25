@@ -20,3 +20,5 @@ You need to extend TreePathScanner to be able to visit all trees in the AST and 
 
 This method deals with dot-separated expressions. Think of `this.someMemberFieldName.value1`. 
 
+- more to come
+
