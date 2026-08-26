@@ -4,7 +4,7 @@ There are different ways of assigning values to variables. To be able to detect 
 
 ## TreePath
 
-Without TreePath the AST can only be traversed top-down. If you have a specific tree object and you want to see of wh ich tree it is a child, you need TreePath. Every tree in the AST has an associated TreePath object that knows its parent TreePath, thus forming upward chains.
+Without TreePath the AST can only be traversed top-down. If you have a specific tree object and you want to find its parent, you need TreePath. Every tree in the AST has an associated TreePath object that knows its parent TreePath, thus forming upward chains. Traversing upward is easier, because while a tree almost always has multiple children, it has only one parent.
 
 In TreePathScanner, there is a field `path` that returns the TreePath object linked to the Tree. The method to retrieve it, when working in an extension of TreePathScanner is:
 
@@ -88,4 +88,37 @@ private boolean isLeftAssignment(TreePath path, TreePath assignment){
 }
 ```
 
+## Checking the Tree type
+
+There are 3 ways to check the type of a tree. Let's say you have a variable which you know is of type Tree but you don't know what implementation it has:
+
+- instanceof (`tree instanceof JCTree.JCVariableDecl vardec`)
+- Tree.Kind (`tree.getKind() == Tree.Kind.VARIABLE`)
+- JCTree.Tag (`tree.getTag() == JCTree.Tag.VARDEF`)
+
+The first one can always be used, it asks for the specific implementation of the tree variable. The second one can be used for any compile type, Tree, JCTree or any of their subclasses. The third one can only be used if tree is of compile type JCTree, or any of its child classes. It does not work if compile type is Tree or any of its child interfaces.
+
+A downside of the first one is that you need to involve a specific subclass of JCTree. Furthermore, while there are tons of JCTree subclasses that allow for refined checks, there are even more Tag values for even more refinement. For example, the subclass JCTree.JCUnary has 8 related Tag values (for `+,-,!,~,++_,--_,_++,_--). But if you want to access specific methods of the implemented type, this one is rather appropriate, because by using a new identifier (`vardec`) you have effectively changed the compile time type to match the runtime type.
+
+A downside of the second is that you work in the public api of javac, using the official interfaces. Doing so prevents trouble (think of --add-export) but prevents the use of all sorts of useful methods that are only part of the hidden implementation. Once you use the 'forbidden' part of javac, there is no reason to stick to the public part of it, and the methods find in the subclasses of JCTree might be very effective.
+
+A downside of the third option is that you can only use it if your compile type is JCTree. This might mean you have to cast type Tree to JCTree (`JCTree tree = (JCTree) treeinterface`). The benefit is that it is easy to group specific types of JCTree subclasses. ChatGPT gave this example:
+
+```
+switch (tree.getTag()) {
+    case ASSIGN:
+        ...
+        break;
+    case APPLY:
+        ...
+        break;
+    case SELECT:
+        ...
+        break;
+}
+```
+
+JCTrees that have ASSIGN as tag are of a different subclass than those having APPLY as tag, but you can now make them part of the same process. With `instanceof` you are limited to a single subclass.
+
+All in all, you might use different ways to check the type of a Tree, and as I am deep into forbidden javac territory I will mainly use `instancof` and `JCTree.Tag`.
 
