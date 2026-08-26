@@ -15,13 +15,13 @@ getCurrentPath(); => TreePath
 To get the parent path, thus, moving upward towards the root, there is:
 
 ```
-getParentPath(); => TreePath
+getCurrentPath().getParentPath(); => TreePath
 ```
 
 To get the Tree linked to a TreePath, you have:
 
 ```
-getLeaf(); => Tree
+somepath.getLeaf(); => Tree
 ```
 
 ## Simple assignment detection
@@ -98,7 +98,9 @@ There are 3 ways to check the type of a tree. Let's say you have a variable whic
 
 The first one can always be used, it asks for the specific implementation of the tree variable. The second one can be used for any compile type, Tree, JCTree or any of their subclasses. The third one can only be used if tree is of compile type JCTree, or any of its child classes. It does not work if compile type is Tree or any of its child interfaces.
 
-A downside of the first one is that you need to involve a specific subclass of JCTree. Furthermore, while there are tons of JCTree subclasses that allow for refined checks, there are even more Tag values for even more refinement. For example, the subclass JCTree.JCUnary has 8 related Tag values (for `+,-,!,~,++_,--_,_++,_--). But if you want to access specific methods of the implemented type, this one is rather appropriate, because by using a new identifier (`vardec`) you have effectively changed the compile time type to match the runtime type.
+A downside of the first one is that you need to involve a specific subclass of JCTree. Furthermore, while there are tons of JCTree subclasses that allow for refined checks, there are even more Tag values for even more refinement. For example, the subclass JCTree.JCUnary has 8 related Tag values (for `+,-,!,~,++_,--_,_++,_--)`. 
+
+But if you want to access specific methods of the implemented type, this one is rather appropriate, because by using a new identifier (`vardec`) you have effectively changed the compile time type to match the runtime type.
 
 A downside of the second is that you work in the public api of javac, using the official interfaces. Doing so prevents trouble (think of --add-export) but prevents the use of all sorts of useful methods that are only part of the hidden implementation. Once you use the 'forbidden' part of javac, there is no reason to stick to the public part of it, and the methods find in the subclasses of JCTree might be very effective.
 
@@ -118,7 +120,16 @@ switch (tree.getTag()) {
 }
 ```
 
-JCTrees that have ASSIGN as tag are of a different subclass than those having APPLY as tag, but you can now make them part of the same process. With `instanceof` you are limited to a single subclass.
+JCTrees that have ASSIGN as tag are of a different subclass than those having APPLY as tag, but you can now make them part of the same process. With `instanceof` you are limited to a single subclass. 
 
 All in all, you might use different ways to check the type of a Tree, and as I am deep into forbidden javac territory I will mainly use `instancof` and `JCTree.Tag`.
 
+## More advanced assignment detection
+
+Assignments, or more specifically the writing to variables, can have multiple forms. In Java, can can group them under the following categories:
+
+|Tree|JCTree|Tree.Kind|JCTree.Tag|
+|---|---|---|---|
+|AssignmentTree|JCAssign|ASSIGNMENT|ASSIGN|
+|CompoundAssignmentTree|JCAssignOp|see below|see below|
+|UnaryTree|JCUnary|see below|see below|
