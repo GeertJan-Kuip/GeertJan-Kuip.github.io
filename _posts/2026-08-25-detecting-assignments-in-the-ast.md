@@ -152,7 +152,7 @@ The Tree.Kind and JCTree.Tag values belonging to CompoundAssignmentTree/JCAssign
 |>>>=|UNSIGNED_RIGHT_SHIFT_ASSIGNMENT|USR_ASG|
 |&=|AND_ASSIGNMENT|BITAND_ASG|
 |^=|XOR_ASSIGNMENT|BITXOR_ASG|
-|&#124;=|XOR_ASSIGNMENT|BITOR_ASG|
+|&#124;=|OR_ASSIGNMENT|BITOR_ASG|
 
 The Tree.Kind and JCTree.Tag values belonging to UnaryTree/JCUnary are:
 
@@ -284,3 +284,5 @@ private boolean isLeftAssignment(TreePath path, TreePath assignment){
     return false;
 }
 ```
+
+This for now.
