@@ -126,7 +126,11 @@ All in all, you might use different ways to check the type of a Tree, and as I a
 
 ## More advanced assignment detection
 
-Assignments, or more specifically the writing to variables, can have multiple forms. In Java, can can group them under the following categories:
+Assignments, or more specifically the writing to variables, can have multiple forms. If you want to be able to spot all write operations, you need to know the forms they can have and you need methods that detect them.
+
+### All write operations
+
+In Java, can can group them under the following categories:
 
 |Tree|JCTree|Tree.Kind|JCTree.Tag|
 |---|---|---|---|
@@ -136,7 +140,7 @@ Assignments, or more specifically the writing to variables, can have multiple fo
 
 The Tree.Kind and JCTree.Tag values belonging to CompoundAssignmentTree/JCAssignOp are:
 
-|Operator|Tree.Kind|JCAssignOP|
+|Operator|Tree.Kind|JCTree.Tag|
 |---|---|---|
 |*=|MULTIPLY_ASSIGNMENT|MUL_ASG|MUL_ASG|
 |/=|DIVIDE_ASSIGNMENT|DIV_ASG|
@@ -150,4 +154,133 @@ The Tree.Kind and JCTree.Tag values belonging to CompoundAssignmentTree/JCAssign
 |^=|XOR_ASSIGNMENT|BITXOR_ASG|
 |&#124;=|XOR_ASSIGNMENT|BITOR_ASG|
 
+The Tree.Kind and JCTree.Tag values belonging to UnaryTree/JCUnary are:
 
+|Operator|Tree.Kind|JCTree.Tag|
+|---|---|---|
+|_++|POSTFIX_INCREMENT|POSTINC|
+|_--|POSTFIX_DECREMENT|POSTDEC|
+|++_|PREFIX_INCREMENT|PREINC|
+|--_|PREFIX_DECREMENT|PREDEC|
+
+Note that the UnaryTree interface, implemented by JCTree.JCUnary, covers more than the four operators listed above. Simple arithmetic operators also belong to this type, but do not alter values by themselves. This is a reason why the enums (Kind and Tag) are so relevant.
+
+### Sample method for detection
+
+The method below looks whether a specific tree, as identified by its TreePath, belongs to one of the types of assigment described above.
+
+```
+private boolean isMutated(TreePath path){
+
+    TreePath origin = path;
+
+    while (path!=null){
+
+        JCTree current = (JCTree) path.getLeaf();
+
+        boolean assign = current instanceof JCTree.JCAssign;
+        boolean assignOp = current instanceof JCTree.JCAssignOp;
+        boolean unary = current instanceof JCTree.JCUnary && unaryTagsThatAssign.contains(current.getTag());
+
+        if (unary) return true;
+
+        if (assign || assignOp){
+            return (isLeftAssignment(origin, path));
+        };
+
+        if (current instanceof JCTree.JCBlock) return false;
+
+        path = path.getParentPath();
+    }
+    return false;
+}
+```
+
+The line `boolean unary = current instanceof JCTree.JCUnary && unaryTagsThatAssign.contains(current.getTag());` refers to a variable `unaryTagsThatAssign`. I have defined it as follows:
+
+```
+List<JCTree.Tag> unaryTagsThatAssign = List.of(JCTree.Tag.PREINC, JCTree.Tag.PREDEC,
+        JCTree.Tag.POSTINC, JCTree.Tag.POSTDEC);
+```
+
+As you see, after checking for the overall type JCTree.JCUnary I checked more specifically for these four tags.
+
+Furthermore, I call a method `isLeftAssignment(origin, path)`. I already provided the code for an early version of it, but because of the existence of multiple assignment/write types I needed to improve the class:
+
+```
+private boolean isLeftAssignment(TreePath path, TreePath assignment){
+
+    Tree tree = assignment.getLeaf();
+
+    if (!(tree instanceof JCTree.JCAssign || tree instanceof JCTree.JCAssignOp)) {
+
+        throw new RuntimeException("Second parameter is not linked to an AssignmentTree or CompoundAssignmentTree.");
+    }
+
+    while (path!=null && path.getParentPath()!=null){
+
+        Tree child = path.getLeaf();
+        Tree parent = path.getParentPath().getLeaf();
+        if (parent==tree){
+
+            if (tree instanceof JCTree.JCAssign tree2 ) {
+
+                if (tree2.getVariable() == child) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+            if (tree instanceof JCTree.JCAssignOp tree3 ) {
+
+                if (tree3.getVariable() == child) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+
+        }
+        path = path.getParentPath();
+    }
+    return false;
+}
+```
+
+I am rather sure that this method can be written in a more compact form but it does the job for now. Some more remarks:
+
+- Fields lhs and rhs (lhs is retrieved with the `getVariable()` method are not unique for JCAssign and JCAssignOp. JCBinary has them as well, but is not involved in assignment/writing. Therefore I omitted it but I think I should add it to make the method more generic.
+- I check for JCAssign and JCAssignOp and apply the same methods to these two types. While you might think I could combine them, these two methods are not related via inheritance. Combining them thus seems to be impossible.
+- I might use ternary operators instead of if/else, that is shorter code. 
+
+### Better version for checking if the expression is on the left or right
+
+Based on previous evaluation, I rewrote the method that checks whether an expression lives left or right:
+
+```
+private boolean isLeftAssignment(TreePath path, TreePath assignment){
+
+    Tree assignmentLeaf = assignment.getLeaf();
+
+    if (!(assignmentLeaf instanceof JCTree.JCAssign || assignmentLeaf instanceof JCTree.JCAssignOp || assignmentLeaf instanceof JCTree.JCBinary)) {
+
+        throw new RuntimeException("Second parameter is not linked to a Tree type that has a left and right expression.");
+    }
+
+    while (path!=null && path.getParentPath()!=null){
+
+        Tree child = path.getLeaf();
+        Tree parent = path.getParentPath().getLeaf();
+        if (parent==assignmentLeaf){
+
+            if (assignmentLeaf instanceof JCTree.JCAssign jcassign) return jcassign.getVariable()==child;
+            if (assignmentLeaf instanceof JCTree.JCAssignOp jcassignOp ) return jcassignOp.getVariable()==child;
+            if (assignmentLeaf instanceof JCTree.JCBinary jcbinary) return jcbinary.getLeftOperand()==child;
+
+        }
+        path = path.getParentPath();
+    }
+    return false;
+}
+```
