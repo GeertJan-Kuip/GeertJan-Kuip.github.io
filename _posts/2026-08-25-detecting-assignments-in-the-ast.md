@@ -131,5 +131,23 @@ Assignments, or more specifically the writing to variables, can have multiple fo
 |Tree|JCTree|Tree.Kind|JCTree.Tag|
 |---|---|---|---|
 |AssignmentTree|JCAssign|ASSIGNMENT|ASSIGN|
-|CompoundAssignmentTree|JCAssignOp|see below|see below|
-|UnaryTree|JCUnary|see below|see below|
+|CompoundAssignmentTree|JCAssignOp|multiple|multiple|
+|UnaryTree|JCUnary|multiple|multiple|
+
+The Tree.Kind and JCTree.Tag values belonging to CompoundAssignmentTree/JCAssignOp are:
+
+|Operator|Tree.Kind|JCAssignOP|
+|---|---|---|
+|*=|MULTIPLY_ASSIGNMENT|MUL_ASG|MUL_ASG|
+|/=|DIVIDE_ASSIGNMENT|DIV_ASG|
+|%=|REMAINDER_ASSIGNMENT|MOD_ASG|
+|+=|PLUS_ASSIGNMENT|PLUS_ASG|
+|-=|MINUS_ASSIGNMENT|MINUS_ASG|
+|<<=|LEFT_SHIFT_ASSIGNMENT|SL_ASG|
+|>>=|RIGHT_SHIFT_ASSIGNMENT|SR_ASG|
+|>>>=|UNSIGNED_RIGHT_SHIFT_ASSIGNMENT|USR_ASG|
+|&=|AND_ASSIGNMENT|BITAND_ASG|
+|^=|XOR_ASSIGNMENT|BITXOR_ASG|
+||=|XOR_ASSIGNMENT|BITOR_ASG|
+
+
